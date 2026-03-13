@@ -129,13 +129,26 @@ def detect_language(text: str) -> str:
     Detect if question is Hindi/Hinglish or English.
 
     Process:
-    1. Translate Hinglish → Hindi
-    2. Count Hindi characters
-    3. More than 2 Hindi chars → reply in Hindi
-    4. Otherwise → reply in English
+    1. Check for explicit Hindi request keywords
+    2. Translate Hinglish → Hindi
+    3. Count Hindi characters
+    4. More than 2 Hindi chars → reply in Hindi
+    5. Otherwise → reply in English
 
     Returns: 'hindi' or 'english'
     """
+    lower = text.lower()
+
+    # Explicit Hindi request — user wants Hindi response
+    hindi_keywords = [
+        'hindi me', 'hindi mein', 'hindi mai',
+        'hindi me batao', 'hindi mein batao',
+        'hindi me samjhao', 'hindi mein samjhao',
+        'in hindi',
+    ]
+    if any(kw in lower for kw in hindi_keywords):
+        return 'hindi'
+
     translated = translate_hinglish(text)
     hindi_chars = set(
         'अआइईउऊएऐओऔकखगघचछजझटठडढणतथदधनपफबभमयरलवशषसह'

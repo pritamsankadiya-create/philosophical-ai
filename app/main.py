@@ -57,7 +57,7 @@ def home():
 def health():
     return {
         "status"    : "✅ running",
-        "model"     : "mistral",
+        "model"     : "llama-3.3-70b-versatile",
         "streaming" : "✅ active",
         "memory"    : f"{len(memory.history)} messages"
     }
@@ -211,8 +211,9 @@ if __name__ == "__main__":
     print("📍 URL  : http://localhost:8000")
     print("📖 Docs : http://localhost:8000/docs")
     print("="*45 + "\n")
+    port = int(os.environ.get("PORT", 8000))
     uvicorn.run(
         app,
         host="0.0.0.0",
-        port=8000
+        port=port
     )

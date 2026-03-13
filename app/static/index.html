@@ -353,7 +353,7 @@
                 return;
             } else {
                 // All retries exhausted
-                addMessage('ai', '❌ Failed after ' + MAX_RETRIES + ' retries. Please check if Ollama is running and try again.');
+                addMessage('ai', '❌ Failed after ' + MAX_RETRIES + ' retries. Please try again later.');
             }
         } finally {
             currentAbort = null;
@@ -489,7 +489,7 @@
                     <span></span>
                 </div>
                 <div id="loading-msg" class="loading-msg">
-                    🧠 Thinking deeply... (15-30 sec)
+                    🧠 Thinking deeply... (2-5 sec)
                 </div>
             </div>
         `;
@@ -498,7 +498,7 @@
 
         // ✅ Cycle through messages so user knows AI is working!
         const messages = [
-            "🧠 Thinking deeply... (15-30 sec)",
+            "🧠 Thinking deeply... (2-5 sec)",
             "📚 Searching philosopher wisdom...",
             "🔍 Finding relevant quotes...",
             "✍️  Crafting your answer...",

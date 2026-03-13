@@ -1,9 +1,11 @@
 fastapi
 uvicorn
-langchain
+groq
+langchain-core
 langchain-community
-langchain-ollama
 langchain-chroma
 langchain-text-splitters
 chromadb
-requests
+onnxruntime
+tokenizers
+numpy

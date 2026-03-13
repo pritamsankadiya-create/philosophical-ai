@@ -1,0 +1,8 @@
+memory/chroma_db/
+venv/
+__pycache__/
+.env
+.git/
+.gitignore
+.dockerignore
+*.pyc

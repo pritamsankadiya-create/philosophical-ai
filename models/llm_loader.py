@@ -1,99 +1,80 @@
 # ============================================================
-# 📁 models/llm_loader.py
-# ⚡ Streaming + Normal response with Hindi fix!
+# models/llm_loader.py
+# Groq API — fast cloud inference
 # ============================================================
 
-import requests
-import json
+import os
+from groq import Groq
+
+client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
+
+MODEL_MAIN = "llama-3.3-70b-versatile"
+MODEL_FAST = "llama-3.1-8b-instant"
 
 
 def generate_response(prompt: str, max_tokens: int = 300) -> str:
     """Normal response — returns complete answer"""
-    url = "http://localhost:11434/api/generate"
-    payload = {
-        "model"  : "mistral",
-        "prompt" : prompt,
-        "stream" : False,
-        "options": {
-            "temperature"   : 0.7,
-            "num_predict"   : max_tokens,
-            "top_k"         : 20,
-            "top_p"         : 0.9,
-            "repeat_penalty": 1.1,
-        }
-    }
     try:
-        response = requests.post(url, json=payload, timeout=180)
-        return response.json()["response"].strip()
-    except requests.exceptions.Timeout:
-        return "⏱️ Timeout. Please try again."
+        response = client.chat.completions.create(
+            model=MODEL_MAIN,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=max_tokens,
+            temperature=0.7,
+            top_p=0.9,
+        )
+        return response.choices[0].message.content.strip()
     except Exception as e:
-        return f"❌ Error: {str(e)}"
+        return f"Error: {str(e)}"
 
 
 def generate_stream(prompt: str, max_tokens: int = 300):
     """
-    ⚡ Streaming response — word by word for all languages!
+    Streaming response — word by word for all languages!
     Buffers tokens and yields at word boundaries (space, punctuation).
-    Fallback: yields if buffer exceeds 8 chars with no boundary,
-    so streaming never gets stuck.
+    Fallback: yields if buffer exceeds 8 chars with no boundary.
     """
-    url = "http://localhost:11434/api/generate"
-    payload = {
-        "model"  : "mistral",
-        "prompt" : prompt,
-        "stream" : True,
-        "options": {
-            "temperature"   : 0.7,
-            "num_predict"   : max_tokens,
-            "top_k"         : 20,
-            "top_p"         : 0.9,
-            "repeat_penalty": 1.1,
-        }
-    }
-
     try:
-        # timeout=(connect, read) — 10s to connect, 300s for first token
-        response = requests.post(
-            url,
-            json=payload,
+        stream = client.chat.completions.create(
+            model=MODEL_MAIN,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=max_tokens,
+            temperature=0.7,
+            top_p=0.9,
             stream=True,
-            timeout=(10, 300)
         )
 
         buffer = ""
-        boundary_chars = {' ', '\n', '।', '?', '!', ',', '.', ':', ';', '—', '-'}
+        boundary_chars = {' ', '\n', '\u0964', '?', '!', ',', '.', ':', ';', '\u2014', '-'}
 
-        for line in response.iter_lines():
-            if line:
-                data  = json.loads(line)
-                token = data.get("response", "")
-                done  = data.get("done", False)
+        for chunk in stream:
+            token = chunk.choices[0].delta.content or ""
 
-                if token:
-                    buffer += token
+            if token:
+                buffer += token
 
-                    # Yield at word boundary OR if buffer is long enough
-                    # (fallback prevents getting stuck)
-                    if any(c in buffer for c in boundary_chars) or len(buffer) >= 8:
-                        yield buffer
-                        buffer = ""
+                # Yield at word boundary OR if buffer is long enough
+                if any(c in buffer for c in boundary_chars) or len(buffer) >= 8:
+                    yield buffer
+                    buffer = ""
 
-                if done:
-                    if buffer:
-                        yield buffer
-                    break
+        # Flush remaining buffer
+        if buffer:
+            yield buffer
 
     except Exception as e:
-        yield f"❌ Error: {str(e)}"
+        yield f"Error: {str(e)}"
 
 
 def generate_fast(prompt: str) -> str:
-    """Fast version for reflection — fewer tokens"""
-    return generate_response(prompt, max_tokens=150)
-
-
-def load_embeddings(model_name: str = "nomic-embed-text"):
-    """Load embeddings for vector search"""
-    from langchain_ollama import OllamaEmbeddings
-    return OllamaEmbeddings(model=model_name)
+    """Fast version for reflection — fewer tokens, smaller model"""
+    try:
+        response = client.chat.completions.create(
+            model=MODEL_FAST,
+            messages=[{"role": "user", "content": prompt}],
+            max_tokens=150,
+            temperature=0.7,
+            top_p=0.9,
+        )
+        return response.choices[0].message.content.strip()
+    except Exception as e:
+        return f"Error: {str(e)}"
