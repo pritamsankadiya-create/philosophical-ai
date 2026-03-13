@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🧠 Philosophical AI</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background: #0f0f0f;
+            color: #e0e0e0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* ── Header ── */
+        .header {
+            background: #1a1a2e;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #333;
+        }
+
+        .header h1 { font-size: 20px; color: #a78bfa; }
+
+        .btn-clear {
+            background: #2d2d2d;
+            color: #e0e0e0;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+
+        .btn-clear:hover { background: #444; }
+
+        /* ── Chat Area ── */
+        .chat-area {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* ── Messages ── */
+        .message {
+            display: flex;
+            gap: 12px;
+            max-width: 80%;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message.ai { align-self: flex-start; }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        .user .avatar { background: #4f46e5; }
+        .ai .avatar {
+            background: #1a1a2e;
+            border: 1px solid #a78bfa;
+        }
+
+        .bubble {
+            padding: 12px 16px;
+            border-radius: 16px;
+            line-height: 1.8;
+            font-size: 15px;
+        }
+
+        .user .bubble {
+            background: #4f46e5;
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .ai .bubble {
+            background: #1e1e2e;
+            color: #e0e0e0;
+            border-bottom-left-radius: 4px;
+            border: 1px solid #333;
+            min-width: 200px;
+        }
+
+        /* ── Typing Indicator ── */
+        .typing {
+            display: flex;
+            gap: 4px;
+            padding: 12px 16px;
+            background: #1e1e2e;
+            border-radius: 16px;
+            border-bottom-left-radius: 4px;
+            width: fit-content;
+            border: 1px solid #333;
+        }
+
+        .typing span {
+            width: 8px;
+            height: 8px;
+            background: #a78bfa;
+            border-radius: 50%;
+            animation: bounce 1.2s infinite;
+        }
+
+        .typing span:nth-child(2) { animation-delay: 0.2s; }
+        .typing span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes bounce {
+            0%, 60%, 100% { transform: translateY(0); }
+            30%            { transform: translateY(-8px); }
+        }
+
+        /* ── Loading message ── */
+        .loading-msg {
+            font-size: 12px;
+            color: #a78bfa;
+            padding-left: 4px;
+            animation: fadeInOut 2s infinite;
+        }
+
+        @keyframes fadeInOut {
+            0%   { opacity: 0.4; }
+            50%  { opacity: 1;   }
+            100% { opacity: 0.4; }
+        }
+
+        /* ── Streaming cursor ── */
+        .cursor {
+            display: inline-block;
+            width: 2px;
+            height: 16px;
+            background: #a78bfa;
+            margin-left: 2px;
+            animation: blink 0.8s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50%      { opacity: 0; }
+        }
+
+        /* ── Input Area ── */
+        .input-area {
+            padding: 16px 24px;
+            background: #1a1a1a;
+            border-top: 1px solid #333;
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .input-box {
+            flex: 1;
+            background: #2d2d2d;
+            border: 1px solid #444;
+            border-radius: 12px;
+            padding: 12px 16px;
+            color: #e0e0e0;
+            font-size: 15px;
+            resize: none;
+            outline: none;
+            max-height: 120px;
+            min-height: 48px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .input-box:focus  { border-color: #a78bfa; }
+        .input-box::placeholder { color: #666; }
+
+        .send-btn {
+            background: #4f46e5;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            padding: 12px 20px;
+            cursor: pointer;
+            font-size: 20px;
+            transition: all 0.2s;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 52px;
+        }
+
+        .send-btn:hover    { background: #6366f1; }
+        .send-btn:disabled {
+            background: #333;
+            cursor: not-allowed;
+        }
+
+        /* ── Welcome ── */
+        .welcome {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .welcome h2 {
+            font-size: 28px;
+            color: #a78bfa;
+            margin-bottom: 12px;
+        }
+
+        .suggestions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .suggestion {
+            background: #1e1e2e;
+            border: 1px solid #333;
+            border-radius: 20px;
+            padding: 8px 16px;
+            font-size: 13px;
+            cursor: pointer;
+            color: #a78bfa;
+            transition: all 0.2s;
+        }
+
+        .suggestion:hover {
+            background: #2d2d3d;
+            border-color: #a78bfa;
+        }
+
+        /* ── Scrollbar ── */
+        .chat-area::-webkit-scrollbar       { width: 4px; }
+        .chat-area::-webkit-scrollbar-track { background: transparent; }
+        .chat-area::-webkit-scrollbar-thumb {
+            background: #333;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+    <h1>🧠 Philosophical AI</h1>
+    <button class="btn-clear" onclick="clearChat()">
+        🧹 Clear Chat
+    </button>
+</div>
+
+<!-- Chat Area -->
+<div class="chat-area" id="chatArea">
+    <div class="welcome" id="welcome">
+        <h2>🧠 Philosophical AI</h2>
+        <p>Ask me anything in English, Hindi, or Hinglish!</p>
+        <p style="margin-top:8px; font-size:13px; color:#555">
+            Powered by Osho • Krishna • Kalam • Chanakya • Vivekananda • Buddha • Rumi & more
+        </p>
+        <div class="suggestions">
+            <div class="suggestion" onclick="askSuggestion(this)">What is consciousness?</div>
+            <div class="suggestion" onclick="askSuggestion(this)">How to deal with failure?</div>
+            <div class="suggestion" onclick="askSuggestion(this)">प्यार क्या है?</div>
+            <div class="suggestion" onclick="askSuggestion(this)">What is karma?</div>
+            <div class="suggestion" onclick="askSuggestion(this)">Khushi kaise milti hai?</div>
+            <div class="suggestion" onclick="askSuggestion(this)">What did Kalam say about dreams?</div>
+            <div class="suggestion" onclick="askSuggestion(this)">What is Chetna?</div>
+            <div class="suggestion" onclick="askSuggestion(this)">How to find peace?</div>
+        </div>
+    </div>
+</div>
+
+<!-- Input Area -->
+<div class="input-area">
+    <textarea
+        class="input-box"
+        id="inputBox"
+        placeholder="Ask a philosophical question... (English, Hindi, Hinglish)"
+        rows="1"
+        onkeydown="handleKey(event)"
+        oninput="autoResize(this)"
+    ></textarea>
+    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+        🚀
+    </button>
+</div>
+
+<script>
+    let isStreaming = false;
+    let currentAbort = null;
+    const MAX_RETRIES = 2;
+
+    // ── Send Message ─────────────────────────────────────────
+    async function sendMessage() {
+        const input    = document.getElementById('inputBox');
+        const question = input.value.trim();
+
+        if (!question || isStreaming) return;
+
+        // Hide welcome
+        const welcome = document.getElementById('welcome');
+        if (welcome) welcome.style.display = 'none';
+
+        addMessage('user', question);
+        input.value = '';
+        autoResize(input);
+
+        await attemptStream(question, 0);
+    }
+
+    // ── Attempt stream with auto-retry ───────────────────────
+    async function attemptStream(question, attempt) {
+        const typingId = showTyping();
+        setLoading(true);
+
+        try {
+            await streamResponse(question, typingId);
+        } catch (err) {
+            removeTyping(typingId);
+
+            if (attempt < MAX_RETRIES) {
+                // Auto-retry — show message and try again
+                const retryNum = attempt + 1;
+                addMessage('ai', `⏱️ Attempt ${retryNum} failed. Retrying automatically... (${retryNum}/${MAX_RETRIES})`);
+                currentAbort = null;
+                setLoading(false);
+                await attemptStream(question, retryNum);
+                return;
+            } else {
+                // All retries exhausted
+                addMessage('ai', '❌ Failed after ' + MAX_RETRIES + ' retries. Please check if Ollama is running and try again.');
+            }
+        } finally {
+            currentAbort = null;
+            setLoading(false);
+        }
+    }
+
+    // ── Stream Response ───────────────────────────────────────
+    async function streamResponse(question, typingId) {
+
+    // Abort controller with 5 min timeout (model needs time to think)
+    const controller = new AbortController();
+    currentAbort = controller;
+    const timeoutId = setTimeout(() => controller.abort(), 300000);
+
+    try {
+        const url      = `/stream?question=${encodeURIComponent(question)}`;
+        const response = await fetch(url, { signal: controller.signal });
+        const reader   = response.body.getReader();
+        const decoder  = new TextDecoder('utf-8');
+
+        let fullText    = '';
+        let buffer      = '';
+        let bubbleReady = false;
+        let bubble      = null;
+        let msgId       = 'msg_' + Date.now();
+
+        while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            // Reset timeout on each chunk — server is alive
+            clearTimeout(timeoutId);
+
+            buffer += decoder.decode(value, { stream: true });
+
+            const lines = buffer.split('\n');
+            buffer = lines.pop() || '';
+
+            for (const line of lines) {
+                if (line.startsWith('data: ')) {
+                    const raw = line.slice(6).trim();
+                    if (!raw) continue;
+
+                    try {
+                        const token = JSON.parse(raw);
+
+                        if (token === '[DONE]') {
+                            if (bubble) {
+                                bubble.innerHTML = fullText;
+                            }
+                            scrollToBottom();
+                            return;
+                        }
+
+                        // First token arrived — NOW remove typing
+                        if (!bubbleReady) {
+                            removeTyping(typingId);
+                            bubble = createAIBubble(msgId);
+                            bubble.innerHTML = '<span class="cursor"></span>';
+                            bubbleReady = true;
+                        }
+
+                        fullText += token.replace(/\n/g, '<br>');
+                        bubble.innerHTML =
+                            fullText +
+                            '<span class="cursor"></span>';
+
+                        scrollToBottom();
+
+                    } catch (e) {
+                        continue;
+                    }
+                }
+            }
+        }
+
+        // Stream ended without [DONE] — still show what we got
+        if (bubbleReady && bubble) {
+            bubble.innerHTML = fullText || '❌ Empty response from AI.';
+        } else {
+            removeTyping(typingId);
+            addMessage('ai', '❌ No response received from AI.');
+        }
+
+    } finally {
+        clearTimeout(timeoutId);
+    }
+}
+
+    // ── Create AI Bubble ──────────────────────────────────────
+    function createAIBubble(id) {
+        const chatArea    = document.getElementById('chatArea');
+        const msg         = document.createElement('div');
+        msg.className     = 'message ai';
+        msg.innerHTML     = `
+            <div class="avatar">🧘</div>
+            <div class="bubble" id="${id}"></div>
+        `;
+        chatArea.appendChild(msg);
+        scrollToBottom();
+        return document.getElementById(id);
+    }
+
+    // ── Add Message ───────────────────────────────────────────
+    function addMessage(role, text) {
+        const chatArea = document.getElementById('chatArea');
+        const msg      = document.createElement('div');
+        msg.className  = `message ${role}`;
+        const avatar   = role === 'user' ? '🤔' : '🧘';
+        msg.innerHTML  = `
+            <div class="avatar">${avatar}</div>
+            <div class="bubble">${text}</div>
+        `;
+        chatArea.appendChild(msg);
+        scrollToBottom();
+    }
+
+
+    // ── Typing Indicator with Loading Messages ────────────────
+    function showTyping() {
+        const chatArea = document.getElementById('chatArea');
+        const id       = 'typing_' + Date.now();
+        const msg      = document.createElement('div');
+        msg.className  = 'message ai';
+        msg.id         = id;
+        msg.innerHTML  = `
+            <div class="avatar">🧘</div>
+            <div style="display:flex; flex-direction:column; gap:8px;">
+                <div class="typing">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+                <div id="loading-msg" class="loading-msg">
+                    🧠 Thinking deeply... (15-30 sec)
+                </div>
+            </div>
+        `;
+        chatArea.appendChild(msg);
+        scrollToBottom();
+
+        // ✅ Cycle through messages so user knows AI is working!
+        const messages = [
+            "🧠 Thinking deeply... (15-30 sec)",
+            "📚 Searching philosopher wisdom...",
+            "🔍 Finding relevant quotes...",
+            "✍️  Crafting your answer...",
+            "🪞 Reflecting on the answer...",
+            "🌟 Almost ready..."
+        ];
+
+        let i = 0;
+        const interval = setInterval(() => {
+            const el = document.getElementById('loading-msg');
+            if (el) {
+                i = (i + 1) % messages.length;
+                el.innerText = messages[i];
+            } else {
+                clearInterval(interval);
+            }
+        }, 4000);
+
+        // Store interval id to clear later
+        msg.dataset.interval = interval;
+
+        return id;
+    }
+
+    // ── Remove Typing ─────────────────────────────────────────
+    function removeTyping(id) {
+        const el = document.getElementById(id);
+        if (el) {
+            // ✅ Clear the message cycling interval
+            if (el.dataset.interval) {
+                clearInterval(el.dataset.interval);
+            }
+            el.remove();
+        }
+    }
+
+    // ── Loading State ─────────────────────────────────────────
+    function setLoading(loading) {
+        isStreaming = loading;
+        document.getElementById('sendBtn').disabled  = loading;
+        document.getElementById('inputBox').disabled = loading;
+        document.getElementById('sendBtn').innerText = loading ? '⏳' : '🚀';
+    }
+
+    // ── Scroll ────────────────────────────────────────────────
+    function scrollToBottom() {
+        const c = document.getElementById('chatArea');
+        c.scrollTop = c.scrollHeight;
+    }
+
+    // ── Clear Chat ────────────────────────────────────────────
+    async function clearChat() {
+        await fetch('/clear');
+        document.getElementById('chatArea').innerHTML = `
+            <div class="welcome" id="welcome">
+                <h2>🧠 Philosophical AI</h2>
+                <p>Ask me anything in English, Hindi, or Hinglish!</p>
+                <p style="margin-top:8px;font-size:13px;color:#555">
+                    Powered by Osho • Krishna • Kalam • Chanakya • Vivekananda • Buddha • Rumi & more
+                </p>
+                <div class="suggestions">
+                    <div class="suggestion" onclick="askSuggestion(this)">What is consciousness?</div>
+                    <div class="suggestion" onclick="askSuggestion(this)">How to deal with failure?</div>
+                    <div class="suggestion" onclick="askSuggestion(this)">प्यार क्या है?</div>
+                    <div class="suggestion" onclick="askSuggestion(this)">What is karma?</div>
+                    <div class="suggestion" onclick="askSuggestion(this)">Khushi kaise milti hai?</div>
+                    <div class="suggestion" onclick="askSuggestion(this)">What did Kalam say about dreams?</div>
+                    <div class="suggestion" onclick="askSuggestion(this)">What is Chetna?</div>
+                    <div class="suggestion" onclick="askSuggestion(this)">How to find peace?</div>
+                </div>
+            </div>`;
+    }
+
+    // ── Suggestion Click ──────────────────────────────────────
+    function askSuggestion(el) {
+        document.getElementById('inputBox').value = el.innerText;
+        sendMessage();
+    }
+
+    // ── Enter Key ─────────────────────────────────────────────
+    function handleKey(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            sendMessage();
+        }
+    }
+
+    // ── Auto Resize Textarea ──────────────────────────────────
+    function autoResize(el) {
+        el.style.height = 'auto';
+        el.style.height = Math.min(el.scrollHeight, 120) + 'px';
+    }
+</script>
+
+</body>
+</html>
