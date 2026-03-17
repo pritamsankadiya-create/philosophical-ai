@@ -12,7 +12,7 @@ MODEL_MAIN = "llama-3.3-70b-versatile"
 MODEL_FAST = "llama-3.1-8b-instant"
 
 
-def generate_response(prompt: str, max_tokens: int = 300) -> str:
+def generate_response(prompt: str, max_tokens: int = 800) -> str:
     """Normal response — returns complete answer"""
     try:
         response = client.chat.completions.create(
@@ -27,7 +27,7 @@ def generate_response(prompt: str, max_tokens: int = 300) -> str:
         return f"Error: {str(e)}"
 
 
-def generate_stream(prompt: str, max_tokens: int = 300):
+def generate_stream(prompt: str, max_tokens: int = 800):
     """
     Streaming response — word by word for all languages!
     Buffers tokens and yields at word boundaries (space, punctuation).

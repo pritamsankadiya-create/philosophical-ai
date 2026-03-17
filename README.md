@@ -5,14 +5,16 @@
 ![Python](https://img.shields.io/badge/Python-3.12-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.111-green)
 ![LangChain](https://img.shields.io/badge/LangChain-0.2-orange)
-![Ollama](https://img.shields.io/badge/Ollama-Mistral-purple)
+![Groq](https://img.shields.io/badge/Groq-LLaMA_3.3-purple)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
 
 ## 📖 What is this?
 
-**Philosophical AI** is a local AI chatbot that answers your life questions using the wisdom of the world's greatest philosophers — from ancient Greek thinkers like Socrates and Plato to Indian masters like Osho, Vivekananda and Shankaracharya.
+**Philosophical AI** is a cloud-powered AI chatbot that answers your life questions using the wisdom of the world's greatest philosophers — from ancient Greek thinkers like Socrates and Plato to Indian masters like Osho, Vivekananda and Shankaracharya.
+
+It features a **cognitive pipeline** that analyzes your question, extracts philosophical concepts, retrieves relevant wisdom, composes context-aware prompts, and reflects on its own answers — all before responding.
 
 Ask in **English**, **Hindi** or **Hinglish** — it understands all three!
 
@@ -21,10 +23,13 @@ Ask in **English**, **Hindi** or **Hinglish** — it understands all three!
 ## ✨ Features
 
 - 🌊 **Streaming responses** — answers appear word by word like ChatGPT
-- 🧠 **Conversation memory** — remembers your last 5 messages
+- 🧠 **Cognitive Pipeline** — 7-stage processing: detect → analyze → retrieve → compose → generate → reflect → remember
+- 🔬 **Concept Analyzer** — extracts philosophical concepts, themes, intent & depth from your question (pure Python, no LLM call)
+- 🔍 **Multi-strategy retrieval** — concept-enriched + philosopher-specific + vague query resolution
+- 📝 **Prompt Composer** — embeds reasoning frameworks + dialectic structure into prompts based on detected themes
+- 🪞 **Intent-aware Reflection** — self-critique engine that deepens answers based on question intent (define, compare, apply, challenge)
+- 💬 **Conversation themes** — tracks recurring concepts across turns to influence future responses
 - 🌍 **Multi-language** — English, Hindi and Hinglish support
-- 🔍 **Semantic search** — finds the most relevant philosopher quotes
-- 🪞 **Reflection engine** — improves every answer before showing it
 - 💬 **Beautiful Chat UI** — dark themed, mobile friendly
 - ⏳ **Loading messages** — shows progress while AI is thinking
 - 📚 **600+ quotes** from 23 philosophers
@@ -78,8 +83,12 @@ philosophical-ai/
 │       └── index.html          ← Chat UI (dark theme)
 │
 ├── core/
-│   ├── thinking_engine.py      ← Main AI brain
-│   └── reflection_engine.py    ← Answer improvement engine
+│   ├── pipeline.py             ← Central orchestrator (7-stage cognitive pipeline)
+│   ├── concept_analyzer.py     ← Pure Python concept/theme/intent extraction
+│   ├── knowledge_retriever.py  ← Multi-strategy retrieval + vague query resolution
+│   ├── prompt_composer.py      ← Reasoning framework + dialectic prompt builder
+│   ├── thinking_engine.py      ← Language detection & Hinglish translation
+│   └── reflection_engine.py    ← Intent-aware self-critique engine
 │
 ├── memory/
 │   ├── vector_store.py         ← Chroma vector database
@@ -104,7 +113,7 @@ philosophical-ai/
 ### Prerequisites
 
 - Python 3.12+
-- [Ollama](https://ollama.com) installed
+- [Groq API Key](https://console.groq.com) (free tier available)
 
 ### 1. Clone the repository
 
@@ -127,11 +136,11 @@ source venv/bin/activate        # Linux / Mac
 pip install -r requirements.txt
 ```
 
-### 4. Pull AI model
+### 4. Set up environment variables
 
 ```bash
-ollama pull mistral
-ollama pull nomic-embed-text
+cp .env.example .env
+# Edit .env and add your Groq API key
 ```
 
 ### 5. Run the server
@@ -153,8 +162,9 @@ http://localhost:8000
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/` | Chat UI |
-| `GET` | `/stream?question=...` | ⚡ Streaming response |
-| `POST` | `/chat` | Normal response with memory |
+| `GET` | `/stream?question=...` | ⚡ Streaming response (cognitive pipeline) |
+| `POST` | `/chat` | Full pipeline response with reflection |
+| `GET` | `/analyze?question=...` | 🔬 Debug: concept analysis without LLM call |
 | `GET` | `/history` | View conversation history |
 | `GET` | `/clear` | Clear conversation memory |
 | `GET` | `/rebuild` | Rebuild vector database |
@@ -187,44 +197,78 @@ curl -X POST http://localhost:8000/chat \
 }
 ```
 
+**Concept Analysis (debug):**
+```bash
+curl "http://localhost:8000/analyze?question=What+is+karma+according+to+Krishna"
+```
+
+**Response:**
+```json
+{
+  "question": "What is karma according to Krishna",
+  "translated": "What is karma according to Krishna",
+  "language": "english",
+  "concepts": ["karma"],
+  "themes": ["gita_philosophy", "buddhism", "vedanta"],
+  "philosophers": ["Shree Krishna"],
+  "intent": "define",
+  "question_depth": "standard"
+}
+```
+
 ---
 
-## 🧠 How it Works
+## 🧠 How it Works — Cognitive Pipeline
 
 ```
 User Question
       │
       ▼
 ┌─────────────────┐
-│ Language Detect │  ← English / Hindi / Hinglish?
+│ Stage 1:        │  ← Detect English / Hindi / Hinglish
+│ Language Detect  │     Translate Hinglish → Hindi
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│ Translate       │  ← Hinglish → Hindi
-│ Hinglish        │
+│ Stage 2:        │  ← Extract concepts, themes, philosophers,
+│ Concept Analyzer │     intent (define/compare/apply/challenge)
+│ (Pure Python)   │     and question depth — NO LLM call
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│ Vector Search   │  ← Find relevant philosopher quotes
-│ (Chroma DB)     │     using semantic similarity
+│ Stage 3:        │  ← Multi-strategy search:
+│ Knowledge       │     1. Direct question search
+│ Retriever       │     2. Concept-enriched search
+│ (Chroma DB)     │     3. Philosopher-specific search
+└────────┬────────┘     + Vague follow-up resolution
+         │
+         ▼
+┌─────────────────┐
+│ Stage 4:        │  ← Embed reasoning frameworks (Vedanta,
+│ Prompt Composer  │     Buddhism, Stoicism...) + dialectic
+│                 │     structure + multi-perspective + intent
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│ Think Engine    │  ← Generate answer using Mistral
-│ (Mistral LLM)   │     with relevant quotes + memory
+│ Stage 5:        │  ← Generate answer using LLaMA 3.3 70B
+│ LLM Generation  │     via Groq API (streaming or full)
+│ (Groq API)      │
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│ Reflect Engine  │  ← Improve the answer quality
+│ Stage 6:        │  ← Intent-aware self-critique
+│ Reflection      │     Deepens superficial answers
+│ (LLaMA 3.1 8B) │     using a fast smaller model
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│ Stream to UI    │  ← Word by word like ChatGPT
+│ Stage 7:        │  ← Save to memory with concept metadata
+│ Memory + Themes  │     Track recurring themes across turns
 └─────────────────┘
 ```
 
@@ -234,12 +278,12 @@ User Question
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| Model | `mistral` | LLM model via Ollama |
-| Embeddings | `nomic-embed-text` | Embedding model |
+| Model | `llama-3.3-70b-versatile` | LLM model via Groq |
+| Fast Model | `llama-3.1-8b-instant` | Reflection engine model |
 | Memory | `5 messages` | Conversation history limit |
-| Chunk size | `150` | Vector DB chunk size |
-| Max tokens | `300` | Response length |
+| Max tokens | `800` | Response length (main) / `200` (reflection) |
 | Temperature | `0.7` | AI creativity level |
+| Top P | `0.9` | Nucleus sampling |
 
 ---
 
@@ -249,8 +293,8 @@ User Question
 # Build
 docker build -t philosophical-ai .
 
-# Run
-docker run -p 8000:8000 philosophical-ai
+# Run (pass your Groq API key)
+docker run -p 8000:8000 -e GROQ_API_KEY=your_key_here philosophical-ai
 ```
 
 ---
@@ -260,15 +304,15 @@ docker run -p 8000:8000 philosophical-ai
 ```
 fastapi
 uvicorn
-langchain
+groq
+langchain-core
 langchain-community
-langchain-ollama
 langchain-chroma
 langchain-text-splitters
 chromadb
-requests
-aiofiles
-pydantic
+onnxruntime
+tokenizers
+numpy
 ```
 
 ---
@@ -279,10 +323,12 @@ pydantic
 - [x] Level 2 — Conversation memory
 - [x] Level 2.5 — Hindi + Hinglish support
 - [x] Level 3 — Streaming Chat UI
-- [x] Level 4 — Deploy online (Railway/Render)
-- [ ] Level 5 — User accounts
-- [ ] Level 6 — Save favorite quotes
-- [ ] Level 7 — Daily wisdom notifications
+- [x] Level 4 — Cognitive Pipeline (concept analysis, multi-strategy retrieval, prompt composition)
+- [x] Level 4.5 — Migrate to Groq API for cloud deployment
+- [ ] Level 5 — Deploy online (Railway/Render)
+- [ ] Level 6 — User accounts
+- [ ] Level 7 — Save favorite quotes
+- [ ] Level 8 — Daily wisdom notifications
 
 ---
 
@@ -308,11 +354,11 @@ This project draws wisdom from:
 | Technology | Purpose |
 |------------|---------|
 | **FastAPI** | Backend API server |
-| **LangChain** | AI orchestration |
+| **LangChain** | Vector store & text splitting |
 | **Chroma DB** | Vector database |
-| **Ollama** | Local LLM runner |
-| **Mistral** | Language model |
-| **nomic-embed-text** | Embeddings |
+| **Groq API** | Cloud LLM inference |
+| **LLaMA 3.3 70B** | Main language model |
+| **LLaMA 3.1 8B** | Fast reflection model |
 | **HTML/CSS/JS** | Chat frontend |
 
 ---
