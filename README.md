@@ -279,7 +279,7 @@ pydantic
 - [x] Level 2 — Conversation memory
 - [x] Level 2.5 — Hindi + Hinglish support
 - [x] Level 3 — Streaming Chat UI
-- [ ] Level 4 — Deploy online (Railway/Render)
+- [x] Level 4 — Deploy online (Railway/Render)
 - [ ] Level 5 — User accounts
 - [ ] Level 6 — Save favorite quotes
 - [ ] Level 7 — Daily wisdom notifications

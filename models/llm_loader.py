@@ -71,7 +71,7 @@ def generate_fast(prompt: str) -> str:
         response = client.chat.completions.create(
             model=MODEL_FAST,
             messages=[{"role": "user", "content": prompt}],
-            max_tokens=150,
+            max_tokens=200,
             temperature=0.7,
             top_p=0.9,
         )
