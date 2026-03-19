@@ -9,6 +9,9 @@ __pycache__/
 # ChromaDB (auto-generated, can be rebuilt with /rebuild)
 memory/chroma_db/
 
+# Long-term memory (runtime learning data, unique per deployment)
+memory/long_term.json
+
 # IDE
 .vscode/
 .idea/

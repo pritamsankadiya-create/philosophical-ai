@@ -262,6 +262,35 @@
             background: #333;
             border-radius: 2px;
         }
+
+        /* ── Tablet (768px) ── */
+        @media (max-width: 768px) {
+            .chat-area { padding: 16px; }
+            .input-area { padding: 12px 16px; }
+            .message { max-width: 90%; }
+            .suggestion { min-height: 44px; display: flex; align-items: center; }
+            .welcome h2 { font-size: 24px; }
+            .welcome { padding: 30px 16px; }
+        }
+
+        /* ── Phone (480px) ── */
+        @media (max-width: 480px) {
+            .chat-area { padding: 10px; gap: 14px; }
+            .input-area { padding: 10px; gap: 8px; }
+            .message { max-width: 95%; gap: 8px; }
+            .avatar { width: 30px; height: 30px; font-size: 15px; }
+            .ai .bubble { min-width: auto; }
+            .bubble { padding: 10px 12px; font-size: 14px; }
+            .input-box { font-size: 16px; padding: 10px 12px; }
+            .send-btn { padding: 10px 16px; min-width: 48px; height: 44px; }
+            .header { padding: 12px 16px; }
+            .header h1 { font-size: 17px; }
+            .welcome h2 { font-size: 22px; }
+            .welcome { padding: 20px 10px; }
+            .welcome p { font-size: 13px; }
+            .suggestions { gap: 6px; }
+            .suggestion { padding: 10px 14px; font-size: 13px; min-height: 44px; }
+        }
     </style>
 </head>
 <body>
@@ -283,14 +312,14 @@
             Powered by Osho • Krishna • Kalam • Chanakya • Vivekananda • Buddha • Rumi & more
         </p>
         <div class="suggestions">
-            <div class="suggestion" onclick="askSuggestion(this)">What is consciousness?</div>
-            <div class="suggestion" onclick="askSuggestion(this)">How to deal with failure?</div>
-            <div class="suggestion" onclick="askSuggestion(this)">प्यार क्या है?</div>
-            <div class="suggestion" onclick="askSuggestion(this)">What is karma?</div>
-            <div class="suggestion" onclick="askSuggestion(this)">Khushi kaise milti hai?</div>
-            <div class="suggestion" onclick="askSuggestion(this)">What did Kalam say about dreams?</div>
-            <div class="suggestion" onclick="askSuggestion(this)">What is Chetna?</div>
-            <div class="suggestion" onclick="askSuggestion(this)">How to find peace?</div>
+            <div class="suggestion" onclick="askSuggestion(this)">Do you actually feel anything?</div>
+            <div class="suggestion" onclick="askSuggestion(this)">Zindagi ka asli matlab kya hai?</div>
+            <div class="suggestion" onclick="askSuggestion(this)">Why does suffering exist?</div>
+            <div class="suggestion" onclick="askSuggestion(this)">Sach mein jeena kya hota hai?</div>
+            <div class="suggestion" onclick="askSuggestion(this)">Is free will an illusion?</div>
+            <div class="suggestion" onclick="askSuggestion(this)">मन को शांत कैसे करें?</div>
+            <div class="suggestion" onclick="askSuggestion(this)">Dhoka milta hai toh kya kare?</div>
+            <div class="suggestion" onclick="askSuggestion(this)">What makes a good karma?</div>
         </div>
     </div>
 </div>
@@ -560,14 +589,14 @@
                     Powered by Osho • Krishna • Kalam • Chanakya • Vivekananda • Buddha • Rumi & more
                 </p>
                 <div class="suggestions">
-                    <div class="suggestion" onclick="askSuggestion(this)">What is consciousness?</div>
-                    <div class="suggestion" onclick="askSuggestion(this)">How to deal with failure?</div>
-                    <div class="suggestion" onclick="askSuggestion(this)">प्यार क्या है?</div>
-                    <div class="suggestion" onclick="askSuggestion(this)">What is karma?</div>
-                    <div class="suggestion" onclick="askSuggestion(this)">Khushi kaise milti hai?</div>
-                    <div class="suggestion" onclick="askSuggestion(this)">What did Kalam say about dreams?</div>
-                    <div class="suggestion" onclick="askSuggestion(this)">What is Chetna?</div>
-                    <div class="suggestion" onclick="askSuggestion(this)">How to find peace?</div>
+                    <div class="suggestion" onclick="askSuggestion(this)">Do you actually feel anything?</div>
+                    <div class="suggestion" onclick="askSuggestion(this)">Zindagi ka asli matlab kya hai?</div>
+                    <div class="suggestion" onclick="askSuggestion(this)">Why does suffering exist?</div>
+                    <div class="suggestion" onclick="askSuggestion(this)">Sach mein jeena kya hota hai?</div>
+                    <div class="suggestion" onclick="askSuggestion(this)">Is free will an illusion?</div>
+                    <div class="suggestion" onclick="askSuggestion(this)">मन को शांत कैसे करें?</div>
+                    <div class="suggestion" onclick="askSuggestion(this)">Dhoka milta hai toh kya kare?</div>
+                    <div class="suggestion" onclick="askSuggestion(this)">What makes a good karma?</div>
                 </div>
             </div>`;
     }

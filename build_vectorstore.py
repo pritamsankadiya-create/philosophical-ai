@@ -1,4 +1,4 @@
-"""Pre-build ChromaDB during Docker image build."""
+"""Pre-build ChromaDB during Docker image build — v3 multi-layer."""
 
 from memory.vector_store import build_vector_store
 

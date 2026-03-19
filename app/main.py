@@ -1,6 +1,6 @@
 # ============================================================
 # app/main.py
-# FastAPI server with cognitive pipeline
+# FastAPI server with v3 cognitive pipeline
 # ============================================================
 
 import sys
@@ -16,9 +16,13 @@ from fastapi import FastAPI
 from fastapi.responses import StreamingResponse, HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from core.pipeline import run_pipeline, run_pipeline_stream, get_pipeline_metadata
+from core.pipeline import (
+    run_pipeline, run_pipeline_stream, get_pipeline_metadata,
+    get_latest_trace, get_all_traces, long_term_memory
+)
 from memory.chat_memory import ChatMemory
 from memory.vector_store import build_vector_store
+from models.llm_loader import get_model_stats
 
 app = FastAPI(title="Philosophical AI")
 
@@ -27,8 +31,12 @@ STATIC_DIR = os.path.join(APP_DIR, "static")
 os.makedirs(STATIC_DIR, exist_ok=True)
 app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
 
-# One memory for whole session
+# Short-term: conversation history (cleared by /clear)
 memory = ChatMemory(max_history=5)
+
+# Long-term memory is initialized in pipeline.py and imported above
+# Track this server session
+long_term_memory.increment_session()
 
 
 class QuestionRequest(BaseModel):
@@ -53,17 +61,22 @@ def home():
 
 @app.get("/health")
 def health():
+    stats = get_model_stats()
     return {
-        "status"    : "running",
-        "model"     : "llama-3.3-70b-versatile",
-        "streaming" : "active",
-        "memory"    : f"{len(memory.history)} messages"
+        "status"         : "running",
+        "version"        : "v4.4",
+        "model"          : stats["current_model"],
+        "model_stats"    : stats,
+        "streaming"      : "active",
+        "chat_memory"    : f"{len(memory.history)} messages",
+        "long_term"      : f"{long_term_memory.total_questions} questions learned",
+        "concepts_known" : len(long_term_memory.concept_counts),
     }
 
 
 @app.post("/chat")
 def chat(request: QuestionRequest):
-    """Chat with cognitive pipeline (2 LLM calls)"""
+    """Chat with v3 cognitive pipeline (2 LLM calls)"""
     question = request.question
     answer = run_pipeline(question, chat_memory=memory, use_reflection=True)
 
@@ -76,7 +89,7 @@ def chat(request: QuestionRequest):
 
 @app.get("/stream")
 async def stream_chat(question: str):
-    """Streaming endpoint with cognitive pipeline (1 LLM call)"""
+    """Streaming endpoint with v3 cognitive pipeline (1 LLM call)"""
     try:
         def event_stream():
             try:
@@ -113,8 +126,20 @@ async def stream_chat(question: str):
 
 @app.get("/analyze")
 def analyze(question: str):
-    """Debug endpoint — shows concept analysis without LLM call"""
+    """Debug endpoint — shows v3 concept analysis without LLM call"""
     return get_pipeline_metadata(question)
+
+
+@app.get("/trace")
+def trace():
+    """Get the latest flow trace — debug endpoint for v3"""
+    return get_latest_trace()
+
+
+@app.get("/traces")
+def traces():
+    """Get all stored flow traces"""
+    return get_all_traces()
 
 
 @app.get("/history")
@@ -127,8 +152,33 @@ def get_history():
 
 @app.get("/clear")
 def clear():
+    """Clear conversation history only. Long-term memory is preserved."""
     memory.clear()
-    return {"message": "Memory cleared!"}
+    return {
+        "message": "Chat history cleared!",
+        "note": "Long-term memory preserved (concept patterns, learned themes, traces)",
+        "long_term_stats": {
+            "questions_learned": long_term_memory.total_questions,
+            "concepts_tracked": len(long_term_memory.concept_counts),
+        }
+    }
+
+
+@app.get("/clear-all")
+def clear_all():
+    """Nuclear reset — clears EVERYTHING including long-term memory."""
+    memory.clear()
+    long_term_memory.reset()
+    return {
+        "message": "ALL memory erased — chat history AND long-term learning",
+        "warning": "The system has forgotten everything it learned"
+    }
+
+
+@app.get("/memory")
+def get_memory():
+    """View the system's long-term memory — what it has learned over time."""
+    return long_term_memory.get_summary()
 
 
 @app.get("/rebuild")
@@ -140,8 +190,8 @@ def rebuild():
 if __name__ == "__main__":
     import uvicorn
     print("\n" + "="*45)
-    print("Philosophical AI")
-    print("Cognitive Pipeline Active")
+    print("Philosophical AI v3")
+    print("Flow-Driven Cognitive Pipeline")
     print("="*45)
     print("URL  : http://localhost:8000")
     print("Docs : http://localhost:8000/docs")
