@@ -1,8 +1,17 @@
 memory/chroma_db/
+memory/long_term.json
 venv/
+.venv/
 __pycache__/
 .env
+.env.*
 .git/
 .gitignore
 .dockerignore
 *.pyc
+*.pyo
+*.log
+.vscode/
+.idea/
+.DS_Store
+README.md

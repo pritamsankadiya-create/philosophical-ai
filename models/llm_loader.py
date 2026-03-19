@@ -9,7 +9,8 @@ from groq import Groq
 client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 
 MODEL_MAIN = "llama-3.3-70b-versatile"
-MODEL_FAST = "llama-3.1-8b-instant"
+MODEL_FALLBACK = "llama-3.1-8b-instant"  # fast model as fallback
+MODEL_FAST = MODEL_FALLBACK
 
 
 def generate_response(prompt: str, max_tokens: int = 800) -> str:
@@ -24,6 +25,15 @@ def generate_response(prompt: str, max_tokens: int = 800) -> str:
         )
         return response.choices[0].message.content.strip()
     except Exception as e:
+        if "rate_limit" in str(e).lower():
+            # Fallback to smaller model
+            response = client.chat.completions.create(
+                model=MODEL_FALLBACK,
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=max_tokens,
+                temperature=0.7,
+            )
+            return response.choices[0].message.content.strip()
         return f"Error: {str(e)}"
 
 
@@ -62,7 +72,27 @@ def generate_stream(prompt: str, max_tokens: int = 800):
             yield buffer
 
     except Exception as e:
-        yield f"Error: {str(e)}"
+        if "rate_limit" in str(e).lower():
+            # Fallback to smaller model for streaming
+            stream = client.chat.completions.create(
+                model=MODEL_FALLBACK,
+                messages=[{"role": "user", "content": prompt}],
+                max_tokens=max_tokens,
+                temperature=0.7,
+                stream=True,
+            )
+            buffer = ""
+            for chunk in stream:
+                token = chunk.choices[0].delta.content or ""
+                if token:
+                    buffer += token
+                    if any(c in buffer for c in boundary_chars) or len(buffer) >= 8:
+                        yield buffer
+                        buffer = ""
+            if buffer:
+                yield buffer
+        else:
+            yield f"Error: {str(e)}"
 
 
 def generate_fast(prompt: str) -> str:
