@@ -472,6 +472,22 @@ NAME-DROPPING RULE — enforced scan:
 - If the user did NOT mention that name — REMOVE IT and say the idea in your own words."""
 
 
+LANGUAGE_RULES_HI = """भाषा नियम:
+प्रतिबंधित: "एक कह सकता है" / "अंततः" / "गहराई से देखें" / "वास्तव में" / "ताने-बाने में"
+
+अनिवार्य:
+- सीधे दावे करो। "प्रेम यह है" — "कोई कह सकता है प्रेम यह है" नहीं।
+- हर वाक्य कुछ नया जोड़े। अगर हटाने से कोई नुकसान न हो — काट दो।
+
+दोहराव-रोधी — खत्म करने से पहले जाँचो:
+- क्या एक ही बात दो बार अलग शब्दों में आई? एक काटो।
+- क्या कोई वाक्य पहले कही बात दोहराता है? काट दो।
+- "यह प्रश्न हमें... प्रेरित करता है" जैसे वाक्य एक बार से ज़्यादा नहीं।
+
+काल्पनिक कहानियां मत बनाओ। असली उदाहरण दो।
+केवल शुद्ध हिंदी — अंग्रेज़ी शब्द मत मिलाओ (mystery, journey आदि नहीं)।"""
+
+
 SHARP_INSIGHT_RULE = """CRITICAL — THE PIVOT:
 Your answer must contain one moment where you reframe the question — one sentence the reader didn't walk in with.
 
@@ -599,7 +615,7 @@ def _build_emotional_prompt_hi(question: str, translated: str, context: str,
 
 {guidance}
 
-{LANGUAGE_RULES}
+{LANGUAGE_RULES_HI}
 
 ज्ञान:
 {context}
@@ -719,7 +735,7 @@ def _build_hindi_flow_prompt(question: str, translated: str, context: str,
 समाप्ति: {ending}
 {directness_block}
 {insight_block}
-{LANGUAGE_RULES}
+{LANGUAGE_RULES_HI}
 
 सार नियम: हर उत्तर में एक स्पष्ट सीख। एक ही बात दो बार नहीं।
 

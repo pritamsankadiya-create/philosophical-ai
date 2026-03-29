@@ -11,10 +11,12 @@ client = Groq(api_key=os.environ.get("GROQ_API_KEY"))
 MODEL_MAIN = "llama-3.3-70b-versatile"
 MODEL_FAST = "llama-3.1-8b-instant"
 
-# Anti-repetition: penalizes tokens that already appeared in the output.
-# 0.3 is mild enough to preserve natural phrasing but stops hard loops,
-# especially in Hindi where LLaMA tends to repeat entire sentences.
-FREQUENCY_PENALTY = 0.3
+# Anti-repetition penalties.
+# frequency_penalty penalizes tokens proportional to how often they appeared.
+# presence_penalty penalizes any token that appeared at all (even once).
+# Together they break Hindi repetition loops where LLaMA repeats entire sentences.
+FREQUENCY_PENALTY = 0.5
+PRESENCE_PENALTY = 0.3
 
 # Fallback tracking
 _model_stats = {"main": 0, "fallback": 0, "last_used": MODEL_MAIN}
@@ -37,6 +39,7 @@ def generate_response(prompt: str, max_tokens: int = 800) -> str:
             temperature=0.7,
             top_p=0.9,
             frequency_penalty=FREQUENCY_PENALTY,
+            presence_penalty=PRESENCE_PENALTY,
         )
         _model_stats["main"] += 1
         _model_stats["last_used"] = MODEL_MAIN
@@ -52,6 +55,7 @@ def generate_response(prompt: str, max_tokens: int = 800) -> str:
                     temperature=0.7,
                     top_p=0.9,
                     frequency_penalty=FREQUENCY_PENALTY,
+                    presence_penalty=PRESENCE_PENALTY,
                 )
                 _model_stats["fallback"] += 1
                 _model_stats["last_used"] = MODEL_FAST
@@ -76,6 +80,7 @@ def generate_stream(prompt: str, max_tokens: int = 800):
             temperature=0.7,
             top_p=0.9,
             frequency_penalty=FREQUENCY_PENALTY,
+            presence_penalty=PRESENCE_PENALTY,
             stream=True,
         )
         _model_stats["main"] += 1
@@ -91,6 +96,7 @@ def generate_stream(prompt: str, max_tokens: int = 800):
                 temperature=0.7,
                 top_p=0.9,
                 frequency_penalty=FREQUENCY_PENALTY,
+                presence_penalty=PRESENCE_PENALTY,
                 stream=True,
             )
             _model_stats["fallback"] += 1
@@ -182,6 +188,7 @@ def generate_fast(prompt: str) -> str:
             temperature=0.7,
             top_p=0.9,
             frequency_penalty=FREQUENCY_PENALTY,
+            presence_penalty=PRESENCE_PENALTY,
         )
         return response.choices[0].message.content.strip()
     except Exception as e:
