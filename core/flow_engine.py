@@ -694,46 +694,36 @@ def _build_follow_up_hindi_prompt(question: str, translated: str, context: str, 
 
 def _build_hindi_flow_prompt(question: str, translated: str, context: str,
                               history: str, analysis: ConceptAnalysis) -> str:
+    # Low-depth Hindi: simple, focused prompt — prevents repetition loops
+    if analysis.depth_score < 0.5:
+        return _build_hindi_simple_prompt(question, translated, context, history, analysis)
+
+    # Deep Hindi: full flow prompt with all instruments
     length = _get_length_target(analysis)
     length_check = _get_length_enforcement(analysis)
     flow_structure = _get_flow_structure(analysis)
     topic_tone = _get_topic_tone(analysis)
     ending = _get_ending_instruction(analysis)
-    style_mode = _select_style_mode(analysis, question)
-    style_info = STYLE_MODES[style_mode]
-    opening_key = _select_opening(analysis, question)
-    opening_inst = OPENING_STRATEGIES[opening_key]
     rasa_block_hi = _build_rasa_block_hi(analysis)
 
     philosopher_focus = ""
-    if analysis.philosophers and analysis.depth_score >= 0.5:
+    if analysis.philosophers:
         names = ", ".join(analysis.philosophers[:2])
         philosopher_focus = f"\n{names} के दर्शन पर विशेष ध्यान दो।"
 
-    if analysis.depth_score < 0.5:
-        insight_block = ""
-        directness_block = "\nपहले 1-2 वाक्यों में स्पष्ट उत्तर दो।\n"
-    else:
-        insight_block = """महत्वपूर्ण — pivot line:
+    insight_block = """महत्वपूर्ण — pivot line:
 एक वाक्य जो पाठक का नज़रिया बदल दे। हर बार अलग तरीके से।
 उदाहरण: "प्यार भावना नहीं है — यह फैसला है जो भावना से पहले आता है।"
 """
-        directness_block = ""
 
     return f"""{SOUL_IDENTITY_HI}
 
 {rasa_block_hi}
 
-शैली: {style_info['instruction']}
-{style_info['voice']}
-
-शुरुआत: {opening_inst}
-
 {flow_structure}
 
-लहजा: {topic_tone}
 समाप्ति: {ending}
-{directness_block}
+
 {insight_block}
 {LANGUAGE_RULES_HI}
 
@@ -753,6 +743,38 @@ def _build_hindi_flow_prompt(question: str, translated: str, context: str,
 उत्तर:
 
 {length_check}"""
+
+
+def _build_hindi_simple_prompt(question: str, translated: str, context: str,
+                                history: str, analysis: ConceptAnalysis) -> str:
+    """Compact Hindi prompt for low-depth questions. All-Hindi, no English mixing."""
+    rasa_block_hi = _build_rasa_block_hi(analysis)
+
+    context_block = ""
+    if context.strip():
+        context_block = f"\nज्ञान (सिर्फ प्रासंगिक हो तो उपयोग करो):\n{context}\n"
+
+    history_block = ""
+    if history.strip():
+        history_block = f"\nपिछली बातचीत:\n{history}\n"
+
+    return f"""{SOUL_IDENTITY_HI}
+
+{rasa_block_hi}
+
+तुम एक दार्शनिक गुरु हो। इस प्रश्न का सीधा, गहरा उत्तर दो।
+
+नियम:
+- पहले वाक्य में सीधा उत्तर। कोई भूमिका नहीं।
+- 3-4 वाक्य। इससे ज़्यादा नहीं।
+- हर वाक्य कुछ नया कहे — एक भी दोहराव नहीं।
+- एक तेज़ दावा करो जो सोच बदल दे।
+- केवल शुद्ध हिंदी। अंग्रेज़ी शब्द नहीं।
+- किसी दार्शनिक का नाम मत लो जब तक पूछा न जाए।
+{context_block}{history_block}
+प्रश्न: {translated}
+
+उत्तर:"""
 
 
 # ============================================================

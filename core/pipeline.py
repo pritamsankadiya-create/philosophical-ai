@@ -31,8 +31,8 @@ def _calculate_max_tokens(analysis) -> int:
     Adaptive max_tokens based on depth and language.
     Hindi Devanagari uses ~2-3x more LLM tokens than English due to byte-level BPE.
     Deep questions request 8-12 sentences, needing more room.
+    Low-depth gets tighter limits to prevent repetition-driven rambling.
     """
-    base = 800
     ds = analysis.depth_score
     lang = analysis.language
 
@@ -40,10 +40,18 @@ def _calculate_max_tokens(analysis) -> int:
         base = 1200
     elif ds >= 0.6:
         base = 1000
+    elif ds >= 0.4:
+        base = 700
+    else:
+        base = 500
 
     # Hindi needs more tokens — Devanagari is tokenized at byte level
+    # But scale the multiplier with depth — low-depth shouldn't get 1120 tokens
     if lang == "hindi":
-        base = int(base * 1.4)
+        if ds >= 0.6:
+            base = int(base * 1.4)
+        else:
+            base = int(base * 1.2)
 
     return base
 
