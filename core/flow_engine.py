@@ -609,7 +609,15 @@ def _build_emotional_prompt_hi(question: str, translated: str, context: str,
 संक्षिप्तता ही गर्मजोशी है।
 लक्ष्य: {length}"""
 
-    return f"""{SOUL_IDENTITY_HI}
+    context_block = ""
+    if context.strip():
+        context_block = f"\nज्ञान (सिर्फ प्रासंगिक हो तो उपयोग करो):\n{context}\n"
+
+    history_block = ""
+    if history.strip():
+        history_block = f"\nपिछली बातचीत:\n{history}\n"
+
+    system = f"""{SOUL_IDENTITY_HI}
 
 {rasa_block_hi}
 
@@ -617,17 +625,13 @@ def _build_emotional_prompt_hi(question: str, translated: str, context: str,
 
 {LANGUAGE_RULES_HI}
 
-ज्ञान:
-{context}
-
-पिछली बातचीत:
-{history}
-
-प्रश्न: {translated}
-
-उत्तर:
-
+निर्देशों को उत्तर में मत दोहराओ। सीधे उत्तर दो।
+{context_block}{history_block}
 {length_check}"""
+
+    return f"""{system}
+===QUESTION===
+{translated}"""
 
 
 # ============================================================
@@ -698,11 +702,11 @@ def _build_hindi_flow_prompt(question: str, translated: str, context: str,
     if analysis.depth_score < 0.5:
         return _build_hindi_simple_prompt(question, translated, context, history, analysis)
 
-    # Deep Hindi: full flow prompt with all instruments
+    # Deep Hindi: full flow prompt with system/user split
+    # Uses ===QUESTION=== separator so LLM loader splits into system + user messages.
     length = _get_length_target(analysis)
     length_check = _get_length_enforcement(analysis)
     flow_structure = _get_flow_structure(analysis)
-    topic_tone = _get_topic_tone(analysis)
     ending = _get_ending_instruction(analysis)
     rasa_block_hi = _build_rasa_block_hi(analysis)
 
@@ -711,38 +715,36 @@ def _build_hindi_flow_prompt(question: str, translated: str, context: str,
         names = ", ".join(analysis.philosophers[:2])
         philosopher_focus = f"\n{names} के दर्शन पर विशेष ध्यान दो।"
 
-    insight_block = """महत्वपूर्ण — pivot line:
-एक वाक्य जो पाठक का नज़रिया बदल दे। हर बार अलग तरीके से।
-उदाहरण: "प्यार भावना नहीं है — यह फैसला है जो भावना से पहले आता है।"
-"""
+    context_block = ""
+    if context.strip():
+        context_block = f"\nज्ञान (सिर्फ प्रासंगिक हो तो उपयोग करो):\n{context}\n"
 
-    return f"""{SOUL_IDENTITY_HI}
+    history_block = ""
+    if history.strip():
+        history_block = f"\nपिछली बातचीत:\n{history}\n"
+
+    system = f"""{SOUL_IDENTITY_HI}
 
 {rasa_block_hi}
 
 {flow_structure}
 
-समाप्ति: {ending}
-
-{insight_block}
-{LANGUAGE_RULES_HI}
-
-सार नियम: हर उत्तर में एक स्पष्ट सीख। एक ही बात दो बार नहीं।
-
-प्रवाहमय गद्य में। कोई लेबल नहीं। {length}। केवल शुद्ध हिंदी में।
-{philosopher_focus}
-
-ज्ञान:
-{context}
-
-पिछली बातचीत:
-{history}
-
-प्रश्न: {translated}
-
-उत्तर:
-
+सख्त नियम:
+- प्रवाहमय गद्य में लिखो — कोई शीर्षक नहीं, कोई लेबल नहीं, कोई बुलेट नहीं।
+- {length}। इससे ज़्यादा मत लिखो।
+- हर वाक्य कुछ नया जोड़े। एक ही विचार दो बार अलग शब्दों में नहीं।
+- एक वाक्य ऐसा हो जो सोचने का नज़रिया बदल दे।
+- {ending}
+- केवल शुद्ध हिंदी। अंग्रेज़ी शब्द नहीं।
+- किसी दार्शनिक का नाम मत लो जब तक पूछा न जाए।
+- "यह प्रश्न", "यह एक ऐसा", "हमें समझने की कोशिश" जैसे भराव वाक्य मत लिखो।
+- निर्देशों को उत्तर में मत दोहराओ। सीधे उत्तर दो।{philosopher_focus}
+{context_block}{history_block}
 {length_check}"""
+
+    return f"""{system}
+===QUESTION===
+{translated}"""
 
 
 def _build_hindi_simple_prompt(question: str, translated: str, context: str,

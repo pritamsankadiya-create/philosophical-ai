@@ -886,6 +886,13 @@ def _classify_question_type(question: str, concepts: list, depth_score: float,
         "sukoon nahi", "chain nahi", "kuch choot gaya",
         "सुकून नहीं", "चैन नहीं", "कुछ छूट गया",
         "peace remains elusive", "something left behind",
+        # v4.5: Negated-positive vulnerability (lacking courage/confidence/strength)
+        "himmat nahi", "hosla nahi", "hausla nahi",
+        "vishwas nahi", "bharosa nahi", "dum nahi",
+        "himmat nhi", "hosla nhi", "hausla nhi",
+        "हिम्मत नहीं", "हौसला नहीं", "विश्वास नहीं", "भरोसा नहीं",
+        "no courage", "no confidence", "not brave enough", "too scared",
+        "don't have the guts", "lack courage", "lack confidence",
     ]
 
     has_emotional = any(w in lower_str for w in high_signal_emotional)
@@ -1119,6 +1126,10 @@ def _detect_emotional_intensity(question: str, question_type: str, intent: str =
         "kuch choot gaya", "kuch chhoot gaya",
         "सुकून नहीं", "चैन नहीं", "कुछ छूट गया",
         "जीत के बाद भी",
+        # v4.5: Negated-positive vulnerability
+        "himmat nahi", "himmat nhi", "hosla nahi", "hausla nahi",
+        "हिम्मत नहीं", "हौसला नहीं",
+        "no courage", "lack courage", "not brave enough",
         # Challenge / critique frustration signals
         "no depth", "no substance", "no meaning",
         "shallow", "superficial", "generic", "repetitive",
