@@ -29,12 +29,31 @@ def get_model_stats() -> dict:
     }
 
 
+def _build_messages(prompt: str) -> list:
+    """
+    Split prompt into system + user messages if separator is present.
+    Prompts containing '\\n===QUESTION===\\n' are split into:
+      - system: everything before the separator (instructions)
+      - user: everything after (the actual question)
+    This makes LLMs follow length/repetition rules much more strictly.
+    """
+    separator = "\n===QUESTION===\n"
+    if separator in prompt:
+        system_part, user_part = prompt.split(separator, 1)
+        return [
+            {"role": "system", "content": system_part.strip()},
+            {"role": "user", "content": user_part.strip()},
+        ]
+    return [{"role": "user", "content": prompt}]
+
+
 def generate_response(prompt: str, max_tokens: int = 800) -> str:
     """Normal response — returns complete answer, falls back on rate limit"""
+    messages = _build_messages(prompt)
     try:
         response = client.chat.completions.create(
             model=MODEL_MAIN,
-            messages=[{"role": "user", "content": prompt}],
+            messages=messages,
             max_tokens=max_tokens,
             temperature=0.7,
             top_p=0.9,
@@ -50,7 +69,7 @@ def generate_response(prompt: str, max_tokens: int = 800) -> str:
             try:
                 response = client.chat.completions.create(
                     model=MODEL_FAST,
-                    messages=[{"role": "user", "content": prompt}],
+                    messages=messages,
                     max_tokens=max_tokens,
                     temperature=0.7,
                     top_p=0.9,
@@ -71,11 +90,12 @@ def generate_stream(prompt: str, max_tokens: int = 800):
     Buffers tokens and yields at word boundaries (space, punctuation).
     Fallback: yields if buffer exceeds 8 chars with no boundary.
     """
+    messages = _build_messages(prompt)
     model = MODEL_MAIN
     try:
         stream = client.chat.completions.create(
             model=model,
-            messages=[{"role": "user", "content": prompt}],
+            messages=messages,
             max_tokens=max_tokens,
             temperature=0.7,
             top_p=0.9,
@@ -91,7 +111,7 @@ def generate_stream(prompt: str, max_tokens: int = 800):
             model = MODEL_FAST
             stream = client.chat.completions.create(
                 model=model,
-                messages=[{"role": "user", "content": prompt}],
+                messages=messages,
                 max_tokens=max_tokens,
                 temperature=0.7,
                 top_p=0.9,

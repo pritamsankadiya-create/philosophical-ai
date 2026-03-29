@@ -747,7 +747,12 @@ def _build_hindi_flow_prompt(question: str, translated: str, context: str,
 
 def _build_hindi_simple_prompt(question: str, translated: str, context: str,
                                 history: str, analysis: ConceptAnalysis) -> str:
-    """Compact Hindi prompt for low-depth questions. All-Hindi, no English mixing."""
+    """
+    Compact Hindi prompt for low-depth questions. All-Hindi, no English mixing.
+    Uses ===QUESTION=== separator so LLM loader splits into system + user messages.
+    System message = instructions (followed more strictly by the model).
+    User message = question only.
+    """
     rasa_block_hi = _build_rasa_block_hi(analysis)
 
     context_block = ""
@@ -758,23 +763,25 @@ def _build_hindi_simple_prompt(question: str, translated: str, context: str,
     if history.strip():
         history_block = f"\nपिछली बातचीत:\n{history}\n"
 
-    return f"""{SOUL_IDENTITY_HI}
+    system = f"""{SOUL_IDENTITY_HI}
 
 {rasa_block_hi}
 
-तुम एक दार्शनिक गुरु हो। इस प्रश्न का सीधा, गहरा उत्तर दो।
+तुम एक दार्शनिक गुरु हो। प्रश्न का सीधा, गहरा उत्तर दो।
 
-नियम:
+सख्त नियम:
 - पहले वाक्य में सीधा उत्तर। कोई भूमिका नहीं।
-- 3-4 वाक्य। इससे ज़्यादा नहीं।
+- अधिकतम 3-4 वाक्य। इससे ज़्यादा लिखना मना है।
 - हर वाक्य कुछ नया कहे — एक भी दोहराव नहीं।
 - एक तेज़ दावा करो जो सोच बदल दे।
 - केवल शुद्ध हिंदी। अंग्रेज़ी शब्द नहीं।
 - किसी दार्शनिक का नाम मत लो जब तक पूछा न जाए।
-{context_block}{history_block}
-प्रश्न: {translated}
+- "यह प्रश्न", "यह एक ऐसा", "हमें समझने की कोशिश" जैसे भराव वाक्य मत लिखो।
+{context_block}{history_block}"""
 
-उत्तर:"""
+    return f"""{system}
+===QUESTION===
+{translated}"""
 
 
 # ============================================================
