@@ -912,7 +912,10 @@ def _classify_question_type(question: str, concepts: list, depth_score: float,
     # Impersonal questions with emotional words = philosophical inquiry, not distress
     if has_emotional and not has_personal:
         intellectual_patterns = [
-            r'\bwhy\s+(does|do|did)\b',
+            r'\bwhy\s+(does|do|did|is|are|was|were)\s+there\b',  # "why is there suffering?"
+            r'\bwhy\s+(does|do|did)\b',                          # "why does suffering exist?"
+            r'\bif\b.*\bwhy\b',                                  # "if X, why Y?" conditional
+            r'\bwhat\s+(is|are|causes|makes)\b',                 # "what is suffering?"
             r'\b(can|do|does|could|would|should)\b.*\b(feel|feeling|feelings)\b',
         ]
         if any(re.search(p, lower_str) for p in intellectual_patterns):
