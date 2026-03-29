@@ -1,6 +1,6 @@
 # ============================================================
 # core/reflection_engine.py
-# v4.2 FINAL: Anti-repetition + soul check + paradox guard
+# v3: Anti-repetition + soul check + paradox guard
 # ============================================================
 
 import os
@@ -99,7 +99,7 @@ def _build_flow_critique(analysis: ConceptAnalysis, flow_trace: FlowTrace = None
 def reflect_deep(answer: str, question: str = "", analysis: ConceptAnalysis = None,
                  flow_trace: FlowTrace = None) -> str:
     """
-    v4.2 FINAL: Prioritized self-critique.
+    v3: Prioritized self-critique.
     1. Machine disclaimer check (remove immediately)
     2. Repetition check (cut duplicates)
     3. Paradox resolution check (reopen if resolved cheaply)

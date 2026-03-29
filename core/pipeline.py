@@ -1,6 +1,6 @@
 # ============================================================
 # core/pipeline.py
-# v4: Active long-term memory — depth boost + context hints
+# v3: Active long-term memory — depth boost + context hints
 # ============================================================
 
 import os
@@ -26,15 +26,37 @@ _flow_traces = []
 MAX_TRACES = 50
 
 
+def _calculate_max_tokens(analysis) -> int:
+    """
+    Adaptive max_tokens based on depth and language.
+    Hindi Devanagari uses ~2-3x more LLM tokens than English due to byte-level BPE.
+    Deep questions request 8-12 sentences, needing more room.
+    """
+    base = 800
+    ds = analysis.depth_score
+    lang = analysis.language
+
+    if ds >= 0.8:
+        base = 1200
+    elif ds >= 0.6:
+        base = 1000
+
+    # Hindi needs more tokens — Devanagari is tokenized at byte level
+    if lang == "hindi":
+        base = int(base * 1.4)
+
+    return base
+
+
 def _store_trace(trace: FlowTrace):
     _flow_traces.append(trace)
     if len(_flow_traces) > MAX_TRACES:
         _flow_traces.pop(0)
 
 
-def _prepare_v4(question: str, chat_memory=None):
+def _prepare_v3(question: str, chat_memory=None):
     """
-    v4 preparation: adds active long-term memory signals.
+    v3 preparation: adds active long-term memory signals.
     Returns (context, history, analysis, translated, language, knowledge_results)
     Depth score is boosted for returning users on familiar concepts.
     """
@@ -42,7 +64,7 @@ def _prepare_v4(question: str, chat_memory=None):
     language = detect_language(question)
     analysis = analyze_concepts(question, language=language, translated=translated)
 
-    # v4: Active memory — boost depth score for returning explorers
+    # v3: Active memory — boost depth score for returning explorers
     depth_boost = long_term_memory.get_depth_boost(analysis.concepts)
     if depth_boost > 0:
         analysis.depth_score = min(1.0, analysis.depth_score + depth_boost)
@@ -51,7 +73,7 @@ def _prepare_v4(question: str, chat_memory=None):
     knowledge_results = retrieve_adaptive(translated, analysis, chat_memory=chat_memory, top_k=4)
     context = format_layered_context(knowledge_results)
 
-    # v4: Inject long-term memory context hint into history
+    # v3: Inject long-term memory context hint into history
     history = ""
     if chat_memory and not chat_memory.is_empty():
         history = chat_memory.get_history_as_text()
@@ -59,7 +81,7 @@ def _prepare_v4(question: str, chat_memory=None):
         if context_summary:
             history += f"\n[Context: {context_summary}]"
 
-    # v4: Add long-term context hint (tells LLM about user's depth)
+    # v3: Add long-term context hint (tells LLM about user's depth)
     context_hint = long_term_memory.get_context_hint(analysis.concepts, language)
     if context_hint:
         context = context_hint + "\n\n" + context
@@ -70,15 +92,16 @@ def _prepare_v4(question: str, chat_memory=None):
 # ─── Full pipeline (2 LLM calls) ─────────────────────────
 
 def run_pipeline(question: str, chat_memory=None, use_reflection: bool = True) -> str:
-    """v4 pipeline — active memory + soul identity."""
+    """v3 pipeline — active memory + soul identity."""
     context, history, analysis, translated, language, knowledge_results = \
-        _prepare_v4(question, chat_memory)
+        _prepare_v3(question, chat_memory)
 
     style_mode = _select_style_mode(analysis, question)
     opening_strategy = _select_opening(analysis, question)
 
     prompt = build_flow_prompt(question, translated, context, history, analysis)
-    raw_answer = generate_response(prompt)
+    max_tokens = _calculate_max_tokens(analysis)
+    raw_answer = generate_response(prompt, max_tokens=max_tokens)
 
     flow_output = parse_flow_output(raw_answer)
     uncertainty = classify_uncertainty(analysis, flow_output["confidence_signals"], question=question)
@@ -114,17 +137,18 @@ def run_pipeline(question: str, chat_memory=None, use_reflection: bool = True) -
 # ─── Streaming pipeline (1 LLM call) ─────────────────────
 
 def run_pipeline_stream(question: str, chat_memory=None):
-    """v4 streaming pipeline."""
+    """v3 streaming pipeline."""
     context, history, analysis, translated, language, knowledge_results = \
-        _prepare_v4(question, chat_memory)
+        _prepare_v3(question, chat_memory)
 
     style_mode = _select_style_mode(analysis, question)
     opening_strategy = _select_opening(analysis, question)
 
     prompt = build_flow_prompt(question, translated, context, history, analysis)
+    max_tokens = _calculate_max_tokens(analysis)
 
     full_answer = []
-    for token in generate_stream(prompt):
+    for token in generate_stream(prompt, max_tokens=max_tokens):
         full_answer.append(token)
         yield token
 

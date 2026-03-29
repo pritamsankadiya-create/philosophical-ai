@@ -1,6 +1,6 @@
 # ============================================================
 # core/flow_engine.py
-# v4.3: Rasa layer added — Navarasa awareness in every prompt
+# v3: Rasa layer added — Navarasa awareness in every prompt
 # ============================================================
 
 import re
@@ -159,7 +159,7 @@ def _get_length_enforcement(analysis: ConceptAnalysis) -> str:
 
 
 # ============================================================
-# v4.3: RASA BLOCK — injected into every prompt
+# v3: RASA BLOCK — injected into every prompt
 # ============================================================
 
 def _build_rasa_block(analysis: ConceptAnalysis) -> str:
@@ -231,8 +231,11 @@ STYLE_MODES = {
 def _select_style_mode(analysis: ConceptAnalysis, question: str) -> str:
     ei = getattr(analysis, 'emotional_intensity', 'low')
     qt = getattr(analysis, 'question_type', 'mixed')
-    if qt == "emotional" and ei == "high":
-        return "emotional"
+    if qt == "emotional":
+        if ei == "high":
+            return "emotional"
+        # Never contrarian for emotional — user could be hurt
+        return _pick(question, ["emotional", "minimalist"], "style")
 
     concept_set = set(analysis.concepts)
     emotional_concepts = {"love", "attachment", "compassion", "suffering", "happiness",
@@ -742,7 +745,7 @@ def _build_hindi_flow_prompt(question: str, translated: str, context: str,
 
 def build_flow_prompt(question: str, translated: str, context: str,
                       history: str, analysis: ConceptAnalysis) -> str:
-    """v4.3: Soul-first + Rasa-aware prompt builder."""
+    """v3: Soul-first + Rasa-aware prompt builder."""
     mode = _determine_answer_mode(analysis)
 
     if analysis.language == "hindi":

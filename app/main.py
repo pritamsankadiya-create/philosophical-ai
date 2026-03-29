@@ -64,7 +64,7 @@ def health():
     stats = get_model_stats()
     return {
         "status"         : "running",
-        "version"        : "v4.4",
+        "version"        : "v3",
         "model"          : stats["current_model"],
         "model_stats"    : stats,
         "streaming"      : "active",

@@ -74,12 +74,11 @@ def build_flow_trace_data(question: str, analysis: ConceptAnalysis,
         insight_type=insight_type,
         reflection_question=flow_output.get("reflection_question", ""),
         timestamp=datetime.now(timezone.utc).isoformat(),
-        # v3.4
+        # v3
         question_type=analysis.question_type,
         answer_mode=str(_determine_answer_mode(analysis)),
-        # v3.5
         emotional_intensity=getattr(analysis, 'emotional_intensity', ''),
-        # v4.3: Navarasa
+        # v3: Navarasa
         detected_rasa=getattr(analysis, 'detected_rasa', ''),
         rasa_intensity=getattr(analysis, 'rasa_intensity', ''),
         rasa_target=getattr(analysis, 'rasa_target', ''),

@@ -1,6 +1,6 @@
 # ============================================================
 # memory/long_term_memory.py
-# v4: ACTIVE memory — not just collected, but used.
+# v3: ACTIVE memory — not just collected, but used.
 #     Returns depth boost and context hints for returning users.
 # ============================================================
 
@@ -20,7 +20,7 @@ MAX_DEPTH_BOOST = 0.25
 
 class LongTermMemory:
     """
-    v4: Active persistent memory.
+    v3: Active persistent memory.
     Now RETURNS signals that the pipeline actually uses to adapt responses:
     - depth_boost: increase depth_score for familiar concepts
     - context_hint: pass known user patterns into the prompt
@@ -93,11 +93,11 @@ class LongTermMemory:
         with open(self.path, "w", encoding="utf-8") as f:
             json.dump(data, f, indent=2, ensure_ascii=False)
 
-    # ─── v4: Active memory — returns signals for pipeline ───────
+    # ─── v3: Active memory — returns signals for pipeline ───────
 
     def get_depth_boost(self, concepts: list) -> float:
         """
-        v4: Return a depth boost if the user has explored these concepts before.
+        v3: Return a depth boost if the user has explored these concepts before.
         Used in pipeline to increase depth_score for returning explorers.
         """
         if not concepts:
@@ -115,7 +115,7 @@ class LongTermMemory:
 
     def get_context_hint(self, concepts: list, language: str = "english") -> str:
         """
-        v4: Return a context hint for the prompt when user has history.
+        v3: Return a context hint for the prompt when user has history.
         Tells the LLM: "this user has explored X before, go deeper by default."
         """
         if not concepts or self.total_questions < 3:

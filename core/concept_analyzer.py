@@ -1,6 +1,6 @@
 # ============================================================
 # core/concept_analyzer.py
-# v4.3: Navarasa detection added
+# v3: Navarasa detection added
 # ============================================================
 
 import re
@@ -41,7 +41,7 @@ class ConceptAnalysis:
     knowledge_mode: str = "balanced"
     question_type: str = "mixed"
     emotional_intensity: str = "low"
-    # v4.3: Navarasa
+    # v3: Navarasa
     detected_rasa: str = "shaant"
     rasa_intensity: str = "low"
     rasa_target: str = "shaant"
@@ -62,6 +62,11 @@ CONCEPT_MAP = {
     "प्यार": "love", "मोहब्बत": "love", "इश्क़": "love", "प्रेम": "love",
     "relationship": "love", "attachment": "attachment",
     "compassion": "compassion", "empathy": "compassion",
+    "breath": "life", "breathing": "life",
+    "prana": "consciousness", "praana": "consciousness",
+    "swas": "life", "saans": "life", "swansh": "life",
+    "श्वास": "life", "स्वास": "life", "साँस": "life", "सांस": "life",
+    "प्राण": "consciousness",
     "life": "life", "zindagi": "life", "jivan": "life",
     "death": "death", "maut": "death", "mrityu": "death",
     "mortality": "death", "afterlife": "death",
@@ -70,7 +75,7 @@ CONCEPT_MAP = {
     "freedom": "freedom", "free will": "freedom",
     "choice": "freedom", "liberation": "freedom",
     "moksha": "liberation", "mukti": "liberation",
-    "azadi": "freedom",
+    "azadi": "freedom", "azaad": "freedom",
     "determinism": "determinism", "determined": "determinism",
     "destiny": "determinism", "fate": "determinism",
     "predestination": "determinism", "predestined": "determinism",
@@ -86,16 +91,44 @@ CONCEPT_MAP = {
     "सत्य": "truth", "सच": "truth", "ज्ञान": "knowledge",
     "happiness": "happiness", "happy": "happiness", "happier": "happiness",
     "khushi": "happiness", "sukh": "happiness",
-    "suffering": "suffering", "pain": "suffering",
+    "suffering": "suffering", "pain": "suffering", "painful": "suffering",
     "dukh": "suffering", "sorrow": "suffering",
+    "kasht": "suffering", "kashtdayak": "suffering", "kastdayak": "suffering",
+    "peeda": "suffering", "pida": "suffering", "taklif": "suffering",
     "peace": "peace", "shanti": "peace", "shaant": "peace", "शांत": "peace",
+    "sukoon": "peace", "sukun": "peace",
+    "सुकून": "peace", "चैन": "peace",
+    "ladai": "courage", "ladaai": "courage", "sangharsh": "courage",
+    "लड़ाई": "courage", "संघर्ष": "courage",
+    "loss": "suffering", "lose": "suffering",
+    "choot": "suffering", "chhoot": "suffering", "छूट": "suffering",
     "खुशी": "happiness", "सुख": "happiness", "दुख": "suffering",
     "शांति": "peace", "दर्द": "suffering",
+    "कष्ट": "suffering", "कष्टदायक": "suffering", "कस्टदायक": "suffering",
+    "पीड़ा": "suffering", "तकलीफ": "suffering", "तकलीफ़": "suffering",
+    "मानव": "self", "जीवन": "life", "जीना": "life",
     "god": "god", "ishwar": "god", "bhagwan": "god",
     "divine": "divine", "faith": "faith",
     "religion": "religion", "prayer": "prayer",
     "spirituality": "spirituality",
     "ईश्वर": "god", "भगवान": "god", "श्रद्धा": "faith",
+    # v3: Spiritual / Vedantic vocabulary
+    "om": "divine", "ॐ": "divine", "aum": "divine",
+    "mantra": "meditation", "मंत्र": "meditation",
+    "gayatri": "divine", "गायत्री": "divine",
+    "chanting": "meditation", "chant": "meditation",
+    "उचारन": "meditation", "उच्चारण": "meditation", "जाप": "meditation",
+    "srishti": "existence", "सृष्टि": "existence", "creation": "existence",
+    "urja": "divine", "ऊर्जा": "divine", "energy": "divine",
+    "sattvic": "dharma", "satvik": "dharma", "sattvik": "dharma",
+    "सात्विक": "dharma", "सात्विकता": "dharma",
+    "shakahari": "dharma", "शाकाहारी": "dharma", "vegetarian": "dharma",
+    "shuddh": "dharma", "शुद्ध": "dharma", "pure": "dharma", "purity": "dharma",
+    "aahar": "dharma", "आहार": "dharma",
+    "puja": "faith", "पूजा": "faith", "pooja": "faith",
+    "bhakti": "faith", "भक्ति": "faith", "devotion": "faith",
+    "tap": "meditation", "tapasya": "meditation", "तपस्या": "meditation",
+    "sadhna": "meditation", "साधना": "meditation",
     "good": "morality", "evil": "morality",
     "right": "morality", "wrong": "morality",
     "moral": "morality", "ethics": "morality",
@@ -156,13 +189,13 @@ CONCEPT_MAP = {
     "dard": "suffering", "gussa": "suffering", "गुस्सा": "suffering",
     "samaj": "society", "समाज": "society",
     "neend": "consciousness", "nind": "consciousness", "नींद": "consciousness",
-    "jeet": "success", "जीत": "success",
+    "jeet": "success", "jeetne": "success", "जीत": "success",
     "haar": "failure", "हार": "failure",
     "rona": "suffering", "hasna": "happiness", "हँसना": "happiness",
     "akela": "existence", "अकेला": "existence",
     "zid": "ego", "ज़िद": "ego",
     "lene": "karma", "dene": "karma", "लेने": "karma", "देने": "karma",
-    "rakh": "memory", "rakhta": "memory",
+    # "rakh"/"rakhta" removed — too ambiguous (means "keep", not "remember")
     "attached": "attachment", "detach": "attachment", "detached": "attachment",
     "lost": "existence", "lonely": "existence", "alone": "existence",
     "empty": "existence", "emptiness": "existence", "hollow": "existence",
@@ -171,8 +204,9 @@ CONCEPT_MAP = {
     "confused": "knowledge", "confusion": "knowledge",
     "stuck": "existence", "trapped": "existence",
     "anxious": "suffering", "anxiety": "suffering", "stressed": "suffering",
+    "bekaar": "existence", "bekar": "existence",
     "money": "success", "wealth": "success",
-    # v4.4: Hinglish curiosity / debate / difficulty / feelings
+    # v3: Hinglish curiosity / debate / difficulty / feelings
     "jigyasa": "knowledge", "jigyasu": "knowledge", "jijnyasa": "knowledge",
     "जिज्ञासा": "knowledge", "जिज्ञासु": "knowledge",
     "dhoka": "suffering", "dhokha": "suffering", "धोखा": "suffering",
@@ -194,12 +228,13 @@ CONCEPT_MAP = {
     "परिस्थिति": "existence", "हालात": "existence",
     "feel": "consciousness", "feeling": "consciousness",
     "feelings": "consciousness", "felt": "consciousness",
+    "फील": "consciousness", "महसूस": "consciousness",
     "baat": "mind", "bate": "mind", "baatein": "mind",
     "badalna": "change", "badal": "change",
     "karna": "karma", "krna": "karma", "krta": "karma",
     "implement": "karma", "implementation": "karma",
     "jeena": "life", "jeete": "life", "jee raha": "life",
-    # v4.4: Inner/outer reality, poverty/wealth, ignoring
+    # v3: Inner/outer reality, poverty/wealth, ignoring
     "bhitar": "consciousness", "andar": "consciousness",
     "bahar": "existence", "vaibhav": "consciousness",
     "garibi": "suffering", "gareebi": "suffering",
@@ -207,7 +242,7 @@ CONCEPT_MAP = {
     "भीतर": "consciousness", "अंदर": "consciousness",
     "बाहर": "existence", "वैभव": "consciousness",
     "गरीबी": "suffering", "नज़र अंदाज़": "awareness",
-    # v4.3: Hinglish action/purpose words
+    # v3: Hinglish action/purpose words
     "achieve": "purpose", "achieving": "purpose",
     "chahta": "purpose", "chahti": "purpose", "chahte": "purpose",
     "karna hai": "purpose", "karna chahta": "purpose",
@@ -217,6 +252,126 @@ CONCEPT_MAP = {
     "sapna": "purpose", "irada": "purpose", "lakshya": "purpose",
     "jeetna": "courage", "badalna chahta": "purpose",
     "aage badhna": "purpose", "kuch kar dikhana": "purpose",
+    # v3: Technology / future / human-machine / relationship / improvement
+    "machine": "consciousness", "machines": "consciousness",
+    "robot": "consciousness", "robots": "consciousness",
+    "ai": "consciousness", "artificial intelligence": "consciousness",
+    "computer": "consciousness", "computers": "consciousness",
+    "technology": "consciousness", "tech": "consciousness",
+    "मशीन": "consciousness", "मशीनों": "consciousness",
+    "रोबोट": "consciousness", "तकनीक": "consciousness",
+    "कंप्यूटर": "consciousness",
+    "future": "existence", "bhavishya": "existence",
+    "भविष्य": "existence",
+    "sambandh": "love", "संबंध": "love",
+    "vikas": "purpose", "vikasit": "purpose",
+    "विकास": "purpose", "विकसित": "purpose",
+    "sudhar": "purpose", "sudhaar": "purpose",
+    "सुधार": "purpose",
+    "tarika": "knowledge", "tarike": "knowledge",
+    "तरीका": "knowledge", "तरीके": "knowledge",
+    "samjh": "knowledge", "samjhna": "knowledge",
+    "समझ": "knowledge", "समझना": "knowledge",
+    "rasta": "purpose", "raasta": "purpose",
+    "रास्ता": "purpose",
+    "इंसानों": "self",
+    "simulation": "consciousness", "virtual": "consciousness",
+    "progress": "purpose", "evolution": "existence",
+    "develop": "purpose", "development": "purpose",
+    "connect": "love", "connection": "love",
+    "bond": "love", "bonding": "love",
+    "coexist": "existence", "coexistence": "existence",
+    # v3: Emotional support / help / depression words
+    "depressed": "suffering", "depression": "suffering",
+    "mental health": "mind", "mental": "mind",
+    "emotionally": "compassion", "emotional": "compassion",
+    "support": "compassion", "help me": "compassion",
+    "sahara": "compassion", "madad": "compassion",
+    "सहारा": "compassion", "मदद": "compassion",
+    "भावनात्मक": "compassion", "डिप्रेशन": "suffering",
+    "डिप्रेस": "suffering",
+    "opposite": "morality", "opposit": "morality",
+    "उलट": "morality", "विपरीत": "morality",
+    "behave": "self", "behavior": "self", "behaviour": "self",
+    "व्यवहार": "self",
+    "dost": "friendship", "friend": "friendship", "friends": "friendship",
+    "friendship": "friendship", "doston": "friendship",
+    "दोस्त": "friendship", "दोस्ती": "friendship", "मित्र": "friendship",
+    "दोस्तों": "friendship", "मित्रता": "friendship",
+    # v3: Moral/change/determination vocabulary
+    "बुरा": "morality", "galat": "morality", "गलत": "morality",
+    "बदलना": "change", "बदल": "change",
+    "तैयार": "courage", "taiyar": "courage",
+    "निश्चय": "courage", "nischay": "courage",
+    # v4: Missing Hinglish vocab (trace analysis fixes)
+    "weakness": "fear", "weekness": "fear",
+    "pariwar": "family", "parivaar": "family", "parivar": "family",
+    "परिवार": "family", "family": "family",
+    "jimmedari": "duty", "jimmedariyon": "duty", "zimmadari": "duty", "zimmedari": "duty",
+    "ज़िम्मेदारी": "duty", "ज़िम्मेदारियों": "duty", "responsibility": "duty",
+    "wartman": "mindfulness", "vartman": "mindfulness", "vartmaan": "mindfulness",
+    "वर्तमान": "mindfulness", "present moment": "mindfulness",
+    "mindful": "mindfulness",
+    "vicharo": "mind", "विचारों": "mind",
+    "shant": "peace", "शांत": "peace",
+    "tivra": "mind", "तीव्र": "mind",
+    "intensity": "mind", "intense": "mind",
+    # v4: Silence / quietude concept
+    "silence": "silence", "silent": "silence", "quiet": "silence",
+    "moun": "silence", "maun": "silence", "मौन": "silence",
+    "khamoshi": "silence", "खामोशी": "silence",
+    # v4: Difference / comparison words
+    "farak": "knowledge", "farq": "knowledge", "फ़र्क": "knowledge",
+    "antar": "knowledge", "अंतर": "knowledge",
+    "duskh": "suffering", "khushiya": "happiness", "khushiyan": "happiness",
+    "खुशियाँ": "happiness",
+    # v4: Decision / conflict / focus concepts
+    "focus": "mind", "focusing": "mind", "concentrate": "mind", "concentration": "mind",
+    "attention": "mind", "distracted": "mind", "distraction": "mind",
+    "conflict": "suffering", "against each other": "suffering",
+    "working against": "suffering", "inner conflict": "suffering",
+    "harmony": "peace", "balance": "peace", "balanced": "peace",
+    "decision": "morality", "right decision": "morality",
+    "brain": "mind", "heart": "mind",
+    # v4: Relationship words — philosophical in context of identity exploration
+    "brother": "love", "sister": "love",
+    "father": "duty", "mother": "compassion",
+    "wife": "love", "husband": "duty",
+    "parent": "duty", "parents": "duty",
+    "child": "love", "children": "love",
+    "son": "love", "daughter": "love",
+    "role": "duty", "roles": "duty",
+    # Hindi relationship words
+    "bhai": "love", "भाई": "love",
+    "behan": "love", "बहन": "love", "behen": "love",
+    "pita": "duty", "pitaji": "duty", "पिता": "duty", "पिताजी": "duty",
+    "baap": "duty", "बाप": "duty",
+    "mata": "compassion", "mataji": "compassion", "माता": "compassion", "माताजी": "compassion",
+    "maa": "compassion", "माँ": "compassion", "ma": "compassion",
+    "patni": "love", "पत्नी": "love",
+    "pati": "duty", "पति": "duty",
+    "beta": "love", "बेटा": "love", "beti": "love", "बेटी": "love",
+    "bachcha": "love", "bachche": "love", "बच्चा": "love", "बच्चे": "love",
+    "biwi": "love", "बीवी": "love",
+    "rishtedaar": "love", "रिश्तेदार": "love",
+    "bhabhee": "love", "bhabhi": "love",
+    # v4: Respect / honor / desire / obsession vocabulary
+    "respect": "identity", "self-respect": "identity", "self-worth": "identity",
+    "disrespect": "identity", "dignity": "identity",
+    "honor": "identity", "honour": "identity", "reputation": "identity",
+    "recognition": "identity", "status": "identity",
+    "izzat": "identity", "इज़्ज़त": "identity",
+    "samman": "identity", "सम्मान": "identity",
+    "maan": "identity",
+    "desire": "attachment", "desiring": "attachment", "craving": "attachment",
+    "wanting": "attachment", "longing": "attachment", "greed": "attachment",
+    "obsessed": "attachment", "obsession": "attachment", "engrossed": "attachment",
+    "addicted": "attachment", "addiction": "attachment",
+    "futile": "purpose", "futility": "purpose",
+    "ichha": "attachment", "इच्छा": "attachment",
+    "lalach": "attachment", "लालच": "attachment",
+    "lobh": "attachment", "लोभ": "attachment",
+    "trishna": "attachment", "तृष्णा": "attachment",
 }
 
 THEME_MAP = {
@@ -264,6 +419,15 @@ THEME_MAP = {
     "ignorance": ["vedanta", "buddhism"],
     "memory": ["philosophy_of_mind", "buddhism"],
     "society": ["existentialism", "gita_philosophy"],
+    "technology": ["philosophy_of_mind", "existentialism", "rationalism"],
+    "friendship": ["sufi_mysticism", "stoicism", "existentialism"],
+    "family": ["gita_philosophy", "vedanta", "existentialism"],
+    "mindfulness": ["buddhism", "yoga", "vedanta"],
+    "silence": ["buddhism", "yoga", "vedanta"],
+    "identity": ["vedanta", "existentialism", "buddhism"],
+    "prayer": ["sufi_mysticism", "vedanta", "yoga"],
+    "religion": ["vedanta", "gita_philosophy", "sufi_mysticism"],
+    "spirituality": ["vedanta", "yoga", "buddhism", "sufi_mysticism"],
 }
 
 PHILOSOPHER_KEYWORDS = {
@@ -284,6 +448,15 @@ PHILOSOPHER_KEYWORDS = {
     "kabir": "Kabir", "nanak": "Guru Nanak",
     "sadhguru": "Sadhguru", "jaggi": "Sadhguru",
     "jaggi vasudev": "Sadhguru", "vasudev": "Sadhguru", "isha": "Sadhguru",
+    "turing": "Alan Turing", "alan turing": "Alan Turing",
+    "charvaka": "Charvaka", "charvak": "Charvaka",
+    "shiva": "Shiva", "shiv": "Shiva", "mahadev": "Shiva",
+    "शिव": "Shiva", "महादेव": "Shiva", "शंकर": "Shiva",
+    "vishnu": "Vishnu", "विष्णु": "Vishnu",
+    "rama": "Shree Rama", "ram": "Shree Rama", "राम": "Shree Rama",
+    "hanuman": "Hanuman", "हनुमान": "Hanuman",
+    "durga": "Durga", "दुर्गा": "Durga", "काली": "Durga",
+    "ganesh": "Ganesh", "ganesha": "Ganesh", "गणेश": "Ganesh",
 }
 
 INTENT_PATTERNS = [
@@ -294,8 +467,11 @@ INTENT_PATTERNS = [
     (r"\bam\s+i\b", "explore"),
     (r"\bwhat\s+is\s+the\s+difference\b", "compare"),
     (r"\bwhat\s+is\b", "define"),
+    (r"\bwho\s+is\b", "define"),
     (r"\bdefine\b", "define"),
     (r"क्या\s+है", "define"),
+    (r"\bkaun\s+(?:hai|hota|hoti)\b", "define"),
+    (r"कौन\s+(?:है|होता|होती)", "define"),
     (r"\bhow\s+to\b", "apply"),
     (r"\bhow\s+can\b", "apply"),
     (r"\bhow\s+do\b", "apply"),
@@ -305,6 +481,22 @@ INTENT_PATTERNS = [
     (r"\bdifference\s+between\b", "compare"),
     (r"\bcompare\b", "compare"),
     (r"\bया\b.*\bया\b", "compare"),
+    (r"\bya\b.*\bya\b", "compare"),
+    (r"\bchahiye\s+ya\b", "compare"),
+    (r"\bkaru\s+ya\b", "compare"),
+    # v4: Hinglish/Hindi compare patterns (diffrence/farak/antar)
+    (r"\b(?:diff(?:e)?rence|farak|farq|antar)\b", "compare"),
+    (r"(?:में|me)\s+(?:क्या|kya)\s+(?:diff|farak|farq|antar|अंतर|फ़र्क)", "compare"),
+    (r"(?:अंतर|फ़र्क)\s+(?:क्या|kya)\s+(?:है|hai)", "compare"),
+    (r"\bor\b.*\bme\s+kya\b", "compare"),
+    (r"\b(?:don't|doesn't)\s+(?:find|see)\b", "challenge"),
+    (r"\b(?:don't|doesn't)\s+feel\s+(?:any|the|much|enough|like\s+it)\b", "challenge"),
+    (r"\bno\s+(?:depth|substance|meaning)\b", "challenge"),
+    (r"\bnot\s+good\s+enough\b", "challenge"),
+    (r"\blacks\s+depth\b", "challenge"),
+    (r"\b(?:shallow|superficial|generic|repetitive)\b", "challenge"),
+    (r"नहीं\s+(?:लगता|दिखता|मिलता)", "challenge"),
+    (r"गहराई\s+नहीं", "challenge"),
     (r"\bwhy\s+not\b", "challenge"),
     (r"\bisn't\b", "challenge"),
     (r"\bwhy\s+should\b", "challenge"),
@@ -321,14 +513,17 @@ AMBIGUITY_PATTERNS = {
 
 PARADOX_PAIRS = [
     ({"freedom", "free will"}, {"determinism", "fate", "destiny"}, "existential"),
-    ({"morality", "good"}, {"morality", "evil"}, "moral"),
+    ({"virtue"}, {"morality"}, "moral"),
     ({"god", "divine"}, {"suffering", "evil"}, "moral"),
     ({"attachment", "love"}, {"liberation", "freedom"}, "existential"),
     ({"duty"}, {"freedom"}, "moral"),
     ({"knowledge"}, {"ignorance"}, "logical"),
     ({"life"}, {"death"}, "existential"),
-    ({"self", "ego"}, {"selflessness", "ego"}, "conceptual"),
+    ({"self"}, {"ego"}, "conceptual"),
     ({"happiness"}, {"suffering"}, "existential"),
+    # v4: Concept-pair paradoxes for Hindi/mindfulness questions
+    ({"peace"}, {"mind"}, "experiential"),
+    ({"mindfulness"}, {"family", "duty"}, "existential"),
 ]
 
 PARADOX_KEYWORD_PATTERNS = [
@@ -348,11 +543,18 @@ PARADOX_KEYWORD_PATTERNS = [
     (r"\bselfless.*\bself\b", "conceptual"),
     (r"\bnothing.*\beverything\b", "logical"),
     (r"\beverything.*\bnothing\b", "logical"),
+    # v4: Hindi/Hinglish paradox patterns — suppression paradox (X → opposite of X)
+    (r"shant\s+karne\s+se.*(?:jyada|badh|tivra|tej)", "experiential"),
+    (r"(?:rok|ruk|band\s+kar|control).*(?:jyada|badh|tivra|tej)", "experiential"),
+    (r"शांत.*(?:तीव्र|बढ़|ज़्यादा)", "experiential"),
+    (r"(?:रोक|बंद\s+कर).*(?:तीव्र|बढ़|ज़्यादा)", "experiential"),
+    (r"\b(?:suppress|silence|stop|control)\w*\s+(?:thought|mind).*\b(?:stronger|more|intense|louder|worse)\b", "experiential"),
+    (r"\b(?:trying|try)\s+(?:to\s+)?(?:not|stop|silence|suppress)\b.*\b(?:more|stronger|worse|intense)\b", "experiential"),
 ]
 
 
 # ============================================================
-# v4.3: NAVARASA SYSTEM — Bharata Muni's 9 Rasas
+# v3: NAVARASA SYSTEM — Bharata Muni's 9 Rasas
 # Detects the emotional 'color' behind words
 # ============================================================
 
@@ -367,6 +569,28 @@ RASA_SIGNALS = {
             "nothing matters", "dard", "dukh", "rona", "aansu", "akela",
             "toot", "bichad", "koi nahi", "samajhta nahi", "chala gaya",
             "chhod diya", "tadap", "yaad aata", "kho gaya",
+            "kasht", "kashtdayak", "kastdayak", "peeda", "pida",
+            "कष्ट", "कष्टदायक", "कस्टदायक", "पीड़ा", "painful",
+            "depressed", "depression", "emotionally", "emotional support",
+            "need help", "need support", "sahara", "madad",
+            "डिप्रेशन", "डिप्रेस", "भावनात्मक", "सहारा", "मदद",
+            "bad person", "galat kaam", "गलत काम", "बुरा इंसान",
+            "guilt", "guilty", "shame", "ashamed", "regret",
+            "kya karu", "क्या करू", "क्या करूँ",
+            # v4: Self-criticism / self-directed distress
+            "upset with myself", "upset with me", "hate myself",
+            "angry at myself", "disappointed in myself", "frustrated with myself",
+            "feel bad about myself", "blame myself", "my fault",
+            "upset", "let down", "let myself down",
+            # v4.4: Negated peace / post-victory emptiness (Q7 fix)
+            "sukoon nahi", "sukun nahi", "chain nahi",
+            "peace remains elusive", "something left behind",
+            "even after victory", "jeet ke baad bhi",
+            "phir bhi khali", "still empty", "no peace",
+            "kuch choot gaya", "kuch chhoot gaya",
+            "सुकून नहीं", "चैन नहीं", "कुछ छूट गया",
+            "जीत के बाद भी", "लड़ाई के बाद भी",
+            "phir bhi sukoon nahi", "after winning still",
         ],
         "weight": 3
     },
@@ -378,6 +602,7 @@ RASA_SIGNALS = {
             "what will happen", "uncertain", "unsafe",
             "darr", "dar lag raha", "dara hua", "ghabra", "chinta",
             "kya hoga", "pata nahi kya", "nahi pata",
+            "डर", "घबरा", "चिंता", "भय", "आशंका", "क्या होगा",
         ],
         "weight": 2
     },
@@ -389,6 +614,7 @@ RASA_SIGNALS = {
             "injustice", "cheated", "betrayed", "lied", "used me",
             "gussa", "naraaz", "nafrat", "tang aa gaya", "bahut ho gaya",
             "kyon hamesha", "dhoka", "jhooth", "galat hai",
+            "गुस्सा", "नाराज़", "नफ़रत", "धोखा", "झूठ", "क्रोध", "अन्याय",
         ],
         "weight": 2
     },
@@ -399,19 +625,24 @@ RASA_SIGNALS = {
             "tired of everything", "bored", "numb", "don't care",
             "nothing works", "why bother", "given up", "whatever",
             "exhausted", "drained", "empty inside",
-            "kya fayda", "sab bekaar", "kuch nahi hoga", "thak gaya",
+            "kya fayda", "sab bekaar", "bekaar", "bekar",
+            "kuch nahi hoga", "thak gaya",
             "mann nahi", "kuch accha nahi lagta", "koi matlab nahi",
+            "achieve nahi", "nahi kar pa", "nahi ho pa",
+            "क्या फ़ायदा", "सब बेकार", "बेकार", "थक गया", "मन नहीं", "कोई मतलब नहीं",
         ],
         "weight": 3
     },
     "shringaar": {
         "desc": "Prem, longing, beauty — ache and joy of love",
         "words": [
-            "love", "miss someone", "longing", "beautiful", "heart",
+            "love", "miss someone", "longing", "beautiful",
+            "my heart", "broken heart", "heart aches",
             "connection", "together", "apart", "close",
             "want to be with", "think about them",
             "pyaar", "mohabbat", "ishq", "yaad aata hai", "dil",
-            "rishta", "saath", "door", "paas", "chahta hoon",
+            "rishta", "mere saath", "tere saath", "door", "mere paas", "tere paas", "chahta hoon",
+            "प्यार", "मोहब्बत", "इश्क़", "दिल", "रिश्ता", "मेरे साथ", "तेरे साथ", "दूर",
         ],
         "weight": 2
     },
@@ -425,7 +656,14 @@ RASA_SIGNALS = {
             "karna hai", "karunga", "hausla", "himmat", "aage badhna",
             "haar nahi maanunga", "badalna hai", "kuch banna hai",
             "try karunga", "mehnat", "chahta hoon", "kuch karna",
-            "lakshya", "sapna", "jeetna", "kuch paana",
+            "lakshya", "sapna", "jeetna", "jeetne", "kuch paana",
+            "kar dikhana", "kar dikhaunga", "kar dikha",
+            "haar maan", "haar nahi",
+            "ready", "taiyar", "तैयार", "nischay", "निश्चय",
+            "decide", "decided", "move on", "move forward",
+            "बदलना चाहता", "आगे बढ़", "बढ़ता",
+            "चाहता हूँ", "बदलना", "जीतना", "जीतने",
+            "कर दिखाना", "कर दिखाऊंगा",
         ],
         "weight": 2
     },
@@ -439,6 +677,9 @@ RASA_SIGNALS = {
             "do you feel", "can you feel", "sach mein jeena",
             "ajeeb", "hairaan", "samajh nahi aata", "kya hai ye",
             "kyun hota hai", "sochta rehta hoon", "gehri baat",
+            "भविष्य", "विकसित", "संबंध", "मशीन", "तकनीक",
+            "sambandh", "bhavishya", "vikasit", "machine",
+            "sudhar", "sudhaar", "tarika", "samjhna",
         ],
         "weight": 2
     },
@@ -448,6 +689,7 @@ RASA_SIGNALS = {
             "funny", "laugh", "joke", "ridiculous", "absurd", "ironic",
             "silly", "haha", "lol", "weird",
             "mazaak", "hansi", "hasna", "ajeeb si baat",
+            "मज़ाक", "मजाक", "हँसी", "हँसना", "हा हा", "हास्य",
         ],
         "weight": 1
     },
@@ -458,6 +700,7 @@ RASA_SIGNALS = {
             "just want to understand", "curious", "reflecting",
             "shanti", "sukoon", "theek hai", "samajhna chahta",
             "sochna", "vichar", "bas rehna chahta", "khamoshi",
+            "शांति", "सुकून", "खामोशी", "विचार",
         ],
         "weight": 1
     },
@@ -563,15 +806,45 @@ def _calculate_depth_score(question: str, intent: str, is_paradox: bool,
     return min(1.0, max(0.1, round(score, 2)))
 
 
+CASUAL_SIGNALS = [
+    "joking", "kidding", "just joking", "just kidding",
+    "mazaak", "mazak", "मज़ाक", "मजाक",
+    "what's up", "whats up", "just asking", "aise hi", "aise he",
+    "timepass", "time pass", "bas aise hi",
+    "how are you", "kaise ho", "kya haal", "kya chal raha",
+]
+
+
 def _classify_question_type(question: str, concepts: list, depth_score: float,
-                              language: str = "english", intent: str = "explore") -> str:
-    lower = question.split()
+                              language: str = "english", intent: str = "explore",
+                              philosophers: list = None) -> str:
+    # Normalize em-dash/en-dash to spaces so "this—so" splits into ["this", "so"]
+    q_normalized = question.replace('—', ' ').replace('–', ' ')
+    lower = q_normalized.split()
     lower_str = question.lower()
     word_count = len(lower)
+    lower_set = {w.lower().strip('?!.,;:।') for w in lower}
 
     personal_en = {"i", "my", "me", "i'm", "i've", "myself"}
     personal_hi = {"main", "mera", "meri", "mujhe", "mai", "apna", "apne", "apni"}
-    has_personal = bool((set(lower) & personal_en) or (set(lower) & personal_hi))
+    personal_hi_deva = {"मेरा", "मेरी", "मुझे", "मैं", "मेने", "मैंने", "अपना", "अपने", "अपनी", "हमारा", "हमारी", "हूँ", "हूं"}
+    has_personal = bool(
+        (lower_set & personal_en)
+        or (lower_set & personal_hi)
+        or any(w in question for w in personal_hi_deva)
+    )
+
+    # Conversational / casual detection — before emotional to avoid misclassification
+    has_casual = any(s in lower_str for s in CASUAL_SIGNALS)
+    if has_casual and word_count <= 12:
+        # Only classify as conversational if not emotional
+        emotional_check = [
+            "feel", "feeling", "hurt", "pain", "empty", "lost",
+            "stuck", "anxious", "afraid", "scared", "lonely", "depressed",
+            "dukhi", "akela", "udas", "pareshan", "दुखी", "अकेला",
+        ]
+        if not any(e in lower_str for e in emotional_check):
+            return "conversational"
 
     high_signal_emotional = [
         "feel", "feeling", "felt", "hurt", "hurting", "pain",
@@ -585,21 +858,73 @@ def _classify_question_type(question: str, concepts: list, depth_score: float,
         "struggling", "suffering", "tired", "exhausted",
         "broken", "shattered", "failed", "failing", "fail",
         "overwhelmed", "disappointed", "regret", "guilty", "ashamed",
-        "bored", "unmotivated", "numb", "disconnected", "meaningless",
+        "bored", "unmotivated", "numb", "disconnected", "meaningless", "upset",
         "nobody cares", "no one cares", "nothing matters", "doesn't matter",
-        "pareshan", "dukhi", "akela", "udas", "thak", "haara",
+        "matlab nahi", "matlab hi nahi", "koi matlab nahi",
+        "pareshan", "dukhi", "akela", "udas", "thak", "haara", "gussa",
         "kya karu", "samajh nahi",
+        "kasht", "kashtdayak", "kastdayak", "peeda", "pida",
+        "कष्ट", "कष्टदायक", "कस्टदायक", "पीड़ा",
+        "depressed", "depression", "emotionally",
+        "emotional support", "need help", "need support",
+        "डिप्रेशन", "डिप्रेस", "भावनात्मक", "सहारा",
+        "madad chahiye", "मदद चाहिए",
+        # Hindi Devanagari emotional signals
+        "दुखी", "अकेला", "उदास", "थक", "हारा",
+        "परेशान", "तकलीफ़", "मुश्किल",
+        "डर", "चिंता", "गुस्सा", "नाराज़",
+        "टूट", "बिछड़", "तड़प",
+        # v3: Guilt / self-blame / negativity signals
+        "बुरा इंसान", "गलत काम", "बुरा", "गलत",
+        "क्या करू", "क्या करूँ",
+        "नेगटिव", "नकारात्मक",
+        # Hinglish despair / futility signals
+        "bekaar", "bekar", "sab bekaar", "kya fayda",
+        "kuch nahi hoga", "nahi kar pa", "nahi ho pa",
+        "बेकार", "सब बेकार",
+        # v4.4: Negated peace / post-victory emptiness
+        "sukoon nahi", "chain nahi", "kuch choot gaya",
+        "सुकून नहीं", "चैन नहीं", "कुछ छूट गया",
+        "peace remains elusive", "something left behind",
     ]
 
     has_emotional = any(w in lower_str for w in high_signal_emotional)
 
-    if has_personal and ("should" in lower or "karu" in lower_str or "karna" in lower_str):
-        return "emotional"
-    # "why does/do/did" without personal words = philosophical curiosity, not distress
-    if has_emotional and not has_personal and re.search(r'\bwhy\s+(does|do|did)\b', lower_str):
-        pass  # skip emotional — it's intellectual inquiry
+    # AI-directed questions ("do you feel", "aapko feel hota hai") are philosophical,
+    # not emotional — the user is exploring AI consciousness, not expressing distress
+    ai_directed_en = {"you", "your", "you're", "yourself"}
+    ai_directed_hi = {"aapko", "tumko", "tumhe", "aap", "tum", "tumhare", "aapke"}
+    ai_directed_deva = {"आपको", "तुमको", "तुम्हे", "तुम्हारे", "आपके"}
+    is_ai_directed = bool(
+        (lower_set & ai_directed_en)
+        or (lower_set & ai_directed_hi)
+        or any(w in question for w in ai_directed_deva)
+    )
+    ai_nature_words = ["feel", "feeling", "conscious", "alive", "experience",
+                       "feel hota", "mehsoos", "mehsus", "anubhav",
+                       "महसूस", "अनुभव", "फील"]
+    is_ai_nature_question = is_ai_directed and any(w in lower_str for w in ai_nature_words)
+
+    if has_personal and ("should" in lower or "karu" in lower_str or "karna" in lower_str
+                         or "करू" in question or "करूँ" in question):
+        if not is_ai_nature_question:
+            return "emotional"
+    # Impersonal questions with emotional words = philosophical inquiry, not distress
+    if has_emotional and not has_personal:
+        intellectual_patterns = [
+            r'\bwhy\s+(does|do|did)\b',
+            r'\b(can|do|does|could|would|should)\b.*\b(feel|feeling|feelings)\b',
+        ]
+        if any(re.search(p, lower_str) for p in intellectual_patterns):
+            pass  # skip emotional — it's intellectual inquiry
+        else:
+            return "emotional"
     elif has_emotional:
-        return "emotional"
+        # AI-nature questions override emotional classification
+        if is_ai_nature_question:
+            pass  # philosophical inquiry about AI consciousness
+        else:
+            return "emotional"
 
     # Hinglish question-word detection (real question, not follow-up)
     hinglish_question_words = ["kya hai", "kyo", "kaise", "kaun", "kyon", "kyun"]
@@ -613,23 +938,63 @@ def _classify_question_type(question: str, concepts: list, depth_score: float,
     follow_up_patterns = [
         "what should i do", "what now", "then what", "so what",
         "what do you mean", "how so", "like what",
-        "kya karu", "ab kya", "phir kya", "to kya", "matlab",
-        "kya matlab", "iska matlab", "aur batao",
+        "about this", "about it", "about that",
+        "in this area", "in this regard", "regarding this",
+        "on this topic", "on this", "explain this",
+        "explain something", "tell me more", "more about",
+        "elaborate on", "go deeper", "in this context",
+        "this further", "this better", "improvements",
+        "kya karu", "ab kya", "phir kya", "to kya",
+        "kya matlab", "iska matlab", "uska matlab", "aur batao",
+        "iske bare", "iske baare", "is baare",
         # Devanagari follow-ups
         "और ये", "और यह", "फिर क्या", "तो क्या", "अब क्या",
-        "कौन तय", "कोण तय", "और बताओ", "मतलब",
+        "कौन तय", "कोण तय", "और बताओ", "क्या मतलब", "इसका मतलब",
+        "इसके बारे", "इस बारे", "और बताये",
+        # v3: Conversational continuations
+        "not letting", "isn't letting", "won't let",
+        "move forward", "move on",
     ]
-    # Intent already detected as a real question type — don't override to follow_up
-    has_real_intent = intent in ("define", "compare", "challenge")
+    # Context-reference words — strong follow-up signal when no concepts found
+    context_ref_words = {"this", "it", "that", "these", "those"}
+    context_ref_hinglish = {"ye", "yeh", "isko", "isme", "ispe", "ispr", "iska"}
+    lower_clean = {w.lower().strip('?!.,;:।') for w in question.split()}
+    has_context_ref = bool(lower_clean & context_ref_words) or bool(lower_clean & context_ref_hinglish)
 
-    if word_count <= 7 and not concepts:
-        if is_greeting:
+    # Acknowledgment patterns — user affirming/closing, not asking
+    acknowledgment_words = {"okay", "ok", "alright", "thik", "theek", "accha", "haan", "chalo"}
+    is_acknowledgment = bool(lower_clean & acknowledgment_words) or "ठीक" in question
+
+    # Intent already detected as a real question type — don't override to follow_up
+    # But only when concepts exist; no-concept + challenge intent = likely conversational
+    has_real_intent = intent in ("define", "compare", "challenge") and bool(concepts)
+
+    if not concepts and not has_real_intent:
+        if word_count <= 10 and any(p in lower_str for p in follow_up_patterns):
             return "follow_up"
-        if has_hinglish_question or has_real_intent:
-            pass  # Don't default to follow_up — it's a real question
-        elif any(p in lower_str for p in follow_up_patterns):
+        if word_count <= 5 and is_greeting:
             return "follow_up"
-        elif word_count <= 4:
+        if word_count <= 10 and is_acknowledgment:
+            return "follow_up"
+        if word_count <= 18 and has_context_ref:
+            return "follow_up"
+        # Daily-life Hinglish questions → factual, not follow_up
+        daily_life_hinglish = ["khana", "khaya", "khaye", "piya", "soya",
+                               "aaj", "kal", "parso", "abhi"]
+        if any(d in lower_str for d in daily_life_hinglish):
+            return "factual"
+        if word_count <= 7:
+            if has_hinglish_question:
+                pass  # Don't default to follow_up — it's a real question
+            elif word_count <= 4:
+                return "follow_up"
+
+    # Short conversational follow-ups — even if concepts exist
+    # (e.g. "Me ready hun parntu ye mujhe aage nhi..." — has courage but is follow_up)
+    if concepts and not has_real_intent and word_count <= 12 and not has_hinglish_question:
+        if is_acknowledgment:
+            return "follow_up"
+        if has_context_ref and len(concepts) <= 1:
             return "follow_up"
 
     # Longer Hinglish with personal + action words → emotional/mixed
@@ -637,6 +1002,17 @@ def _classify_question_type(question: str, concepts: list, depth_score: float,
                        "krna chahiye", "kya kare", "kaise kare"]
     if not concepts and has_personal and any(a in lower_str for a in hinglish_action):
         return "emotional"
+
+    # Hindi emotional support requests (मदद चाहिए, सहारा, भावनात्मक)
+    hindi_emotional_signals = [
+        "मदद चाहिए", "सहारा", "भावनात्मक", "डिप्रेशन", "डिप्रेस",
+        "madad", "sahara", "emotional support", "emotionally",
+    ]
+    if has_personal and any(s in lower_str or s in question for s in hindi_emotional_signals):
+        return "emotional"
+
+    if not concepts and philosophers:
+        return "philosophical"
 
     if not concepts:
         factual_patterns = [
@@ -652,6 +1028,32 @@ def _classify_question_type(question: str, concepts: list, depth_score: float,
         # If Hinglish question words detected, don't default to factual
         if has_hinglish_question:
             return "mixed"
+        # Hindi/Devanagari questions — check for meta/system questions first
+        has_devanagari = any('\u0900' <= c <= '\u097F' for c in question)
+        if has_devanagari:
+            meta_signals = [
+                "जानकारी", "साझा", "डेटा", "प्राइवेसी", "सुरक्षा",
+                "information", "data", "privacy", "expose", "share",
+                "उपयोगकर्ता", "user", "users",
+            ]
+            if any(s in lower_str or s in question for s in meta_signals):
+                return "factual"
+            # Personal daily-life questions — not philosophical
+            daily_life_signals = [
+                "खाना", "खाया", "खाये", "पिया", "सोया", "उठा",
+                "पहना", "गया", "आया", "किया", "देखा",
+                "आज", "कल", "परसों", "अभी",
+                "khaya", "khana", "piya", "soya",
+            ]
+            if any(s in lower_str or s in question for s in daily_life_signals):
+                return "factual"
+            return "philosophical"
+        # Hinglish with common conversational words → mixed, not factual
+        hinglish_conv = ["toh", "kare", "kaise", "batao", "bataye",
+                         "samjh", "tarah", "tarike", "sudhar", "rasta",
+                         "hota", "sakta", "chahiye", "jaye", "kiye"]
+        if any(w in lower_str for w in hinglish_conv):
+            return "mixed"
         return "factual"
 
     if has_personal:
@@ -664,9 +1066,8 @@ def _classify_question_type(question: str, concepts: list, depth_score: float,
     return "mixed"
 
 
-def _detect_emotional_intensity(question: str, question_type: str) -> str:
-    if question_type not in ("emotional", "mixed"):
-        return "low"
+def _detect_emotional_intensity(question: str, question_type: str, intent: str = "explore") -> str:
+    is_emotional_type = question_type in ("emotional", "mixed") or intent == "challenge"
     lower = question.lower()
     high_signals = [
         "useless", "worthless", "pointless", "meaningless",
@@ -681,7 +1082,7 @@ def _detect_emotional_intensity(question: str, question_type: str) -> str:
         "kuch nahi bacha", "koi fayda nahi",
     ]
     if any(s in lower for s in high_signals):
-        return "high"
+        return "high" if is_emotional_type else "medium"
     medium_signals = [
         "struggling", "suffering", "can't stop", "don't know what to do",
         "feel trapped", "feel stuck", "wasting my life", "wasting time",
@@ -690,15 +1091,42 @@ def _detect_emotional_intensity(question: str, question_type: str) -> str:
         "scared of", "afraid of", "terrified",
         "nobody understands", "feel alone", "feel empty",
         "failed", "keep failing", "always fail",
+        # v4: Self-criticism medium signals
+        "upset with myself", "upset with me", "feel bad about myself",
+        "disappointed in myself", "frustrated with myself", "angry at myself",
+        "blame myself", "my fault", "let myself down",
         "pareshan", "bahut dukhi", "samajh nahi aa raha",
         "kya karu", "kuch samajh nahi", "bahut darr",
-        # v4.3: "bahut" intensity boosters
+        # v3: "bahut" intensity boosters
         "bahut akela", "bahut thak", "bahut pareshan",
         "bahut dard", "bahut darr", "bahut udas",
         "kaafi akela", "ekdum akela", "bilkul akela",
+        # v3: Guilt / self-blame / negativity medium signals
+        "what should i do", "what do i do",
+        "bad person", "wrong things", "done wrong",
+        "negative mindset", "negative thinking", "preventing me",
+        "बुरा इंसान", "गलत काम",
+        "क्या करू", "क्या करूँ",
+        "नकारात्मक", "नेगटिव",
+        "आगे नहीं", "aage nahi", "aage nhi",
+        # v4.4: Post-victory emptiness / negated peace signals
+        "sukoon nahi", "sukun nahi", "chain nahi",
+        "peace remains elusive", "something left behind",
+        "even after victory", "jeet ke baad bhi",
+        "kuch choot gaya", "kuch chhoot gaya",
+        "सुकून नहीं", "चैन नहीं", "कुछ छूट गया",
+        "जीत के बाद भी",
+        # Challenge / critique frustration signals
+        "no depth", "no substance", "no meaning",
+        "shallow", "superficial", "generic", "repetitive",
+        "not good enough", "lacks depth", "don't find",
+        "doesn't make sense", "doesn't help", "not helpful",
+        "disappointed", "expected more", "expected better",
+        "गहराई नहीं", "नहीं लगता", "नहीं दिखता", "नहीं मिलता",
+        "कोई गहराई नहीं", "बेकार जवाब",
     ]
     if any(s in lower for s in medium_signals):
-        return "medium"
+        return "medium" if is_emotional_type else "low"
     return "low"
 
 
@@ -714,7 +1142,7 @@ def _determine_knowledge_mode(is_paradox: bool, intent: str, depth_score: float)
 
 def _detect_rasa(question: str, translated: str, question_type: str,
                  emotional_intensity: str) -> tuple:
-    """v4.3: Detect Navarasa flavor. Returns (rasa, intensity, target)."""
+    """v3: Detect Navarasa flavor. Returns (rasa, intensity, target)."""
     search = (question + " " + translated).lower()
     scores = {rasa: 0 for rasa in RASA_SIGNALS}
 
@@ -734,6 +1162,8 @@ def _detect_rasa(question: str, translated: str, question_type: str,
                 best_rasa = "bhayanak"
             else:
                 best_rasa = "shaant"
+        elif question_type == "conversational":
+            best_rasa = "hasya"
         elif question_type in ("philosophical", "factual"):
             best_rasa = "adbhut"
         else:
@@ -753,8 +1183,16 @@ def _detect_rasa(question: str, translated: str, question_type: str,
     return best_rasa, rasa_intensity, rasa_target
 
 
+CONTEXT_SENSITIVE_WORDS = {
+    "confused": r"(?:you(?:'re|r| are| seem| look| sound| get(?:ting)?))\s+(?:\w+\s+)*confused",
+    "confusion": r"(?:you(?:'re|r| are| seem| look| sound))\s+(?:\w+\s+)*confusion|(?:getting|causing)\s+confusion",
+    "stuck": r"(?:you(?:'re|r| are| seem| look| sound| get(?:ting)?))\s+(?:\w+\s+)*stuck",
+    "lost": r"(?:you(?:'re|r| are| seem| look| sound| get(?:ting)?))\s+(?:\w+\s+)*lost",
+}
+
+
 def analyze_concepts(question: str, language: str = "english", translated: str = "") -> ConceptAnalysis:
-    """v4.3: Full analysis with Navarasa detection."""
+    """v3: Full analysis with Navarasa detection."""
     analysis = ConceptAnalysis(language=language)
 
     texts = [question.lower()]
@@ -762,9 +1200,21 @@ def analyze_concepts(question: str, language: str = "english", translated: str =
         texts.append(translated.lower())
     search_text = " ".join(texts)
 
+    # Strip English idioms that cause false positives
+    idiom_strip = [
+        "mind you", "bear in mind", "never mind", "don't mind",
+        "do you mind", "make up your mind", "change your mind",
+    ]
+    clean_search = search_text
+    for idiom in idiom_strip:
+        clean_search = clean_search.replace(idiom, "")
+
     found_concepts = set()
     for keyword, concept in CONCEPT_MAP.items():
-        if _match_keyword_in_text(keyword, search_text):
+        if _match_keyword_in_text(keyword, clean_search):
+            if keyword in CONTEXT_SENSITIVE_WORDS:
+                if re.search(CONTEXT_SENSITIVE_WORDS[keyword], clean_search, re.IGNORECASE):
+                    continue
             found_concepts.add(concept)
     analysis.concepts = list(found_concepts)
 
@@ -811,12 +1261,13 @@ def analyze_concepts(question: str, language: str = "english", translated: str =
         analysis.is_paradox, analysis.intent, analysis.depth_score
     )
     analysis.question_type = _classify_question_type(
-        question, analysis.concepts, analysis.depth_score, language, analysis.intent
+        question, analysis.concepts, analysis.depth_score, language, analysis.intent,
+        analysis.philosophers
     )
     analysis.emotional_intensity = _detect_emotional_intensity(
-        question, analysis.question_type
+        question, analysis.question_type, analysis.intent
     )
-    # v4.3: Navarasa
+    # v3: Navarasa
     analysis.detected_rasa, analysis.rasa_intensity, analysis.rasa_target = _detect_rasa(
         question, translated, analysis.question_type, analysis.emotional_intensity
     )

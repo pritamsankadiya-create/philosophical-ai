@@ -12,7 +12,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 class ChatMemory:
     """
     Short-term conversation memory — stores recent chat history.
-    v3.5: Also stores conversation context (problem_type, emotional_state, topic)
+    v3: Also stores conversation context (problem_type, emotional_state, topic)
     for smarter follow-up responses.
 
     This is safe to clear between conversations.
@@ -22,7 +22,7 @@ class ChatMemory:
     def __init__(self, max_history: int = 5):
         self.history = []
         self.max_history = max_history
-        # v3.5: Conversation context for follow-ups
+        # v3: Conversation context for follow-ups
         self.context = {
             "problem_type": "",       # emotional, factual, philosophical, etc.
             "emotional_state": "",    # what the user is feeling
@@ -44,7 +44,7 @@ class ChatMemory:
 
     def update_context(self, question_type: str = "", concepts: list = None,
                        emotional_intensity: str = "", question: str = ""):
-        """v3.5: Update conversation context from latest analysis."""
+        """v3: Update conversation context from latest analysis."""
         if question_type:
             self.context["problem_type"] = question_type
         if concepts:
@@ -72,7 +72,7 @@ class ChatMemory:
                     break
 
     def get_context_summary(self) -> str:
-        """v3.5: Get conversation context as text for follow-up prompts."""
+        """v3: Get conversation context as text for follow-up prompts."""
         parts = []
         if self.context["problem_type"]:
             parts.append(f"Previous question type: {self.context['problem_type']}")
