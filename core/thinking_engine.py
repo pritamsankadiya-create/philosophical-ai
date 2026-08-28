@@ -45,6 +45,18 @@ def translate_hinglish(text: str) -> str:
         "bolo"           : "बोलो",
         "aur batao"      : "और बताओ",
 
+        # Breath / Prana
+        "saans"          : "साँस",
+        "swas"           : "श्वास",
+        "swansh"         : "श्वास",
+        "prana"          : "प्राण",
+        "praana"         : "प्राण",
+        "sukoon"         : "सुकून",
+        "sukun"          : "सुकून",
+        "ladai"          : "लड़ाई",
+        "ladaai"         : "लड़ाई",
+        "sangharsh"      : "संघर्ष",
+
         # Philosophy topics
         "khushi"         : "खुशी",
         "dukh"           : "दुख",
@@ -74,7 +86,106 @@ def translate_hinglish(text: str) -> str:
         "parmatma"       : "परमात्मा",
         "ishwar"         : "ईश्वर",
         "bhagwan"        : "भगवान",
+        # v3: expanded Hinglish coverage
+        "dhyan"          : "ध्यान",
+        "dhyaan"         : "ध्यान",
+        "insaan"         : "इंसान",
+        "insano"         : "इंसानों",
+        "kamjori"        : "कमज़ोरी",
+        "kamzori"        : "कमज़ोरी",
+        "takleef"        : "तकलीफ़",
+        "taklif"         : "तकलीफ़",
+        "umeed"          : "उम्मीद",
+        "ummeed"         : "उम्मीद",
+        "matlab"         : "मतलब",
+        "matlb"          : "मतलब",
+        "matalb"         : "मतलब",
+        "virakti"        : "विरक्ति",
+        "vairagya"       : "वैराग्य",
+        "kalpna"         : "कल्पना",
+        "kalpnao"        : "कल्पनाओं",
+        "samajh"         : "समझ",
+        "disha"          : "दिशा",
+        "sansar"         : "संसार",
+        "duniya"         : "दुनिया",
+        "rishta"         : "रिश्ता",
+        "rishte"         : "रिश्ते",
+        "bhavna"         : "भावना",
+        "ehsaas"         : "एहसास",
+        "anubhav"        : "अनुभव",
+        "vichar"         : "विचार",
+        "soch"           : "सोच",
+        "yakeen"         : "यकीन",
+        "hausla"         : "हौसला",
+        "irada"          : "इरादा",
+        "manzil"         : "मंज़िल",
+        "rasta"          : "रास्ता",
+        "raasta"         : "रास्ता",
+        "sachai"         : "सच्चाई",
+        "sachhai"        : "सच्चाई",
+        "bhagya"         : "भाग्य",
+        "kismat"         : "किस्मत",
+        "takdir"         : "तक़दीर",
 
+        # v3: Missing informal/abbreviated Hinglish
+        "kese"           : "कैसे",
+        "badiya"         : "बढ़िया",
+        "kch"            : "कुछ",
+        "kuch"           : "कुछ",
+        "jigyasa"        : "जिज्ञासा",
+        "jigyasu"        : "जिज्ञासु",
+        "dhoka"          : "धोखा",
+        "dhokha"         : "धोखा",
+        "tark"           : "तर्क",
+        "vitark"         : "वितर्क",
+        "charcha"        : "चर्चा",
+        "paristhi"       : "परिस्थिति",
+        "paristhiti"     : "परिस्थिति",
+        "dikkat"         : "दिक्कत",
+        "mushkil"        : "मुश्किल",
+        "halaat"         : "हालात",
+        "samasya"        : "समस्या",
+        "wasna"          : "वासना",
+        "vasna"          : "वासना",
+        "kaam"           : "काम",
+        "raah"           : "राह",
+        "sury"           : "सूर्य",
+        "surya"          : "सूर्य",
+        "dev"            : "देव",
+        "devi"           : "देवी",
+        "devta"          : "देवता",
+        "grah"           : "ग्रह",
+        "kartvya"        : "कर्तव्य",
+        "kartavya"       : "कर्तव्य",
+        "palan"          : "पालन",
+        "bhitar"         : "भीतर",
+        "andar"          : "अंदर",
+        "bahar"          : "बाहर",
+        "vaibhav"        : "वैभव",
+        "garibi"         : "गरीबी",
+        "gareebi"        : "गरीबी",
+        "najar"          : "नज़र",
+        "andaj"          : "अंदाज़",
+
+        # v3: Action / purpose / veer words
+        "chahta"         : "चाहता",
+        "chahti"         : "चाहती",
+        "chahte"         : "चाहते",
+        "chahta hoon"    : "चाहता हूँ",
+        "karna"          : "करना",
+        "karna chahta"   : "करना चाहता",
+        "banna"          : "बनना",
+        "paana"          : "पाना",
+        "achieve"        : "achieve",
+        "kuch karna"     : "कुछ करना",
+        "kuch banna"     : "कुछ बनना",
+        "aage badhna"    : "आगे बढ़ना",
+        "badalna"        : "बदलना",
+        "jeetna"         : "जीतना",
+        "sapna"          : "सपना",
+        "lakshya"        : "लक्ष्य",
+        "himmat hai"     : "हिम्मत है",
+        "hausla hai"     : "हौसला है",
         # Philosophers
         "osho"           : "ओशो",
         "krishna"        : "कृष्ण",
@@ -87,6 +198,8 @@ def translate_hinglish(text: str) -> str:
         "patanjali"      : "पतंजलि",
         "shankaracharya" : "शंकराचार्य",
         "buddha"         : "बुद्ध",
+        "sadhguru"       : "सद्गुरु",
+        "jaggi"          : "जग्गी",
 
         # Grammar words
         "hai"            : "है",
@@ -108,6 +221,232 @@ def translate_hinglish(text: str) -> str:
         "accha"          : "अच्छा",
         "bura"           : "बुरा",
         "theek"          : "ठीक",
+
+        # v3: Grammar words (follow-up/clarification detection)
+        "ye"             : "यह",
+        "ki"             : "कि",
+        "ka"             : "का",
+        "ke"             : "के",
+        "ko"             : "को",
+        "ho"             : "हो",
+        "rahi"           : "रही",
+        "raha"           : "रहा",
+        "se"             : "से",
+        "jese"           : "जैसे",
+        "jaise"          : "जैसे",
+        "nhi"            : "नहीं",
+        "ak"             : "एक",
+        "ek"             : "एक",
+        "kab"            : "कब",
+        "kahan"          : "कहाँ",
+        "phir"           : "फिर",
+        "jab"            : "जब",
+        "tab"            : "तब",
+        "abhi"           : "अभी",
+        "kyo"            : "क्यों",
+
+        # v3: Concept words (common Hinglish)
+        "dimag"          : "दिमाग",
+        "dimaag"         : "दिमाग",
+        "yaad"           : "याद",
+        "yaadein"        : "यादें",
+        "bhool"          : "भूल",
+        "dard"           : "दर्द",
+        "gussa"          : "गुस्सा",
+        "akela"          : "अकेला",
+        "neend"          : "नींद",
+        "paisa"          : "पैसा",
+        "jeet"           : "जीत",
+        "haar"           : "हार",
+        "lene"           : "लेने",
+        "dene"           : "देने",
+        "baat"           : "बात",
+        "chij"           : "चीज़",
+        "chijo"          : "चीज़ों",
+        "cheez"          : "चीज़",
+        "rakh"           : "रख",
+        "rakhta"         : "रखता",
+        "pata"           : "पता",
+        "log"            : "लोग",
+        "kisse"          : "किससे",
+
+        # v3: Follow-up / conversational Hinglish
+        "bataye"         : "बताये",
+        "batao"          : "बताओ",
+        "bataye"         : "बताये",
+        "batana"         : "बताना",
+        "sudhar"         : "सुधार",
+        "sudhaar"        : "सुधार",
+        "samjh"          : "समझ",
+        "samjhe"         : "समझे",
+        "samjho"         : "समझो",
+        "samjhna"        : "समझना",
+        "tarah"          : "तरह",
+        "tarike"         : "तरीके",
+        "tarika"         : "तरीका",
+        "iske"           : "इसके",
+        "uske"           : "उसके",
+        "bare"           : "बारे",
+        "baare"          : "बारे",
+        "jaye"           : "जाये",
+        "kiye"           : "किये",
+        "kare"           : "करे",
+        "karein"         : "करें",
+        "hota"           : "होता",
+        "hoti"           : "होती",
+        "hote"           : "होते",
+        "sakta"          : "सकता",
+        "sakti"          : "सकती",
+        "sakte"          : "सकते",
+        "woh"            : "वो",
+        "wah"            : "वह",
+        "yaar"           : "यार",
+        "bhai"           : "भाई",
+        "toh"            : "तो",
+        "lekin"          : "लेकिन",
+        "magar"          : "मगर",
+        "par"            : "पर",
+        "liye"           : "लिए",
+        "dusra"          : "दूसरा",
+        "dusre"          : "दूसरे",
+        "pehle"          : "पहले",
+        "baad"           : "बाद",
+        "saath"          : "साथ",
+        "beech"          : "बीच",
+        "bich"           : "बीच",
+        "sambandh"       : "संबंध",
+        "vikas"          : "विकास",
+        "vikasit"        : "विकसित",
+        "bhavishya"      : "भविष्य",
+        "machine"        : "मशीन",
+        "masheen"        : "मशीन",
+        "robot"          : "रोबोट",
+        "technology"     : "तकनीक",
+        "takneek"        : "तकनीक",
+        "computer"       : "कंप्यूटर",
+        "kasht"          : "कष्ट",
+        "kashtdayak"     : "कष्टदायक",
+        "kastdayak"      : "कष्टदायक",
+        "peeda"          : "पीड़ा",
+        "pida"           : "पीड़ा",
+        "manav"          : "मानव",
+        "painful"        : "दर्दनाक",
+        "depressed"      : "डिप्रेस",
+        "depression"     : "डिप्रेशन",
+        "emotionally"    : "भावनात्मक",
+        "emotional"      : "भावनात्मक",
+        "support"        : "सहारा",
+        "sahara"         : "सहारा",
+        "madad"          : "मदद",
+        "dost"           : "दोस्त",
+        "friend"         : "दोस्त",
+        "opposite"       : "उलट",
+        "ulat"           : "उलट",
+        "vyavhar"        : "व्यवहार",
+        "behave"         : "व्यवहार",
+        "feel"           : "फील",
+        "mehsoos"        : "महसूस",
+        "mehsus"         : "महसूस",
+
+        # v3: Missing personal/conversational
+        "mujhe"          : "मुझे",
+        "mene"           : "मेने",
+        "maine"          : "मैंने",
+        "hoon"           : "हूँ",
+        "hun"            : "हूँ",
+        "hone"           : "होने",
+        "aage"           : "आगे",
+        "thik"           : "ठीक",
+
+        # v3: Determination / resolution
+        "nischay"        : "निश्चय",
+        "nishchay"       : "निश्चय",
+        "taiyar"         : "तैयार",
+        "reday"          : "तैयार",
+
+        # v3: Grammar connectors
+        "parntu"         : "परंतु",
+        "parantu"        : "परंतु",
+        "kintu"          : "किंतु",
+        "krke"           : "करके",
+        "karke"          : "करके",
+        "badta"          : "बढ़ता",
+        "badhta"         : "बढ़ता",
+        "ispr"           : "इसपर",
+        "ispe"           : "इसपे",
+
+        # v3: Example / moral vocabulary
+        "udahran"        : "उदाहरण",
+        "udaharan"       : "उदाहरण",
+        "samjha"         : "समझा",
+        "galat"          : "गलत",
+        "sahi"           : "सही",
+
+        # v4: Missing Hinglish spelling variants (from trace analysis)
+        "weekness"       : "कमज़ोरी",
+        "weakness"       : "कमज़ोरी",
+        "pariwar"        : "परिवार",
+        "parivaar"       : "परिवार",
+        "parivar"        : "परिवार",
+        "jimmedari"      : "ज़िम्मेदारी",
+        "jimmedariyon"   : "ज़िम्मेदारियों",
+        "zimmadari"      : "ज़िम्मेदारी",
+        "zimmedari"      : "ज़िम्मेदारी",
+        "wartman"        : "वर्तमान",
+        "vartman"        : "वर्तमान",
+        "vartmaan"       : "वर्तमान",
+        "bhavisya"       : "भविष्य",
+        "muskil"         : "मुश्किल",
+        "vicharo"        : "विचारों",
+        "shant"          : "शांत",
+        "tivra"          : "तीव्र",
+        "jyada"          : "ज़्यादा",
+        "sayad"          : "शायद",
+        "insan"          : "इंसान",
+        "sabse"          : "सबसे",
+        "badi"           : "बड़ी",
+        "payega"         : "पायेगा",
+        "padega"         : "पड़ेगा",
+        "sochna"         : "सोचना",
+        "bareme"         : "बारेमें",
+
+        # v4: Respect / desire / obsession
+        "izzat"          : "इज़्ज़त",
+        "samman"         : "सम्मान",
+        "ichha"          : "इच्छा",
+        "lalach"         : "लालच",
+        "lobh"           : "लोभ",
+        "trishna"        : "तृष्णा",
+
+        # v4: Relationship words
+        "bhai"           : "भाई",
+        "behan"          : "बहन",
+        "behen"          : "बहन",
+        "pita"           : "पिता",
+        "pitaji"         : "पिताजी",
+        "baap"           : "बाप",
+        "mata"           : "माता",
+        "mataji"         : "माताजी",
+        "maa"            : "माँ",
+        "patni"          : "पत्नी",
+        "pati"           : "पति",
+        "beta"           : "बेटा",
+        "beti"           : "बेटी",
+        "bachcha"        : "बच्चा",
+        "bachche"        : "बच्चे",
+        "biwi"           : "बीवी",
+        "rishtedaar"     : "रिश्तेदार",
+
+        # v4: More common misspellings + missing words
+        "duskh"          : "दुख",
+        "khushiya"       : "खुशियाँ",
+        "khushiyan"      : "खुशियाँ",
+        "moun"           : "मौन",
+        "maun"           : "मौन",
+        "diffrence"      : "difference",
+        "farak"          : "फ़र्क",
+        "farq"           : "फ़र्क",
+        "antar"          : "अंतर",
     }
 
     # Word by word replacement
@@ -124,16 +463,60 @@ def translate_hinglish(text: str) -> str:
 
 
 # ─── Step 2: Language Detector ──────────────────────────────
+
+# Curated Hinglish-only words — NOT standard English.
+# Used to detect romanized Hindi without false positives from English words
+# like "feel", "friend", "machine" that exist in hinglish_map.
+_HINGLISH_MARKERS = {
+    # Pronouns / grammar
+    "kya", "hai", "hain", "aur", "mera", "meri", "tera", "teri",
+    "humara", "tumhara", "nahi", "nhi", "haan", "bahut", "tum",
+    "hum", "yeh", "woh", "wo", "kaise", "kese", "kyun", "kyo",
+    "kyoki", "batao", "samjhao", "bolo", "abhi", "phir", "jab",
+    "tab", "toh", "lekin", "magar", "parntu", "kintu",
+    # Common verbs / helpers
+    "karna", "karta", "karti", "chahta", "chahti", "sakta",
+    "sakti", "hota", "hoti", "raha", "rahi", "padega", "hoga",
+    "karein", "kare", "jaye", "kiye", "bataye", "samjhe",
+    # Concept words (clearly not English)
+    "insaan", "insan", "zindagi", "jindagi", "pyar", "pyaar",
+    "dukh", "sukh", "dharma", "karma", "satya", "atma", "aatma",
+    "mann", "buddhi", "gyan", "shakti", "shanti", "mukti",
+    "safalta", "dar", "himmat", "vishwas", "chetna", "parmatma",
+    "ishwar", "bhagwan", "accha", "bura", "theek", "thik",
+    "samjh", "tarika", "matlab", "kuch", "dimag", "dimaag",
+    "yaad", "dard", "gussa", "akela", "neend", "paisa", "jeet",
+    "haar", "soch", "vichar", "ehsaas", "hausla", "sachai",
+    "sansar", "duniya", "kismat", "bhagya", "jigyasa", "dhoka",
+    "mushkil", "muskil", "dikkat", "samasya", "mujhe", "maine",
+    "hoon", "hun", "aage", "pehle", "baad", "saath", "rishta",
+    "kamjori", "kamzori", "pariwar", "jimmedari", "wartman",
+    "vicharo", "shant", "tivra", "jyada", "sayad", "farak",
+    "moun", "maun", "duskh", "khushiya",
+    # Relationship words (clearly not English)
+    "bhai", "behan", "behen", "pita", "pitaji", "baap",
+    "mata", "mataji", "maa", "patni", "pati", "biwi",
+    "beta", "beti", "bachcha", "bachche", "rishtedaar",
+    # Respect / desire
+    "izzat", "samman", "ichha", "lalach", "lobh", "trishna",
+    # Breath / struggle
+    "saans", "swas", "swansh", "prana", "praana",
+    "sukoon", "sukun", "ladai", "ladaai", "sangharsh",
+}
+
+
 def detect_language(text: str) -> str:
     """
     Detect if question is Hindi/Hinglish or English.
 
     Process:
     1. Check for explicit Hindi request keywords
-    2. Translate Hinglish → Hindi
-    3. Count Hindi characters
-    4. More than 2 Hindi chars → reply in Hindi
-    5. Otherwise → reply in English
+    2. Check original text for Devanagari characters (> 2 → hindi)
+    3. Check for Hinglish-only marker words (>= 2 → hindi)
+    4. Otherwise → english
+
+    NOTE: Does NOT use translate_hinglish() — that caused false positives
+    because common English words (feel, friend, machine) were in hinglish_map.
 
     Returns: 'hindi' or 'english'
     """
@@ -149,13 +532,22 @@ def detect_language(text: str) -> str:
     if any(kw in lower for kw in hindi_keywords):
         return 'hindi'
 
-    translated = translate_hinglish(text)
+    # Step 1: Check ORIGINAL text for Devanagari characters
     hindi_chars = set(
         'अआइईउऊएऐओऔकखगघचछजझटठडढणतथदधनपफबभमयरलवशषसह'
         'ङञड़ढ़क्षत्रज्ञश्रफ़ज़'
     )
-    count = sum(1 for c in translated if c in hindi_chars)
-    return 'hindi' if count > 2 else 'english'
+    devanagari_count = sum(1 for c in text if c in hindi_chars)
+    if devanagari_count > 2:
+        return 'hindi'
+
+    # Step 2: Check for Hinglish-only words (romanized Hindi, NOT English)
+    words = {w.lower().strip('?!.,;:।') for w in text.split()}
+    hinglish_count = len(words & _HINGLISH_MARKERS)
+    if hinglish_count >= 2:
+        return 'hindi'
+
+    return 'english'
 
 
 # ─── Step 3: Smart Search Query Builder ─────────────────────

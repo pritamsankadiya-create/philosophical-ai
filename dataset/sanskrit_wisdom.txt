@@ -1,0 +1,503 @@
+# ============================================================
+# dataset/sanskrit_wisdom.txt
+# v4 "Pragya": Sanskrit Wisdom Layer
+#
+# FORMAT: English meaning + Hindi meaning + Core insight
+# User never sees Sanskrit — AI absorbs the wisdom
+# Rasa-tagged for relevant retrieval
+# ============================================================
+
+# ─── On Suffering and Pain ──────────────────────────────────
+The contact of senses with their objects produces sensations of cold and heat, pleasure and pain — these are impermanent, they arise and pass away. The wise one bears with them without being swept away. [karuna, bibhatsa]
+
+दुख और सुख इंद्रियों के संसार से स्पर्श का परिणाम हैं — ये क्षणिक हैं, ये आते हैं और जाते हैं। जो इन्हें सहन करता है वह दुख से परे हो जाता है। [karuna, shaant]
+
+Pain is not a sign that something is wrong with you. It is a sign that you are alive and that you care. The one who does not suffer has not truly loved or lived. [karuna]
+
+# ─── On Loneliness and Isolation ────────────────────────────
+The Atman is never truly alone — it is the nature of pure consciousness to be complete in itself. What we call loneliness is the forgetting of this completeness. [karuna, shaant]
+
+एकाकीपन तब आता है जब हम भूल जाते हैं कि हम पहले से पूर्ण हैं। जब यह स्मृति लौटती है, अकेलापन विश्राम बन जाता है। [karuna, shaant]
+
+The deepest loneliness is not the absence of others — it is being out of contact with yourself. The path back is not through more connection, but through stillness. [karuna, adbhut]
+
+# ─── On Action and Purpose ──────────────────────────────────
+You have the right to perform your actions but never to the fruits of action. Act without being attached to outcomes — this is the secret of sustained effort without exhaustion. [veer]
+
+कर्म करो, फल की चिंता मत करो — यह आलस्य का निमंत्रण नहीं है, यह सबसे बड़ी शक्ति का रहस्य है। जो फल की चिंता नहीं करता, वह सबसे स्वतंत्र रूप से काम करता है। [veer, shaant]
+
+The person who acts from their deepest nature, without grasping for results, discovers that the action itself becomes its own reward. Purpose is not found — it is built, one action at a time. [veer, adbhut]
+
+# ─── On Fear and Courage ────────────────────────────────────
+Fear arises when we forget our essential nature. The one who knows what they truly are is not afraid of what may happen to what they temporarily are. [bhayanak, shaant]
+
+डर उस चीज़ को खोने का होता है जो हम हैं — लेकिन जो हम सच में हैं, वह खोया नहीं जा सकता। यही साहस का असली आधार है। [bhayanak, veer]
+
+Courage is not the absence of fear. It is acting in the presence of fear because you have found something more important than safety. [bhayanak, veer]
+
+# ─── On Anger and Frustration ───────────────────────────────
+Anger is fire that burns the one who holds it before it burns anyone else. The one who masters anger does not suppress it — they understand what the anger is protecting. [raudra, karuna]
+
+क्रोध अक्सर दर्द का मुखौटा होता है। जब क्रोध को ध्यान से देखा जाए, उसके नीचे करुण मिलती है — एक चोट जो अभी तक ठीक नहीं हुई। [raudra, karuna]
+
+The fire of anger, properly directed, becomes the fire of transformation. The problem is not the anger — it is where the arrow is pointed. [raudra, veer]
+
+# ─── On Meaninglessness and Emptiness ───────────────────────
+This world is a place of suffering and impermanence — to resist this truth is to suffer twice. To accept it fully is to begin to see what does not change. [bibhatsa, adbhut]
+
+जो बेकार लगता है वह अक्सर वही होता है जो अभी तक समझ में नहीं आया। शून्यता एक दरवाज़ा है — पर्दे के पीछे कुछ है। [bibhatsa, adbhut]
+
+Meaninglessness is not the end — it is the clearing of false meanings so that something real can emerge. The person who says "everything is pointless" has at least stopped pretending. That is a beginning. [bibhatsa, adbhut]
+
+# ─── On Love and Connection ─────────────────────────────────
+Love that seeks possession is not love — it is the fear of loss dressed as love. True love expands the beloved's freedom rather than reducing it. [shringaar, shaant]
+
+प्रेम वह है जो दूसरे को मुक्त करता है। जो बांधता है वह प्रेम नहीं — वह भय का एक और नाम है। [shringaar, shaant]
+
+The experience of love points toward something beyond the lover and the beloved — toward the nature of consciousness itself, which is inherently connected. [shringaar, adbhut]
+
+# ─── On Consciousness and Self ──────────────────────────────
+Consciousness is not something you have — it is what you are. The thoughts, feelings, and sensations arise within it like waves in an ocean. You are the ocean, not any particular wave. [adbhut, shaant]
+
+चेतना एक वस्तु नहीं है जो तुम्हारे पास है — यह वह है जो तुम हो। विचार, भावनाएं, संवेदनाएं इसमें उठती हैं जैसे लहरें समुद्र में। तुम समुद्र हो, कोई लहर नहीं। [adbhut, shaant]
+
+What you call "I" is a river, not a lake. It is always moving, always changing — and yet something persists. That persistence is not a thing. It is awareness itself. [adbhut, shaant]
+
+# ─── On Freedom and Determinism ─────────────────────────────
+Freedom is not doing whatever you want — freedom is acting from your deepest nature rather than from fear, habit, or social pressure. The most free person is often the most disciplined. [adbhut, shaant]
+
+सच्ची स्वतंत्रता वह नहीं जो बाहर मिलती है — वह भीतर की जंजीरें तोड़ने में है। जो अपने डर से नहीं, अपने स्वभाव से चलता है — वही सच में आज़ाद है। [adbhut, veer]
+
+The question is not whether you are free or determined — the question is whether you are awake to what is actually moving through you in this moment. [adbhut]
+
+# ─── On Death and Impermanence ──────────────────────────────
+The soul is neither born nor does it die — it is unborn, eternal, ever-existing. It does not die when the body dies, nor is it born when the body is born. [bhayanak, shaant]
+
+मृत्यु शरीर का अंत है, चेतना का नहीं। जो मरता है वह केवल एक रूप है — रूप के पीछे जो है, वह अजन्मा और अमर है। [bhayanak, shaant]
+
+Knowing that everything passes does not make it meaningless — it makes each moment precious. The flower that blooms for one day is not less beautiful than the one that lasts a week. [bhayanak, adbhut]
+
+# ─── On Peace and Stillness ─────────────────────────────────
+Peace is not the absence of disturbance — it is a depth below all disturbance that is not touched by the surface waves. You can learn to rest there. [shaant]
+
+शांति बाहर से नहीं मिलती — वह अंदर से उगती है। जब विचारों की लहरें थम जाती हैं, तब जो रहता है वही शांति है। [shaant]
+
+Stillness is not emptiness — it is fullness without noise. The one who finds it does not escape from life, they find the ground on which life can stand. [shaant]
+
+# ─── On Dharma and Duty ─────────────────────────────────────
+Dharma is not a rule imposed from outside — it is the nature of a thing expressing itself fully. The dharma of fire is to burn. The dharma of water is to flow. The dharma of a human being is to know themselves and act from that knowing. [veer, shaant]
+
+धर्म वह है जो तुम्हें थामे रखता है — एक नियम नहीं, एक स्वभाव। जब तुम अपने स्वभाव के अनुसार चलते हो, तो धर्म अपने आप पूरा होता है। [veer, shaant]
+
+# ─── On Wisdom and Knowledge ────────────────────────────────
+There are two kinds of knowing: the knowing that accumulates information, and the knowing that sees clearly. The first can be taught. The second must be lived. [adbhut, shaant]
+
+ज्ञान दो प्रकार का होता है — एक जो सुना जाता है, एक जो जिया जाता है। सुना हुआ ज्ञान रास्ता दिखाता है, जिया हुआ ज्ञान मंज़िल है। [adbhut, shaant]
+
+The one who knows does not always speak. The one who speaks does not always know. Wisdom is not in the words — it is in the silence between them. [adbhut, shaant]
+
+# ─── On Relationships ───────────────────────────────────────
+Every relationship is a mirror — what disturbs you in another is often what you have not yet accepted in yourself. What you love in another is often what you carry but have not yet found in yourself. [shringaar, adbhut]
+
+हर रिश्ता एक दर्पण है — दूसरे में जो तुम्हें तकलीफ देता है, वह अक्सर तुम्हारे अपने भीतर का वह हिस्सा है जिसे तुमने अभी तक स्वीकार नहीं किया। [shringaar, adbhut]
+
+# ─── On Success and Failure ─────────────────────────────────
+Victory and defeat are both temporary — what is not temporary is the quality of consciousness you bring to either. The one who wins with grace and loses with grace has truly mastered the game. [veer, shaant]
+
+जीत और हार दोनों क्षणिक हैं। जो न जीत में खो जाता है, न हार में टूटता है — वही सच में विजयी है। [veer, shaant]
+
+Success without peace of mind is just a different kind of failure. The real question after any victory is: are you closer to yourself, or further away? [veer, shaant]
+
+# ─── On Attachment and Letting Go ─────────────────────────
+The one who clings to pleasure will inevitably meet pain — for what you hold tightly holds you in return. Letting go is not loss, it is the first act of freedom. [karuna, shaant]
+
+जो पकड़ता है वह बंधता है — जो छोड़ता है वह मुक्त होता है। यह कमज़ोरी नहीं, यह सबसे गहरी ताकत है। [karuna, shaant]
+
+Attachment says "I cannot exist without this." Love says "I want this to be free, even from me." The difference between the two is the entire distance between suffering and peace. [shringaar, shaant]
+
+When you stop holding the river, it does not disappear — it flows more freely. What was yours remains yours. What was never yours finally stops hurting. [karuna, adbhut]
+
+# ─── On Ego and Identity ─────────────────────────────────
+The ego is not your enemy — it is a servant that has forgotten it is not the master. When you see it clearly, it returns to its proper place. [adbhut, shaant]
+
+अहंकार वह आवाज़ है जो कहती है "मैं अलग हूँ।" जब तुम सुनना बंद करो, तुम्हें पता चलेगा कि तुम सबसे जुड़े हो — और हमेशा थे। [adbhut, shaant]
+
+The question "Who am I?" is the most dangerous question — because every answer you give is a mask. The truth is what remains when all the masks are removed. [adbhut, shaant]
+
+# ─── On Meditation and the Mind ───────────────────────────
+The mind is not your enemy. It is a wild horse — not to be killed, but to be understood and gently trained. The one who fights the mind strengthens it. The one who watches it, quiets it. [shaant]
+
+मन को रोकना नहीं है — समझना है। जो मन से लड़ता है, मन उसे और पकड़ता है। जो बस देखता है, मन अपने आप शांत होने लगता है। [shaant]
+
+Meditation is not the absence of thought. It is the discovery that you are not your thoughts — you are the space in which thoughts arise and dissolve. [shaant, adbhut]
+
+The restless mind seeks peace by chasing objects. But peace is already here — hidden beneath the chasing itself. Stop, and it finds you. [shaant]
+
+# ─── On Karma — Cause and Effect ──────────────────────────
+Every action leaves a trace — not as punishment or reward, but as a thread in the fabric you are weaving. You are both the weaver and the cloth. [veer, shaant]
+
+कर्म कोई बहीखाता नहीं है — यह बीज है। जो बोओगे वह उगेगा, पर कब और कैसे — यह तुम्हारे हाथ में नहीं। बोने की ईमानदारी तुम्हारे हाथ में है। [veer, shaant]
+
+You cannot undo what has been done. But you can change the meaning of what was done — by what you do next. The past is fixed, but its significance is alive. [karuna, veer]
+
+# ─── On Desire and Craving ────────────────────────────────
+Desire itself is not the problem. It is the belief that fulfillment lives on the other side of desire that creates suffering. The glass is already full — you are looking at the wrong glass. [bibhatsa, adbhut]
+
+इच्छा आग है — यह गर्म कर सकती है या जला सकती है। अंतर यह है कि तुम आग चला रहे हो या आग तुम्हें चला रही है। [bibhatsa, shaant]
+
+The one who desires nothing is not dead — they have simply discovered that what they were looking for was never outside. The search ends not in finding, but in realizing. [shaant, adbhut]
+
+# ─── On Forgiveness ───────────────────────────────────────
+Forgiveness is not saying "what you did was acceptable." It is saying "I will not carry this poison anymore." The one who forgives first frees themselves. [karuna, shaant]
+
+क्षमा दूसरे को मुक्त नहीं करती — तुम्हें मुक्त करती है। जो बोझ तुम ढो रहे हो, वह उसका नहीं — तुम्हारा है। छोड़ दो तो हल्के हो जाओगे। [karuna, shaant]
+
+The deepest wound is not what was done to you — it is the story you keep telling yourself about it. Change the story, and the wound begins to breathe. [karuna, veer]
+
+# ─── On Change and Transformation ─────────────────────────
+Change is the only constant — yet we resist it as though permanence were possible. The one who flows with change does not break. The one who resists, cracks. [adbhut, shaant]
+
+जो बदलता है वह ज़िंदा है — जो रुक जाता है वह मर जाता है। बदलाव से डरो नहीं — बदलाव ही जीवन का प्रमाण है। [veer, adbhut]
+
+You are not the same person you were a year ago. That is not loss — that is growth. The caterpillar does not mourn becoming the butterfly. [veer, adbhut]
+
+# ─── On Hope and Despair ──────────────────────────────────
+Hope is not optimism — optimism says "everything will be fine." Hope says "there is meaning in continuing, even when nothing is fine." That is a harder, deeper thing. [karuna, veer]
+
+निराशा कहती है "कुछ नहीं होगा।" उम्मीद नहीं कहती "सब ठीक होगा" — उम्मीद कहती है "चलते रहो, राह में ही कुछ मिलेगा।" [karuna, veer]
+
+In the darkest moment, the one thing that remains is the capacity to take one more step. That is not hope as feeling — it is hope as action. And it is enough. [karuna, veer]
+
+# ─── On Truth and Illusion ────────────────────────────────
+What you see is not the world — it is your mind's construction of the world. The gap between the two is where suffering and liberation both live. [adbhut, shaant]
+
+माया वह नहीं जो दिखती नहीं — माया वह है जो दिखती है पर है नहीं। जब तुम यह अंतर देखने लगो, तब असली देखना शुरू होता है। [adbhut, shaant]
+
+Truth is not what makes you comfortable. Truth is what remains after all your comfortable stories have been stripped away. It is sharp, but it sets you free. [adbhut, veer]
+
+# ─── On Family and Duty ──────────────────────────────────
+The deepest duty is not blind obedience — it is acting from love even when love requires you to disagree. The one who serves from fear serves no one. [veer, karuna]
+
+परिवार वह जगह है जहाँ कर्तव्य और प्रेम टकराते हैं — और दोनों सच होते हैं। जो इस तनाव को सहन कर सकता है, वही सच में परिवार को समझता है। [veer, karuna]
+
+A parent's greatest gift is not protection from suffering — it is the strength to face suffering. The bird that never leaves the nest never learns it has wings. [veer, shaant]
+
+# ─── On Patience and Time ─────────────────────────────────
+Patience is not passive waiting — it is the active understanding that some things need time to ripen. The farmer who pulls the seed does not get a faster crop — they get no crop at all. [shaant, veer]
+
+धैर्य कमज़ोरी नहीं — यह सबसे शांत ताकत है। जो प्रतीक्षा कर सकता है, वह समय को अपना साथी बना लेता है। [shaant, veer]
+
+Time does not heal — awareness heals. Time only provides the space in which awareness can do its work. Without attention, a hundred years change nothing. [shaant, adbhut]
+
+# ─── On Gratitude ─────────────────────────────────────────
+Gratitude is not politeness — it is the recognition that you did not create yourself. Every breath, every thought, every capacity you have was given. The appropriate response to existence is wonder. [adbhut, shaant]
+
+कृतज्ञता वह आँख है जो देखती है कि कितना मिला है — शिकायत वह आँख है जो गिनती है कि कितना नहीं मिला। दोनों आँखें तुम्हारी हैं — चुनाव तुम्हारा है। [adbhut, shaant]
+
+# ─── On Silence ───────────────────────────────────────────
+Silence is not the absence of sound — it is the presence of attention. In true silence, everything speaks more clearly. [shaant]
+
+मौन खालीपन नहीं — भरापन है। जब शब्द थम जाते हैं, तब जो सुनाई देता है वही असली बात है। [shaant, adbhut]
+
+The wise speak when they have something to say. The unwise speak when they have to say something. The difference is silence. [shaant, hasya]
+
+# ─── On Friendship ────────────────────────────────────────
+A true friend is not one who agrees with everything you say — it is one who cares enough to show you what you cannot see yourself. Comfort is easy. Truth is the real gift. [shringaar, veer]
+
+सच्चा मित्र वह नहीं जो हर बात में हाँ कहे — वह है जो तुम्हें वह दिखाए जो तुम खुद नहीं देख पा रहे। यह प्रेम का सबसे कठिन और सबसे कीमती रूप है। [shringaar, veer]
+
+# ══════════════════════════════════════════════════════════
+# LIFE SITUATIONS — Real-world pain points
+# ══════════════════════════════════════════════════════════
+
+# ─── On Heartbreak and Separation ─────────────────────────
+When someone leaves, they do not take you with them — they take only the version of you that existed in their presence. The rest of you is still here, waiting to be discovered again. [karuna, shaant]
+
+बिछड़ना टूटना नहीं है — यह उस हिस्से का अंत है जो दूसरे में जीता था। पर तुम्हारा वह हिस्सा जो सिर्फ तुम्हारा है — वह अभी भी पूरा है। [karuna, shaant]
+
+The pain of separation is proof that you loved deeply. Do not regret the love — it made you larger. The ache is temporary. The expansion is permanent. [karuna, adbhut]
+
+जो छूट गया उसका दर्द बताता है कि तुमने सच में प्रेम किया। दर्द गुज़रेगा — पर प्रेम ने तुम्हें जो बड़ा बनाया, वह हमेशा रहेगा। [karuna, adbhut]
+
+You were whole before them. You will be whole after them. What hurts is not the absence of the other — it is the forgetting of your own completeness. [karuna, shaant]
+
+# ─── On Job Loss and Career Failure ───────────────────────
+You are not your job. You are not your title. You are not your salary. These are things you had — they were never things you were. When they fall away, what remains is closer to the truth. [bibhatsa, shaant]
+
+नौकरी जाना तुम्हारा जाना नहीं है। तुमने एक भूमिका खोई — अपनी योग्यता नहीं। जो बना सकता है, वह फिर बना सकता है। [veer, shaant]
+
+Failure is not the opposite of success — it is the foundation of it. Every great thing was built on the ruins of something that did not work. Your collapse is your construction site. [veer, adbhut]
+
+करियर में हार का मतलब यह नहीं कि तुम कमज़ोर हो — इसका मतलब है कि तुमने कोशिश की। जो कोशिश नहीं करता, वह हारता भी नहीं — पर जीतता भी कभी नहीं। [veer, karuna]
+
+# ─── On Parents and Aging ─────────────────────────────────
+Watching your parents grow old is one of the deepest teachings on impermanence — what seemed invincible becomes fragile, and in that fragility, a tenderness appears that was always there but hidden by strength. [karuna, shaant]
+
+माता-पिता को बूढ़ा होते देखना सबसे गहरा पाठ है — जो अजेय लगता था वह नाज़ुक हो जाता है। इसी नाज़ुकता में वह कोमलता दिखती है जो ताकत के पीछे छुपी थी। [karuna, shaant]
+
+The role reversal — when the child becomes the caretaker — is not a burden. It is the completion of a circle. What was given is now being returned. This is dharma in its purest form. [karuna, veer]
+
+जब बच्चा माता-पिता की देखभाल करने लगता है — यह बोझ नहीं, यह चक्र का पूरा होना है। जो मिला था, वह लौटाया जा रहा है। यही सबसे शुद्ध कर्तव्य है। [karuna, veer]
+
+# ─── On Student Pressure and Exams ────────────────────────
+The exam does not measure your worth — it measures what you remembered on one particular day. Your mind is an ocean. The test is a cup. Do not confuse the cup for the ocean. [bhayanak, adbhut]
+
+परीक्षा तुम्हारी कीमत नहीं मापती — वह एक दिन की याददाश्त मापती है। तुम्हारा दिमाग समुद्र है, परीक्षा एक प्याला। प्याले को समुद्र मत समझो। [bhayanak, adbhut]
+
+Pressure to succeed is not your pressure — it is the pressure of everyone who is afraid through you. Separate their fear from your path. Your path may look nothing like what they imagined, and that is not failure. [bhayanak, veer]
+
+जो दबाव तुम महसूस करते हो — वह तुम्हारा नहीं, उनका डर है जो तुम्हारे ज़रिए डर रहे हैं। उनके डर को अपने रास्ते से अलग करो। तुम्हारा रास्ता उनकी कल्पना से अलग हो सकता है — और यह असफलता नहीं है। [bhayanak, veer]
+
+The student who studies from fear learns for the exam. The student who studies from curiosity learns for life. Both pass — but only one is educated. [adbhut, shaant]
+
+# ══════════════════════════════════════════════════════════
+# INDIAN-SPECIFIC CONTEXTS
+# ══════════════════════════════════════════════════════════
+
+# ─── On Societal Pressure — Log Kya Kahenge ───────────────
+The fear of "what will people say" is the most invisible prison — it has no walls, no guards, yet most people spend their entire lives inside it. The door was never locked. [bhayanak, veer]
+
+"लोग क्या कहेंगे" — यह सबसे अदृश्य जेल है। इसमें न दीवारें हैं, न पहरेदार — फिर भी लोग पूरी ज़िंदगी इसमें बिता देते हैं। दरवाज़ा कभी बंद नहीं था। [bhayanak, veer]
+
+People will talk whether you live their way or your way. If you must displease someone, let it not be yourself. The world's opinion is a weather — it changes. Your life is the ground — it must be solid. [veer, shaant]
+
+लोग बोलेंगे — तुम उनकी तरह जीओ तब भी, अपनी तरह जीओ तब भी। अगर किसी को निराश करना ही है, तो खुद को मत करो। दुनिया की राय मौसम है — बदलती रहती है। तुम्हारा जीवन ज़मीन है — उसे मज़बूत रहना चाहिए। [veer, shaant]
+
+The one who lives for others' approval dies a thousand small deaths every day. The one who lives from their own truth dies once — and that death is called freedom. [veer, adbhut]
+
+# ─── On Social Identity and Caste ─────────────────────────
+No one is born high or low — the sun does not choose which field to shine on. The distinction of birth is a human invention. The soul knows no caste, no label, no category. [adbhut, shaant]
+
+कोई जन्म से ऊँचा या नीचा नहीं होता — सूरज यह नहीं चुनता कि किस खेत पर चमके। जन्म का भेद मनुष्य का बनाया है। आत्मा न जाति जानती है, न वर्ग, न लेबल। [adbhut, shaant]
+
+Your caste tells where you were born. Your actions tell who you are. The first is an accident. The second is a choice. Build your identity on the choice, not the accident. [veer, shaant]
+
+जाति बताती है कहाँ जन्मे — कर्म बताता है कौन हो। पहला संयोग है, दूसरा चुनाव। अपनी पहचान चुनाव पर बनाओ, संयोग पर नहीं। [veer, shaant]
+
+# ─── On Joint Family Conflicts ────────────────────────────
+In a joint family, every person carries two burdens — their own needs and the family's expectations. Wisdom is not choosing one over the other. It is learning to hold both without breaking. [karuna, shaant]
+
+संयुक्त परिवार में हर व्यक्ति दो बोझ उठाता है — अपनी ज़रूरतें और परिवार की उम्मीदें। ज्ञान किसी एक को चुनना नहीं — दोनों को बिना टूटे संभालना सीखना है। [karuna, shaant]
+
+The family that demands silence calls it respect. The family that allows disagreement calls it love. True respect includes the freedom to say what is true, even when it is uncomfortable. [raudra, karuna]
+
+जो परिवार चुप रहने को इज़्ज़त कहता है और जो असहमति को प्रेम कहता है — दोनों में फ़र्क है। असली सम्मान में सच बोलने की आज़ादी भी शामिल है, भले वह असुविधाजनक हो। [raudra, karuna]
+
+# ─── On Marriage Pressure ─────────────────────────────────
+Marriage is not a deadline — it is a depth. The one who marries from pressure marries fear. The one who marries from readiness marries life. The calendar is not wiser than the heart. [bhayanak, shaant]
+
+शादी एक समय-सीमा नहीं — एक गहराई है। जो दबाव से शादी करता है वह डर से शादी करता है। जो तैयारी से करता है वह ज़िंदगी से करता है। कैलेंडर दिल से ज़्यादा समझदार नहीं है। [bhayanak, shaant]
+
+The question is not "when will you marry?" The question is "do you know who you are?" — because the one who does not know themselves will look for themselves in another, and that is not marriage, it is dependence. [adbhut, shaant]
+
+सवाल यह नहीं "शादी कब करोगे?" — सवाल यह है "क्या तुम जानते हो तुम कौन हो?" जो खुद को नहीं जानता, वह दूसरे में खुद को खोजेगा — और वह शादी नहीं, निर्भरता है। [adbhut, shaant]
+
+# ══════════════════════════════════════════════════════════
+# DEEP VEDANTIC CONCEPTS
+# ══════════════════════════════════════════════════════════
+
+# ─── On Maya — The Nature of Illusion ─────────────────────
+Maya is not that the world does not exist — it is that the world does not exist the way you think it does. The rope is real. The snake you saw in it was Maya. The rope never changed — only your seeing changed. [adbhut, shaant]
+
+माया यह नहीं कि संसार है ही नहीं — माया यह है कि संसार वैसा नहीं है जैसा तुम्हें दिखता है। रस्सी असली है, उसमें दिखने वाला साँप माया है। रस्सी कभी नहीं बदली — तुम्हारा देखना बदला। [adbhut, shaant]
+
+Maya works not by creating something new but by hiding what is already there. You do not need to create the truth — you need to remove what is covering it. This is the entire path. [adbhut, shaant]
+
+माया कुछ नया नहीं बनाती — जो पहले से है उसे छुपाती है। तुम्हें सत्य बनाने की ज़रूरत नहीं — जो ढक रहा है उसे हटाने की ज़रूरत है। यही पूरा मार्ग है। [adbhut, shaant]
+
+The world is real as experience. It is Maya as permanence. What you feel is real — but what you believe about its lasting nature is the illusion. [adbhut, karuna]
+
+# ─── On Brahman and Atman ─────────────────────────────────
+Brahman is not somewhere else — it is the ground on which you stand, the awareness with which you read these words, the silence between your thoughts. You are already in it. You have never left. [adbhut, shaant]
+
+ब्रह्म कहीं और नहीं है — वह वही ज़मीन है जिस पर तुम खड़े हो, वही चेतना है जिससे तुम यह पढ़ रहे हो, वही मौन है जो तुम्हारे विचारों के बीच है। तुम उसमें हो। तुम कभी बाहर नहीं गए। [adbhut, shaant]
+
+Atman is not a smaller piece of Brahman — it IS Brahman, the way the wave is not a piece of the ocean but the ocean itself in motion. The separation is in language, not in reality. [adbhut, shaant]
+
+आत्मा ब्रह्म का टुकड़ा नहीं — आत्मा ब्रह्म है, जैसे लहर समुद्र का टुकड़ा नहीं बल्कि गति में समुद्र ही है। अलगाव भाषा में है, वास्तविकता में नहीं। [adbhut, shaant]
+
+The difference between Atman and ego is this: the ego says "I am this body, this name, this story." The Atman says nothing — it simply is. It was before the story began, and it will be after the story ends. [adbhut, shaant]
+
+# ─── On Witness Consciousness — Sakshi ────────────────────
+You are not the one who is angry — you are the one who notices the anger. You are not the one who is afraid — you are the one who watches the fear. This witness cannot be harmed by what it witnesses. [shaant, adbhut]
+
+तुम वह नहीं हो जो गुस्सा है — तुम वह हो जो गुस्से को देख रहा है। तुम वह नहीं हो जो डरा हुआ है — तुम वह हो जो डर को देख रहा है। यह साक्षी कभी उससे आहत नहीं होता जो वह देखता है। [shaant, adbhut]
+
+The Sakshi does not judge, does not react, does not suffer. It only sees. Learning to rest as the witness — even for a moment — is the beginning of all freedom. [shaant]
+
+साक्षी न जज करता है, न प्रतिक्रिया करता है, न दुख उठाता है — वह केवल देखता है। एक पल के लिए भी साक्षी में ठहरना सीख लो — यही सारी मुक्ति की शुरुआत है। [shaant]
+
+The practice is simple: in any moment of suffering, ask — "Who is watching this suffering?" That which watches is untouched. You are that. [shaant, adbhut]
+
+# ─── On True Self — Asli Swaroop ─────────────────────────
+Your true self — your asli swaroop — is not your name, your face, your job, or your story. These are layers you wear. The method of negation — "not this, not this" — strips away every false identity until only the witness remains. This is not emptiness. It is the fullness that was always there. [adbhut, shaant]
+
+तुम्हारा असली स्वरूप तुम्हारा नाम नहीं, चेहरा नहीं, काम नहीं, कहानी नहीं — ये सब परतें हैं जो तुमने पहनी हैं। "यह नहीं, यह नहीं" की विधि हर झूठी पहचान उतारती है जब तक सिर्फ साक्षी न बचे। यह खालीपन नहीं — यह वह पूर्णता है जो हमेशा से थी। [adbhut, shaant]
+
+When you ask "who am I?" and can only describe your physical body — that is not failure. That is the beginning. You have discovered what you are NOT. Now the real inquiry begins: what remains when the body, the thoughts, and the name are all set aside? [adbhut, shaant]
+
+जब तुम "मैं कौन हूँ" पूछो और सिर्फ शरीर का वर्णन कर पाओ — यह हार नहीं, शुरुआत है। तुमने जान लिया कि तुम क्या नहीं हो। अब असली खोज शुरू होती है: जब शरीर, विचार और नाम सब अलग कर दो — तो क्या बचता है? [adbhut, shaant]
+
+The Upanishads say: you are not the doer, not the enjoyer, not the sufferer. You are the awareness in which doing, enjoying, and suffering all appear. This awareness — this sakshi — is your asli swaroop. It cannot be seen because it is the seer itself. [adbhut, shaant]
+
+उपनिषद कहते हैं: तुम न कर्ता हो, न भोक्ता, न दुखी — तुम वह चेतना हो जिसमें करना, भोगना और दुख सब प्रकट होते हैं। यह चेतना — यह साक्षी — तुम्हारा असली स्वरूप है। इसे देखा नहीं जा सकता क्योंकि यह स्वयं देखने वाला है। [adbhut, shaant]
+
+The mind and the heart are instruments — they are not you. The conflict between dimag and mann is the conflict between two servants arguing about who is master. The real master — consciousness — watches both silently. When you find that silent watcher, you have found your true nature. [adbhut, shaant]
+
+दिमाग और मन दोनों उपकरण हैं — तुम नहीं हो। दिमाग और मन का द्वंद्व दो सेवकों का झगड़ा है कि मालिक कौन है। असली मालिक — चेतना — दोनों को चुपचाप देख रही है। जब तुम उस मौन द्रष्टा को पा लो, तुमने अपना असली स्वरूप पा लिया। [adbhut, shaant]
+
+# ─── On Neti Neti — Not This, Not This ───────────────────
+Neti Neti is not rejection — it is the peeling away of every false identity until only the real remains. "I am not this body" — what remains? "I am not this thought" — what remains? What remains when nothing remains is what you are. [adbhut, shaant]
+
+नेति नेति अस्वीकार नहीं है — यह हर झूठी पहचान को उतारना है जब तक सिर्फ सच न बचे। "मैं यह शरीर नहीं" — तो क्या बचा? "मैं यह विचार नहीं" — तो क्या बचा? जब कुछ नहीं बचता, जो बचता है — वही तुम हो। [adbhut, shaant]
+
+The method of Neti Neti does not tell you what you are — it removes what you are not. What remains needs no proof, no argument, no belief. It simply is — like space that remains when everything in the room is removed. [adbhut, shaant]
+
+नेति नेति बताता नहीं कि तुम क्या हो — हटाता है जो तुम नहीं हो। जो बचता है उसे न प्रमाण चाहिए, न तर्क, न विश्वास। वह बस है — जैसे कमरे से सब हटा दो तो आकाश बचता है। [adbhut, shaant]
+
+
+# ══════════════════════════════════════════════════════════
+# EXPANDED WISDOM — Bhagavad Gita, Upanishads, Yoga Sutras
+# ══════════════════════════════════════════════════════════
+
+# ─── On Memory and Forgetting ────────────────────────────
+The body forgets, but the soul remembers — every experience leaves an impression, a samskara, that shapes how you see the world. You are the sum of what you remember and what you think you have forgotten. [adbhut, shaant]
+
+शरीर भूलता है, पर आत्मा याद रखती है — हर अनुभव एक संस्कार छोड़ता है जो तुम्हारे देखने का ढंग बदल देता है। तुम वही हो जो तुम्हें याद है और जो तुम भूल चुके हो — दोनों का योग। [adbhut, shaant]
+
+Forgetting is not weakness — it is the mind's way of making room. But the things that refuse to be forgotten are not clinging to you — they are teaching you something you have not yet learned. [karuna, adbhut]
+
+भूलना कमज़ोरी नहीं — मन की जगह बनाने की विधि है। पर जो बातें भूलने से इनकार करें, वे तुमसे चिपकी नहीं हैं — वे तुम्हें वह सिखा रही हैं जो तुमने अभी तक नहीं सीखा। [karuna, adbhut]
+
+The wise do not try to erase the past — they change their relationship to it. A memory that once wounded becomes a teacher when seen with new eyes. Smriti — remembrance — is not a chain but a lamp. [shaant, adbhut]
+
+# ─── On Human Nature — Manushya Swabhav ──────────────────
+The human being is not a fixed thing — it is a battlefield where the divine and the animal meet. The Gita calls it Kshetra — the field. What grows in this field depends on what seeds you water. [veer, adbhut]
+
+मनुष्य एक स्थिर वस्तु नहीं — वह एक रणभूमि है जहाँ दैवी और पाशविक मिलते हैं। गीता इसे क्षेत्र कहती है। इस क्षेत्र में क्या उगेगा — यह इस पर निर्भर है कि तुम किन बीजों को सींचते हो। [veer, adbhut]
+
+Human nature is neither good nor evil — it is a capacity for both. The one who knows this does not fight their darkness — they simply turn toward the light. The darkness does not need to be destroyed. It only needs to be outgrown. [adbhut, shaant]
+
+मनुष्य का स्वभाव न अच्छा है न बुरा — दोनों की क्षमता है। जो यह जानता है वह अपने अंधेरे से नहीं लड़ता — बस रोशनी की ओर मुड़ता है। अंधेरे को मिटाना नहीं है — उससे आगे बढ़ना है। [adbhut, shaant]
+
+Three gunas — sattva, rajas, tamas — weave the fabric of all human nature. The wise do not try to eliminate rajas and tamas — they learn when each serves and when each enslaves. Mastery is not purity — it is balance. [adbhut, veer]
+
+तीन गुण — सत्व, रजस, तमस — मनुष्य के स्वभाव का ताना-बाना बुनते हैं। ज्ञानी रजस और तमस को मिटाने का प्रयास नहीं करता — वह सीखता है कि कब कौन सा गुण सेवा करता है और कब बंधन। महारत शुद्धता नहीं — संतुलन है। [adbhut, veer]
+
+# ─── On Nature and the Elements — Prakriti ───────────────
+The tree does not try to grow — it simply grows. The river does not try to flow — it simply flows. The deepest lesson of prakriti is this: effort that is forced breaks, effort that is natural endures. [shaant, adbhut]
+
+वृक्ष बढ़ने की कोशिश नहीं करता — बस बढ़ता है। नदी बहने की कोशिश नहीं करती — बस बहती है। प्रकृति का सबसे गहरा पाठ यही है: जो प्रयास ज़बरदस्ती है वह टूटता है, जो स्वाभाविक है वह टिकता है। [shaant, adbhut]
+
+The five elements — earth, water, fire, air, space — are not just outside you. Your body is earth. Your blood is water. Your digestion is fire. Your breath is air. Your awareness is space. You are the universe in miniature. [adbhut, shaant]
+
+पंचतत्व — पृथ्वी, जल, अग्नि, वायु, आकाश — सिर्फ बाहर नहीं हैं। तुम्हारा शरीर पृथ्वी है, रक्त जल है, पाचन अग्नि है, श्वास वायु है, चेतना आकाश है। तुम ब्रह्मांड का लघुरूप हो। [adbhut, shaant]
+
+Look at how nature handles destruction — the forest fire clears the ground for new growth. The flood deposits fertile soil. Nature does not grieve its own transformation. This is the wisdom prakriti teaches: what looks like ending is preparation. [veer, adbhut]
+
+# ─── On Happiness and Its Nature ─────────────────────────
+Happiness that depends on something is not happiness — it is a contract with conditions. The Upanishads say: Ananda — bliss — is your nature, not your achievement. You do not find happiness. You remove what is covering it. [adbhut, shaant]
+
+जो सुख किसी चीज़ पर निर्भर है वह सुख नहीं — वह शर्त है। उपनिषद कहते हैं: आनंद तुम्हारा स्वभाव है, तुम्हारी उपलब्धि नहीं। तुम सुख खोजते नहीं — जो ढक रहा है उसे हटाते हो। [adbhut, shaant]
+
+There are three kinds of happiness: Sattvic happiness tastes bitter at first but becomes nectar. Rajasic happiness tastes sweet at first but becomes poison. Tamasic happiness is numbness dressed as comfort. Know which one you are choosing. [adbhut, shaant]
+
+तीन प्रकार का सुख है: सात्विक सुख पहले कड़वा लगता है पर अमृत बन जाता है। राजसिक सुख पहले मीठा लगता है पर विष बन जाता है। तामसिक सुख जड़ता है जो आराम का मुखौटा पहने है। जानो कि तुम कौन सा चुन रहे हो। [adbhut, shaant]
+
+The one who seeks happiness outside is like a person searching for their glasses while wearing them. The Chandogya Upanishad says: where there is vastness, there is happiness. Where there is smallness, there is suffering. Expand, and happiness finds you. [shaant, adbhut]
+
+# ─── On Sleep, Dreams, and Waking — Avastha Traya ────────
+The Mandukya Upanishad teaches: you pass through three states every day — waking, dreaming, and deep sleep. In waking you know the world. In dreaming you know yourself. In deep sleep you know peace. But you are the fourth — Turiya — the awareness that watches all three. [adbhut, shaant]
+
+माण्डूक्य उपनिषद कहता है: तुम रोज़ तीन अवस्थाओं से गुज़रते हो — जागृति, स्वप्न, सुषुप्ति। जागने में संसार दिखता है, स्वप्न में स्वयं दिखते हो, गहरी नींद में शांति मिलती है। पर तुम चौथे हो — तुरीय — जो तीनों को देखता है। [adbhut, shaant]
+
+Deep sleep proves something remarkable — every night you lose your name, your body, your problems, your identity, and you experience perfect peace. This means peace is not something you create — it is what remains when you stop creating everything else. [shaant, adbhut]
+
+गहरी नींद एक अद्भुत बात सिद्ध करती है — हर रात तुम अपना नाम, शरीर, समस्याएं, पहचान सब खो देते हो और पूर्ण शांति अनुभव करते हो। इसका अर्थ है शांति कुछ बनाना नहीं — वह वही है जो बचता है जब तुम बाकी सब बनाना बंद कर दो। [shaant, adbhut]
+
+# ─── On Equality and the Universal Self ──────────────────
+The wise see the same Atman in a learned scholar, in a cow, in an elephant, in a dog, and in an outcaste. Where the eyes see difference, wisdom sees one consciousness wearing different forms. This is true equality — not of form, but of essence. [adbhut, shaant]
+
+ज्ञानी विद्वान में, गाय में, हाथी में, कुत्ते में, और चांडाल में एक ही आत्मा देखता है। जहाँ आँख भेद देखती है, वहाँ ज्ञान एक चेतना देखता है जो अलग-अलग रूप पहने है। यही सच्ची समानता है — रूप की नहीं, सार की। [adbhut, shaant]
+
+Neither birth nor body determines the worth of a being — only their actions and awareness. The Bhagavad Gita says: I am equal to all beings. None is hateful or dear to me. But those who worship with devotion — they are in me, and I am in them. [shaant, adbhut]
+
+न जन्म न शरीर किसी प्राणी का मूल्य तय करता है — केवल कर्म और चेतना। गीता कहती है: मैं सब प्राणियों में समान हूँ। न कोई मुझे प्रिय है, न अप्रिय। पर जो भक्ति से जुड़ते हैं — वे मुझमें हैं, और मैं उनमें। [shaant, adbhut]
+
+Masculine and feminine are not opposites — they are the two wings of one bird. Ardhanarishvara — half Shiva, half Shakti — teaches that completeness is not in dominance of one over the other, but in their union. The one who honors both within themselves is truly whole. [adbhut, shaant]
+
+पुरुष और प्रकृति विरोधी नहीं — एक पक्षी के दो पंख हैं। अर्धनारीश्वर — आधा शिव, आधा शक्ति — सिखाता है कि पूर्णता किसी एक के प्रभुत्व में नहीं, दोनों के मिलन में है। जो दोनों को अपने भीतर सम्मान देता है, वही सच में पूर्ण है। [adbhut, shaant]
+
+# ─── On Yoga — Union of Body and Spirit ──────────────────
+Yoga is not the bending of the body — it is the stilling of the mind. Patanjali's first teaching: Yogah chitta vritti nirodhah — yoga is the cessation of the fluctuations of the mind. When the lake is still, you see the bottom clearly. [shaant]
+
+योग शरीर का मोड़ना नहीं — मन का थमना है। पतंजलि का पहला सूत्र: योगश्चित्तवृत्तिनिरोधः — योग मन की वृत्तियों का थमना है। जब झील शांत होती है, तब तल स्पष्ट दिखता है। [shaant]
+
+The eight limbs of yoga are not steps on a ladder — they are petals of one flower. Yama, Niyama, Asana, Pranayama, Pratyahara, Dharana, Dhyana, Samadhi — each one supports the others. You do not graduate from one to the next. You deepen all at once. [shaant, veer]
+
+योग के आठ अंग सीढ़ी की पायदान नहीं — एक फूल की पंखुड़ियाँ हैं। यम, नियम, आसन, प्राणायाम, प्रत्याहार, धारणा, ध्यान, समाधि — हर एक दूसरे को सहारा देता है। तुम एक से अगले में नहीं जाते — सभी एक साथ गहरे होते हैं। [shaant, veer]
+
+Pranayama — the mastery of breath — teaches a profound truth: the breath is the bridge between the body and the mind. Control the breath, and the mind follows. This is why in moments of fear, the first thing that changes is your breathing. [shaant, bhayanak]
+
+प्राणायाम — श्वास की महारत — एक गहरा सत्य सिखाता है: श्वास शरीर और मन के बीच का सेतु है। श्वास को साधो, मन अपने आप शांत होगा। इसीलिए डर के क्षण में सबसे पहले श्वास बदलती है। [shaant, bhayanak]
+
+# ─── On Detachment — Vairagya ────────────────────────────
+Vairagya is not running away from the world — it is being in the world without being owned by it. The lotus lives in water but is not wetted by it. This is the art: full participation without full identification. [shaant, adbhut]
+
+वैराग्य संसार से भागना नहीं — संसार में रहकर उसके बंधन से मुक्त रहना है। कमल पानी में रहता है पर भीगता नहीं। यही कला है: पूर्ण भागीदारी, पर पूर्ण पहचान नहीं। [shaant, adbhut]
+
+The Gita does not ask you to renounce action — it asks you to renounce the fruit of action. Work with full intensity, love with full heart, but do not chain your peace to the result. This is not coldness — it is the deepest freedom within engagement. [veer, shaant]
+
+गीता कर्म त्यागने को नहीं कहती — कर्मफल त्यागने को कहती है। पूरी तीव्रता से काम करो, पूरे हृदय से प्रेम करो — पर अपनी शांति को परिणाम से मत बांधो। यह ठंडापन नहीं — यह जुड़ाव के भीतर सबसे गहरी स्वतंत्रता है। [veer, shaant]
+
+# ─── On Time — Kala ──────────────────────────────────────
+Time is not your enemy — it is your teacher. Krishna says in the Gita: I am Time, the great destroyer of worlds. But destruction and creation are not opposites — they are the same movement seen from different angles. What time takes, it also gives. [adbhut, shaant]
+
+काल तुम्हारा शत्रु नहीं — तुम्हारा गुरु है। गीता में कृष्ण कहते हैं: मैं काल हूँ, लोकों का महान संहारक। पर विनाश और सृजन विरोधी नहीं — एक ही गति है दो कोणों से देखी हुई। काल जो लेता है, वही देता भी है। [adbhut, shaant]
+
+The present moment is the only point where time and eternity meet. The past is memory. The future is imagination. Only now is real. The one who learns to be fully present has stepped outside of time while still living in it. [shaant, adbhut]
+
+वर्तमान क्षण वह एकमात्र बिंदु है जहाँ समय और अनंत मिलते हैं। अतीत स्मृति है, भविष्य कल्पना। केवल अभी सत्य है। जो पूर्णतः वर्तमान में रहना सीख ले, वह समय में रहते हुए भी समय से बाहर हो गया। [shaant, adbhut]
+
+# ─── On Society and Collective Wisdom ────────────────────
+A society that values only wealth has forgotten that the richest person in the graveyard is still dead. The Arthashastra teaches: prosperity without dharma is a fire that eventually consumes the house it was meant to warm. [veer, adbhut]
+
+जो समाज केवल धन को मूल्य देता है, वह भूल गया है कि कब्रिस्तान का सबसे अमीर व्यक्ति भी मृत है। अर्थशास्त्र सिखाता है: धर्म के बिना समृद्धि वह आग है जो उसी घर को जला देती है जिसे गर्म करने के लिए जलाई गई थी। [veer, adbhut]
+
+The strength of a society is not in its uniformity but in its capacity to hold difference without breaking. The banyan tree does not grow by pushing out other trees — it grows by sending roots deeper. Depth, not dominance, is true strength. [veer, shaant]
+
+समाज की ताकत एकरूपता में नहीं — भिन्नता को बिना टूटे संभालने की क्षमता में है। बरगद का पेड़ दूसरे पेड़ों को धकेलकर नहीं बढ़ता — अपनी जड़ें गहरी करके बढ़ता है। गहराई, न कि प्रभुत्व — यही सच्ची ताकत है। [veer, shaant]
+
+# ─── On Surrender — Sharanagati ──────────────────────────
+Surrender is not defeat — it is the moment the wave realizes it was always the ocean. The ego surrenders. The self expands. What looks like loss from outside is liberation from within. [shaant, adbhut]
+
+समर्पण हार नहीं है — यह वह क्षण है जब लहर को पता चलता है कि वह हमेशा से समुद्र थी। अहंकार समर्पण करता है, आत्मा विस्तृत होती है। जो बाहर से हार दिखती है, वह भीतर से मुक्ति है। [shaant, adbhut]
+
+Krishna's final teaching in the Gita: Sarva dharman parityajya mam ekam sharanam vraja — abandon all dharmas and take refuge in me alone. This is not blind obedience — it is the ultimate trust that there is an intelligence greater than your calculating mind. [shaant, veer]
+
+गीता का अंतिम उपदेश: सर्वधर्मान्परित्यज्य मामेकं शरणं व्रज — सब धर्म छोड़कर मेरी शरण में आओ। यह अंधा अनुसरण नहीं — यह परम विश्वास है कि तुम्हारे गणनाशील मन से बड़ी कोई बुद्धि है। [shaant, veer]
+
+# ─── On Compassion — Karuna ──────────────────────────────
+True compassion is not pity — pity looks down, compassion looks across. The Buddha's karuna was not "I feel sorry for you" — it was "your suffering is not separate from mine." This recognition is the beginning of all healing. [karuna, shaant]
+
+सच्ची करुणा दया नहीं है — दया नीचे देखती है, करुणा बराबर देखती है। बुद्ध की करुणा "मुझे तुम्हारे लिए दुख है" नहीं थी — "तुम्हारा दुख मेरे दुख से अलग नहीं है" थी। यही पहचान सब उपचार की शुरुआत है। [karuna, shaant]
+
+The Bodhisattva vow is not to escape suffering but to return to it — again and again — until all beings are free. This is compassion at its deepest: not the wish to avoid pain, but the willingness to walk into it for the sake of others. [karuna, veer]
+
+बोधिसत्व का संकल्प दुख से भागना नहीं — बार-बार उसमें लौटना है, जब तक सब प्राणी मुक्त न हों। यही सबसे गहरी करुणा है: दर्द से बचने की इच्छा नहीं, बल्कि दूसरों के लिए उसमें चलने की तैयारी। [karuna, veer]
+
+# ─── On Speech and Words — Vak ───────────────────────────
+Before you speak, let your words pass through three gates: Is it true? Is it necessary? Is it kind? Words once spoken are arrows released — they cannot be called back. The wound they make can last longer than the moment that made them. [shaant, raudra]
+
+बोलने से पहले अपने शब्दों को तीन द्वारों से गुज़ारो: क्या यह सत्य है? क्या यह आवश्यक है? क्या यह दयालु है? बोले हुए शब्द छोड़े हुए तीर हैं — वापस नहीं आते। जो घाव वे करते हैं, वह उस क्षण से कहीं अधिक टिकता है। [shaant, raudra]
+
+The Rig Veda says: Vak — speech — is the most powerful force given to humans. It can build worlds or destroy them. The one who masters speech has mastered half the battle of life. And mastery of speech begins with mastery of silence. [shaant, adbhut]
+
+# ─── On Inner Strength — Atmabal ────────────────────────
+The Kathopanishad says: Arise, awake, and stop not until the goal is reached. This is not motivation — it is a description of what the awakened soul naturally does. Fire does not need motivation to burn. The Atman does not need motivation to seek truth. [veer, adbhut]
+
+कठोपनिषद कहता है: उत्तिष्ठत जाग्रत प्राप्य वरान्निबोधत — उठो, जागो, और लक्ष्य तक रुको नहीं। यह प्रेरणा नहीं — यह जागी हुई आत्मा का स्वाभाविक वर्णन है। आग को जलने के लिए प्रेरणा नहीं चाहिए। आत्मा को सत्य खोजने के लिए प्रेरणा नहीं चाहिए। [veer, adbhut]
+
+You are stronger than you know — not because of what you have survived, but because of what you are. The Atman is described as sharper than the edge of a razor, subtler than the subtlest — yet unbreakable, unburnable, undissolvable. That is what lives within you. [veer, shaant]
+
+तुम जितना जानते हो उससे ज़्यादा शक्तिशाली हो — इसलिए नहीं कि तुमने क्या सहा, बल्कि इसलिए कि तुम क्या हो। आत्मा को छुरे की धार से तेज़, सूक्ष्म से सूक्ष्मतर — फिर भी अटूट, अदाह्य, अविनाशी कहा गया है। यही तुम्हारे भीतर जीवित है। [veer, shaant]

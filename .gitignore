@@ -14,7 +14,7 @@ build/
 # ChromaDB (auto-generated, can be rebuilt with /rebuild)
 memory/chroma_db/
 
-# Runtime data
+# Long-term memory (runtime learning data, unique per deployment)
 memory/long_term.json
 
 # IDE
@@ -34,3 +34,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Claude Code
+CLAUDE.md

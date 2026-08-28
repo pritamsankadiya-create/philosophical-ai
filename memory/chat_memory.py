@@ -1,51 +1,88 @@
 # ============================================================
 # memory/chat_memory.py
-# Conversation memory with conversation theme tracking
+# SHORT-TERM conversation memory only
+# Long-term learning is handled by long_term_memory.py
 # ============================================================
 
 import os
 import sys
-from collections import Counter
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 
 class ChatMemory:
     """
-    Stores conversation history and tracks conversation themes.
+    Short-term conversation memory — stores recent chat history.
+    v3: Also stores conversation context (problem_type, emotional_state, topic)
+    for smarter follow-up responses.
 
-    Theme tracking: counts concept frequency across turns.
-    If user keeps asking about "consciousness" → it becomes a
-    dominant theme, influencing future responses.
+    This is safe to clear between conversations.
+    Long-term concept tracking and learning lives in LongTermMemory.
     """
 
     def __init__(self, max_history: int = 5):
         self.history = []
         self.max_history = max_history
-        self.concept_counts = Counter()  # lifetime concept frequency
-        self.turn_concepts = []          # concepts per turn (for recency)
+        # v3: Conversation context for follow-ups
+        self.context = {
+            "problem_type": "",       # emotional, factual, philosophical, etc.
+            "emotional_state": "",    # what the user is feeling
+            "emotional_intensity": "",  # low, medium, high
+            "topic": "",              # last discussed topic/concepts
+            "goal": "",               # what the user wants to achieve
+        }
 
-    def add_message(self, role: str, content: str, concepts: list = None):
-        """
-        Add a message to memory with optional concept metadata.
-        """
+    def add_message(self, role: str, content: str):
+        """Add a message to short-term history."""
         self.history.append({
             "role": role,
             "content": content
         })
 
-        # Track concepts for user messages
-        if role == "user" and concepts:
-            self.turn_concepts.append(concepts)
-            for c in concepts:
-                self.concept_counts[c] += 1
-
-            # Keep turn tracker in sync with history size
-            if len(self.turn_concepts) > self.max_history:
-                self.turn_concepts = self.turn_concepts[-self.max_history:]
-
-        # Keep only last N conversations
+        # Keep only last N conversation pairs
         if len(self.history) > self.max_history * 2:
             self.history = self.history[-(self.max_history * 2):]
+
+    def update_context(self, question_type: str = "", concepts: list = None,
+                       emotional_intensity: str = "", question: str = ""):
+        """v3: Update conversation context from latest analysis."""
+        if question_type:
+            self.context["problem_type"] = question_type
+        if concepts:
+            self.context["topic"] = ", ".join(concepts[:3])
+        if emotional_intensity:
+            self.context["emotional_intensity"] = emotional_intensity
+        # Extract emotional state from question
+        if question:
+            lower = question.lower()
+            emotional_states = {
+                "lost": "feeling lost", "empty": "feeling empty",
+                "stuck": "feeling stuck", "confused": "feeling confused",
+                "sad": "feeling sad", "anxious": "feeling anxious",
+                "lonely": "feeling lonely", "scared": "feeling scared",
+                "angry": "feeling angry", "tired": "feeling tired",
+                "bored": "feeling bored", "useless": "feeling useless",
+                "worthless": "feeling worthless", "hopeless": "feeling hopeless",
+                "attached": "struggling with attachment",
+                "wasting": "feeling like wasting life",
+                "failed": "dealing with failure",
+            }
+            for keyword, state in emotional_states.items():
+                if keyword in lower:
+                    self.context["emotional_state"] = state
+                    break
+
+    def get_context_summary(self) -> str:
+        """v3: Get conversation context as text for follow-up prompts."""
+        parts = []
+        if self.context["problem_type"]:
+            parts.append(f"Previous question type: {self.context['problem_type']}")
+        if self.context["emotional_state"]:
+            parts.append(f"User's state: {self.context['emotional_state']}")
+        if self.context["emotional_intensity"]:
+            parts.append(f"Intensity: {self.context['emotional_intensity']}")
+        if self.context["topic"]:
+            parts.append(f"Topic: {self.context['topic']}")
+        return " | ".join(parts) if parts else ""
 
     def get_history_as_text(self) -> str:
         if not self.history:
@@ -60,48 +97,14 @@ class ChatMemory:
 
         return text
 
-    def get_recent_concepts(self, n: int = 3) -> list:
-        """Get unique concepts from the last n turns."""
-        recent = self.turn_concepts[-n:]
-        seen = set()
-        result = []
-        for concepts in recent:
-            for c in concepts:
-                if c not in seen:
-                    seen.add(c)
-                    result.append(c)
-        return result
-
-    def get_dominant_themes(self, min_count: int = 2, top_n: int = 3) -> list:
-        """
-        Get conversation themes — concepts the user keeps returning to.
-
-        Example: user asked about consciousness 3 times, mind 2 times
-        → returns ["consciousness", "mind"]
-
-        Only returns concepts mentioned min_count or more times.
-        """
-        themes = [
-            (concept, count)
-            for concept, count in self.concept_counts.most_common(top_n)
-            if count >= min_count
-        ]
-        return [concept for concept, count in themes]
-
-    def get_theme_summary(self) -> dict:
-        """Debug: full view of conversation themes."""
-        return {
-            "dominant_themes": self.get_dominant_themes(),
-            "recent_concepts": self.get_recent_concepts(),
-            "all_concept_counts": dict(self.concept_counts.most_common(10)),
-            "total_turns": len(self.turn_concepts),
-        }
-
     def clear(self):
+        """Clear conversation history only. Long-term memory is NOT touched."""
         self.history = []
-        self.turn_concepts = []
-        self.concept_counts.clear()
-        print("Memory cleared!")
+        self.context = {
+            "problem_type": "", "emotional_state": "",
+            "emotional_intensity": "", "topic": "", "goal": "",
+        }
+        print("Chat history cleared! (Long-term memory preserved)")
 
     def is_empty(self) -> bool:
         return len(self.history) == 0

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🧠 Philosophical AI</title>
+    <title>🧠 Philosophical AI — v3 Emergent Mind</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -27,6 +27,23 @@
         }
 
         .header h1 { font-size: 20px; color: #a78bfa; }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .version-badge {
+            font-size: 11px;
+            background: #1a1040;
+            color: #a78bfa;
+            border: 1px solid #4f46e5;
+            border-radius: 20px;
+            padding: 3px 10px;
+            letter-spacing: 0.4px;
+            white-space: nowrap;
+        }
 
         .btn-clear {
             background: #2d2d2d;
@@ -262,38 +279,53 @@
             background: #333;
             border-radius: 2px;
         }
+
+        /* ── Tablet (768px) ── */
+        @media (max-width: 768px) {
+            .chat-area { padding: 16px; }
+            .input-area { padding: 12px 16px; }
+            .message { max-width: 90%; }
+            .suggestion { min-height: 44px; display: flex; align-items: center; }
+            .welcome h2 { font-size: 24px; }
+            .welcome { padding: 30px 16px; }
+        }
+
+        /* ── Phone (480px) ── */
+        @media (max-width: 480px) {
+            .chat-area { padding: 10px; gap: 14px; }
+            .input-area { padding: 10px; gap: 8px; }
+            .message { max-width: 95%; gap: 8px; }
+            .avatar { width: 30px; height: 30px; font-size: 15px; }
+            .ai .bubble { min-width: auto; }
+            .bubble { padding: 10px 12px; font-size: 14px; }
+            .input-box { font-size: 16px; padding: 10px 12px; }
+            .send-btn { padding: 10px 16px; min-width: 48px; height: 44px; }
+            .header { padding: 12px 16px; }
+            .header h1 { font-size: 17px; }
+            .version-badge { font-size: 10px; padding: 2px 8px; }
+            .welcome h2 { font-size: 22px; }
+            .welcome { padding: 20px 10px; }
+            .welcome p { font-size: 13px; }
+            .suggestions { gap: 6px; }
+            .suggestion { padding: 10px 14px; font-size: 13px; min-height: 44px; }
+        }
     </style>
 </head>
 <body>
 
 <!-- Header -->
 <div class="header">
-    <h1>🧠 Philosophical AI</h1>
+    <div class="header-left">
+        <h1>🧠 Philosophical AI</h1>
+        <span class="version-badge">v3 Emergent Mind</span>
+    </div>
     <button class="btn-clear" onclick="clearChat()">
         🧹 Clear Chat
     </button>
 </div>
 
 <!-- Chat Area -->
-<div class="chat-area" id="chatArea">
-    <div class="welcome" id="welcome">
-        <h2>🧠 Philosophical AI</h2>
-        <p>Ask me anything in English, Hindi, or Hinglish!</p>
-        <p style="margin-top:8px; font-size:13px; color:#555">
-            Powered by Osho • Krishna • Kalam • Chanakya • Vivekananda • Buddha • Rumi & more
-        </p>
-        <div class="suggestions">
-            <div class="suggestion" onclick="askSuggestion(this)">What is consciousness?</div>
-            <div class="suggestion" onclick="askSuggestion(this)">How to deal with failure?</div>
-            <div class="suggestion" onclick="askSuggestion(this)">प्यार क्या है?</div>
-            <div class="suggestion" onclick="askSuggestion(this)">What is karma?</div>
-            <div class="suggestion" onclick="askSuggestion(this)">Khushi kaise milti hai?</div>
-            <div class="suggestion" onclick="askSuggestion(this)">What did Kalam say about dreams?</div>
-            <div class="suggestion" onclick="askSuggestion(this)">What is Chetna?</div>
-            <div class="suggestion" onclick="askSuggestion(this)">How to find peace?</div>
-        </div>
-    </div>
-</div>
+<div class="chat-area" id="chatArea"></div>
 
 <!-- Input Area -->
 <div class="input-area">
@@ -314,6 +346,30 @@
     let isStreaming = false;
     let currentAbort = null;
     const MAX_RETRIES = 2;
+
+    // ── Welcome HTML (single source of truth) ────────────────
+    function getWelcomeHtml() {
+        const suggestions = [
+            'Do you actually feel anything?',
+            'Bahut akela feel ho raha hai',
+            'Kya insaan kabhi sach mein azaad ho sakta hai?',
+            'Sab kuch bekaar lagta hai',
+            'Mrityu ke baad kya hota hai?',
+            'Mera sapna bada hai lekin himmat nahi hoti',
+            'Chetna kya hai?',
+            'If God exists, why is there suffering?',
+        ];
+        return `<div class="welcome" id="welcome">
+            <h2>🧠 Philosophical AI</h2>
+            <p>Thinks. Feels. Sits with you.</p>
+            <p style="margin-top:8px; font-size:13px; color:#555">
+                English · Hindi · Hinglish &nbsp;|&nbsp; Navarasa · Soul Identity · Deep Memory
+            </p>
+            <div class="suggestions">
+                ${suggestions.map(s => `<div class="suggestion" onclick="askSuggestion(this)">${s}</div>`).join('\n                ')}
+            </div>
+        </div>`;
+    }
 
     // ── Send Message ─────────────────────────────────────────
     async function sendMessage() {
@@ -346,14 +402,14 @@
             if (attempt < MAX_RETRIES) {
                 // Auto-retry — show message and try again
                 const retryNum = attempt + 1;
-                addMessage('ai', `⏱️ Attempt ${retryNum} failed. Retrying automatically... (${retryNum}/${MAX_RETRIES})`);
+                addMessage('ai', `⏱️ Attempt ${retryNum} failed. Retrying automatically... (${retryNum}/${MAX_RETRIES})`, true);
                 currentAbort = null;
                 setLoading(false);
                 await attemptStream(question, retryNum);
                 return;
             } else {
                 // All retries exhausted
-                addMessage('ai', '❌ Failed after ' + MAX_RETRIES + ' retries. Please try again later.');
+                addMessage('ai', '❌ Failed after ' + MAX_RETRIES + ' retries. Please try again later.', true);
             }
         } finally {
             currentAbort = null;
@@ -409,6 +465,15 @@
                             return;
                         }
 
+                        // Sentence completion — server trimmed incomplete tail
+                        if (typeof token === 'string' && token.startsWith('[REPLACE]')) {
+                            fullText = escapeHtml(token.substring(9)).replace(/\n/g, '<br>');
+                            if (bubble) {
+                                bubble.innerHTML = fullText + '<span class="cursor"></span>';
+                            }
+                            continue;
+                        }
+
                         // First token arrived — NOW remove typing
                         if (!bubbleReady) {
                             removeTyping(typingId);
@@ -417,7 +482,7 @@
                             bubbleReady = true;
                         }
 
-                        fullText += token.replace(/\n/g, '<br>');
+                        fullText += escapeHtml(token).replace(/\n/g, '<br>');
                         bubble.innerHTML =
                             fullText +
                             '<span class="cursor"></span>';
@@ -436,7 +501,7 @@
             bubble.innerHTML = fullText || '❌ Empty response from AI.';
         } else {
             removeTyping(typingId);
-            addMessage('ai', '❌ No response received from AI.');
+            addMessage('ai', '❌ No response received from AI.', true);
         }
 
     } finally {
@@ -458,15 +523,23 @@
         return document.getElementById(id);
     }
 
+    // ── Sanitize HTML to prevent XSS ────────────────────────
+    function escapeHtml(str) {
+        const div = document.createElement('div');
+        div.textContent = str;
+        return div.innerHTML;
+    }
+
     // ── Add Message ───────────────────────────────────────────
-    function addMessage(role, text) {
+    function addMessage(role, text, trusted = false) {
         const chatArea = document.getElementById('chatArea');
         const msg      = document.createElement('div');
         msg.className  = `message ${role}`;
         const avatar   = role === 'user' ? '🤔' : '🧘';
+        const safe     = trusted ? text : escapeHtml(text);
         msg.innerHTML  = `
             <div class="avatar">${avatar}</div>
-            <div class="bubble">${text}</div>
+            <div class="bubble">${safe}</div>
         `;
         chatArea.appendChild(msg);
         scrollToBottom();
@@ -498,11 +571,13 @@
 
         // ✅ Cycle through messages so user knows AI is working!
         const messages = [
-            "🧠 Analyzing your question...",
-            "📚 Searching philosopher wisdom...",
-            "🔍 Applying reasoning frameworks...",
-            "⚖️  Weighing multiple perspectives...",
+            "🧠 Detecting your question's depth...",
+            "🌊 Reading the emotional rasa...",
+            "📚 Retrieving philosophical wisdom...",
+            "🪬 Applying soul identity...",
+            "⚖️  Weighing paradox and uncertainty...",
             "✍️  Composing your answer...",
+            "🔍 Running reflection check...",
             "🌟 Almost ready..."
         ];
 
@@ -552,24 +627,7 @@
     // ── Clear Chat ────────────────────────────────────────────
     async function clearChat() {
         await fetch('/clear');
-        document.getElementById('chatArea').innerHTML = `
-            <div class="welcome" id="welcome">
-                <h2>🧠 Philosophical AI</h2>
-                <p>Ask me anything in English, Hindi, or Hinglish!</p>
-                <p style="margin-top:8px;font-size:13px;color:#555">
-                    Powered by Osho • Krishna • Kalam • Chanakya • Vivekananda • Buddha • Rumi & more
-                </p>
-                <div class="suggestions">
-                    <div class="suggestion" onclick="askSuggestion(this)">What is consciousness?</div>
-                    <div class="suggestion" onclick="askSuggestion(this)">How to deal with failure?</div>
-                    <div class="suggestion" onclick="askSuggestion(this)">प्यार क्या है?</div>
-                    <div class="suggestion" onclick="askSuggestion(this)">What is karma?</div>
-                    <div class="suggestion" onclick="askSuggestion(this)">Khushi kaise milti hai?</div>
-                    <div class="suggestion" onclick="askSuggestion(this)">What did Kalam say about dreams?</div>
-                    <div class="suggestion" onclick="askSuggestion(this)">What is Chetna?</div>
-                    <div class="suggestion" onclick="askSuggestion(this)">How to find peace?</div>
-                </div>
-            </div>`;
+        document.getElementById('chatArea').innerHTML = getWelcomeHtml();
     }
 
     // ── Suggestion Click ──────────────────────────────────────
@@ -591,6 +649,9 @@
         el.style.height = 'auto';
         el.style.height = Math.min(el.scrollHeight, 120) + 'px';
     }
+
+    // ── Init ─────────────────────────────────────────────────
+    document.getElementById('chatArea').innerHTML = getWelcomeHtml();
 </script>
 
 </body>

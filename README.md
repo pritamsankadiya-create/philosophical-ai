@@ -5,7 +5,7 @@
 ![Python](https://img.shields.io/badge/Python-3.12-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.111-green)
 ![LangChain](https://img.shields.io/badge/LangChain-0.2-orange)
-![Groq](https://img.shields.io/badge/Groq-LLaMA_3.3-purple)
+![Groq](https://img.shields.io/badge/Groq-Qwen_3.8_27B-purple)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
@@ -14,7 +14,7 @@
 
 **Philosophical AI** is a cloud-powered AI chatbot that answers your life questions using the wisdom of the world's greatest philosophers — from ancient Greek thinkers like Socrates and Plato to Indian masters like Osho, Vivekananda and Shankaracharya.
 
-It features a **cognitive pipeline** that analyzes your question, extracts philosophical concepts, retrieves relevant wisdom, composes context-aware prompts, and reflects on its own answers — all before responding.
+It features a **15-stage cognitive pipeline** with Prajna (प्रज्ञा) pattern detection, response contracts, Navarasa emotion detection, and persistent learning — analyzing your question, detecting what you're NOT saying, retrieving relevant wisdom, composing context-aware prompts, and reflecting on its own answers.
 
 Ask in **English**, **Hindi** or **Hinglish** — it understands all three!
 
@@ -23,7 +23,7 @@ Ask in **English**, **Hindi** or **Hinglish** — it understands all three!
 ## ✨ Features
 
 - 🌊 **Streaming responses** — answers appear word by word like ChatGPT
-- 🧠 **Cognitive Pipeline** — 7-stage processing: detect → analyze → retrieve → compose → generate → reflect → remember
+- 🧠 **Cognitive Pipeline** — 15-stage processing: detect → analyze → Prajna insight → retrieve → compose → generate → contract enforce → reflect → remember
 - 🔬 **Concept Analyzer** — extracts philosophical concepts, themes, intent & depth from your question (pure Python, no LLM call)
 - 🔍 **Multi-strategy retrieval** — concept-enriched + philosopher-specific + vague query resolution
 - 📝 **Prompt Composer** — embeds reasoning frameworks + dialectic structure into prompts based on detected themes
@@ -83,23 +83,35 @@ philosophical-ai/
 │       └── index.html          ← Chat UI (dark theme)
 │
 ├── core/
-│   ├── pipeline.py             ← Central orchestrator (7-stage cognitive pipeline)
-│   ├── concept_analyzer.py     ← Pure Python concept/theme/intent extraction
+│   ├── pipeline.py             ← Central orchestrator (15-stage cognitive pipeline)
+│   ├── concept_analyzer.py     ← Pure Python concept/theme/intent/Navarasa extraction
+│   ├── prajna_layer.py         ← Prajna (प्रज्ञा) — detects what is NOT said
+│   ├── flow_engine.py          ← Soul identity + prompt composition + FlowTrace
 │   ├── knowledge_retriever.py  ← Multi-strategy retrieval + vague query resolution
-│   ├── prompt_composer.py      ← Reasoning framework + dialectic prompt builder
 │   ├── thinking_engine.py      ← Language detection & Hinglish translation
-│   └── reflection_engine.py    ← Intent-aware self-critique engine
+│   ├── reflection_engine.py    ← Intent-aware self-critique + rhythm detection
+│   ├── response_synthesizer.py ← Response assembly + trace building
+│   ├── uncertainty_engine.py   ← Epistemic status classification
+│   └── system_awareness.py     ← Meta-observation generation
+│
+├── utils/
+│   ├── response_contract.py    ← Declarative response contracts (crisis/emotional/default)
+│   └── phrase_dedup.py         ← Banned phrase stripping + 3-gram dedup
 │
 ├── memory/
 │   ├── vector_store.py         ← Chroma vector database
 │   ├── chat_memory.py          ← Conversation memory
+│   ├── long_term_memory.py     ← Persistent learning (concepts, depth boost)
 │   └── chroma_db/              ← Auto-generated vector DB
 │
 ├── models/
-│   └── llm_loader.py           ← Ollama / Groq connector
+│   └── llm_loader.py           ← Groq API connector (Qwen 3.8 27B + fallback)
 │
 ├── dataset/
-│   └── philosophy.txt          ← 600+ philosopher quotes
+│   ├── philosophy.txt          ← 600+ philosopher quotes
+│   ├── scientific.txt          ← Neuroscience, psychology, cognitive science
+│   ├── experiential.txt        ← Lived wisdom on suffering, love, fear
+│   └── sanskrit_wisdom.txt     ← Rasa-tagged bilingual wisdom (unwired)
 │
 ├── requirements.txt
 ├── Dockerfile
@@ -253,7 +265,7 @@ User Question
          │
          ▼
 ┌─────────────────┐
-│ Stage 5:        │  ← Generate answer using LLaMA 3.3 70B
+│ Stage 5:        │  ← Generate answer using Qwen 3.8 27B
 │ LLM Generation  │     via Groq API (streaming or full)
 │ (Groq API)      │
 └────────┬────────┘
@@ -262,7 +274,7 @@ User Question
 ┌─────────────────┐
 │ Stage 6:        │  ← Intent-aware self-critique
 │ Reflection      │     Deepens superficial answers
-│ (LLaMA 3.1 8B) │     using a fast smaller model
+│ (GPT-OSS 20B) │     using a fast smaller model
 └────────┬────────┘
          │
          ▼
@@ -278,7 +290,7 @@ User Question
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| Model | `llama-3.3-70b-versatile` | LLM model via Groq |
+| Model | `qwen/qwen3.8-27b` | LLM model via Groq |
 | Fast Model | `llama-3.1-8b-instant` | Reflection engine model |
 | Memory | `5 messages` | Conversation history limit |
 | Max tokens | `800` | Response length (main) / `200` (reflection) |
@@ -357,8 +369,8 @@ This project draws wisdom from:
 | **LangChain** | Vector store & text splitting |
 | **Chroma DB** | Vector database |
 | **Groq API** | Cloud LLM inference |
-| **LLaMA 3.3 70B** | Main language model |
-| **LLaMA 3.1 8B** | Fast reflection model |
+| **Qwen 3.8 27B** | Main language model |
+| **GPT-OSS 20B** | Fast reflection model |
 | **HTML/CSS/JS** | Chat frontend |
 
 ---
