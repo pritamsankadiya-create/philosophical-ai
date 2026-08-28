@@ -1,6 +1,6 @@
 # ============================================================
 # app/main.py
-# FastAPI server with v3 cognitive pipeline
+# FastAPI server with v4 cognitive pipeline
 # ============================================================
 
 import sys
@@ -64,7 +64,7 @@ def health():
     stats = get_model_stats()
     return {
         "status"         : "running",
-        "version"        : "v3",
+        "version"        : "v4",
         "model"          : stats["current_model"],
         "model_stats"    : stats,
         "streaming"      : "active",
@@ -76,7 +76,7 @@ def health():
 
 @app.post("/chat")
 def chat(request: QuestionRequest):
-    """Chat with v3 cognitive pipeline (2 LLM calls)"""
+    """Chat with v4 cognitive pipeline (2 LLM calls)"""
     question = request.question
     answer = run_pipeline(question, chat_memory=memory, use_reflection=True)
 
@@ -89,7 +89,7 @@ def chat(request: QuestionRequest):
 
 @app.get("/stream")
 async def stream_chat(question: str):
-    """Streaming endpoint with v3 cognitive pipeline (1 LLM call)"""
+    """Streaming endpoint with v4 cognitive pipeline (1 LLM call)"""
     try:
         def event_stream():
             try:
@@ -126,13 +126,13 @@ async def stream_chat(question: str):
 
 @app.get("/analyze")
 def analyze(question: str):
-    """Debug endpoint — shows v3 concept analysis without LLM call"""
+    """Debug endpoint — shows v4 concept analysis without LLM call"""
     return get_pipeline_metadata(question)
 
 
 @app.get("/trace")
 def trace():
-    """Get the latest flow trace — debug endpoint for v3"""
+    """Get the latest flow trace — debug endpoint for v4"""
     return get_latest_trace()
 
 
@@ -181,6 +181,28 @@ def get_memory():
     return long_term_memory.get_summary()
 
 
+@app.get("/model-stats")
+def model_stats():
+    """Monitor model usage, fallback frequency, and rate limit events."""
+    stats = get_model_stats()
+    alert = None
+    if stats.get("all_failed", 0) > 0:
+        alert = f"CRITICAL — all models failed {stats['all_failed']} time(s)"
+    elif stats["fallback_percentage"] > 20:
+        alert = "HIGH fallback rate — main model hitting rate limits frequently"
+    return {
+        **stats,
+        "alert": alert,
+        "capacity": {
+            "tier1_qwen3.8": "1K RPD, 2M TPD",
+            "tier2_gpt-oss-120b": "1K RPD, 200K TPD",
+            "tier3_gpt-oss-20b": "1K RPD, 200K TPD",
+            "total": "3K RPD, 2.4M TPD",
+            "future_backup": "Cerebras API (LLaMA 3.3 70B, 1M tok/day)",
+        }
+    }
+
+
 @app.get("/rebuild")
 def rebuild():
     build_vector_store()
@@ -190,7 +212,7 @@ def rebuild():
 if __name__ == "__main__":
     import uvicorn
     print("\n" + "="*45)
-    print("Philosophical AI v3")
+    print("Philosophical AI v4")
     print("Flow-Driven Cognitive Pipeline")
     print("="*45)
     print("URL  : http://localhost:8000")

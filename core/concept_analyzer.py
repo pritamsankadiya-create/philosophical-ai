@@ -147,6 +147,8 @@ CONCEPT_MAP = {
     "dhyan": "meditation", "dhyaan": "meditation",
     "ध्यान": "meditation", "योग": "yoga",
     "time": "time", "change": "change",
+    "समय": "time", "काल": "time", "kaal": "time", "samay": "time",
+    "waqt": "time", "वक़्त": "time", "वक्त": "time",
     "impermanence": "impermanence",
     "know": "knowledge", "knowing": "knowledge", "understand": "knowledge",
     "understanding": "knowledge", "believe": "faith", "belief": "faith",
@@ -766,8 +768,16 @@ def _detect_paradox(search_text: str, concepts: set) -> tuple:
     return False, ""
 
 
+_INHERENTLY_DEEP_CONCEPTS = {
+    "consciousness", "existence", "truth", "death", "time", "freedom",
+    "god", "soul", "ego", "liberation", "morality", "duty", "wisdom",
+    "mind", "self", "identity", "impermanence",
+}
+
+
 def _calculate_depth_score(question: str, intent: str, is_paradox: bool,
-                            concept_count: int, ambiguity_count: int) -> float:
+                            concept_count: int, ambiguity_count: int,
+                            concepts: list = None) -> float:
     score = 0.3
     word_count = len(question.split())
     if word_count >= 15:
@@ -780,12 +790,17 @@ def _calculate_depth_score(question: str, intent: str, is_paradox: bool,
         score += 0.2
     elif intent == "explore":
         score += 0.1
+    elif intent == "define":
+        score += 0.1
     if is_paradox:
         score += 0.2
     if concept_count >= 3:
         score += 0.1
     elif concept_count >= 2:
         score += 0.05
+    # Inherently deep concepts get a depth floor
+    if concepts and set(concepts) & _INHERENTLY_DEEP_CONCEPTS:
+        score += 0.15
     if ambiguity_count >= 2:
         score += 0.1
     elif ambiguity_count >= 1:
@@ -793,7 +808,8 @@ def _calculate_depth_score(question: str, intent: str, is_paradox: bool,
     if concept_count == 0:
         # Hinglish question-word signals partially offset missing-concept penalty
         lower_q = question.lower()
-        hinglish_markers = ["kyo", "kya hai", "matlab", "sachme", "kaise", "kyun"]
+        hinglish_markers = ["kyo", "kya hai", "matlab", "sachme", "kaise", "kyun",
+                           "क्या", "कैसे", "क्यों", "मतलब"]
         has_hinglish_signal = any(m in lower_q for m in hinglish_markers)
         if has_hinglish_signal:
             score += 0.05  # partial offset
@@ -924,8 +940,34 @@ def _classify_question_type(question: str, concepts: list, depth_score: float,
             r'\bif\b.*\bwhy\b',                                  # "if X, why Y?" conditional
             r'\bwhat\s+(is|are|causes|makes)\b',                 # "what is suffering?"
             r'\b(can|do|does|could|would|should)\b.*\b(feel|feeling|feelings)\b',
+            # Hinglish intellectual patterns — philosophical inquiry in Hinglish
+            r'\bagar\b.*\b(toh|to)\b',                           # "agar X toh Y" conditional
+            r'\bkyun\b',                                         # "kyun" = why
+            r'\bkyon\b',                                         # "kyon" = why
+            r'\bkya\s+matlab\b',                                 # "kya matlab" = what meaning
+            r'क्यों',                                            # Devanagari "why"
+            r'अगर\b.*\b(तो|तब)',                                 # Devanagari if-then
+            r'क्या\s+(है|होता|मतलब)',                             # Devanagari "what is/means"
         ]
-        if any(re.search(p, lower_str) for p in intellectual_patterns):
+        # Philosophical concept override — discussing emotions intellectually
+        # (e.g., "Agar Brahman hi sab kuch hai toh dukh aur sukh ka kya matlab")
+        philosophical_override_concepts = {
+            "consciousness", "soul", "mind", "existence", "truth", "ego",
+            "freedom", "death", "life", "knowledge", "wisdom", "morality",
+            "duty", "liberation", "meditation", "awareness", "virtue",
+            "time", "impermanence",
+        }
+        has_philosophical_concept = bool(set(concepts) & philosophical_override_concepts)
+
+        _DISTRESS_SIGNALS = [
+            "dard", "dukh", "rona", "takleef", "toot", "akela",
+            "hurt", "pain", "broken", "lost", "suffering", "cry", "alone",
+            "दर्द", "दुख", "टूटा", "अकेला", "रोना", "तकलीफ",
+        ]
+        has_distress = any(s in lower_str for s in _DISTRESS_SIGNALS)
+        if has_philosophical_concept and len(concepts) >= 2 and not has_distress:
+            pass  # philosophical inquiry about emotions, not distress
+        elif any(re.search(p, lower_str) for p in intellectual_patterns):
             pass  # skip emotional — it's intellectual inquiry
         else:
             return "emotional"
@@ -1090,6 +1132,8 @@ def _detect_emotional_intensity(question: str, question_type: str, intent: str =
         "bekaar", "bekar", "zindagi bekaar", "koi matlab nahi",
         "haar gaya", "haar gayi", "jeena nahi", "sab khatam",
         "kuch nahi bacha", "koi fayda nahi",
+        "bahut dard", "bahut takleef", "bahut dukh", "bahut rona",
+        "बहुत दर्द", "बहुत दुख", "बहुत तकलीफ",
     ]
     if any(s in lower for s in high_signals):
         return "high" if is_emotional_type else "medium"
@@ -1269,7 +1313,8 @@ def analyze_concepts(question: str, language: str = "english", translated: str =
     )
     analysis.depth_score = _calculate_depth_score(
         question, analysis.intent, analysis.is_paradox,
-        len(found_concepts), len(analysis.ambiguity_markers)
+        len(found_concepts), len(analysis.ambiguity_markers),
+        concepts=found_concepts,
     )
     analysis.knowledge_mode = _determine_knowledge_mode(
         analysis.is_paradox, analysis.intent, analysis.depth_score

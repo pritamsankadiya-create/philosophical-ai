@@ -40,6 +40,14 @@ class FlowTrace:
     detected_rasa: str = ""
     rasa_intensity: str = ""
     rasa_target: str = ""
+    # Model tracking
+    model_used: str = ""
+    was_fallback: bool = False
+    fallback_reason: str = ""
+    # Prajna + Contract tracking
+    prajna_hint: str = ""
+    contract_type: str = ""
+    contract_violations: Dict = field(default_factory=dict)
 
 
 @dataclass
@@ -463,6 +471,15 @@ ANTI-REPETITION — check before finishing:
 - Scan your response. Does the same idea appear twice in different words? Cut one.
 - Does any sentence restate what a previous sentence already said? Cut it.
 
+STRUCTURE VARIETY:
+- Vary how each sentence begins. Not every sentence should start the same way.
+- Mix: a question, a metaphor, a contradiction, a direct claim — in rotation.
+- Same structure repeated = lazy thinking.
+
+SENTENCE COMPLETION:
+- Every sentence must be complete. If near the token limit — do not start a new sentence.
+- Finish the current one cleanly, then stop. An incomplete sentence is worse than a shorter response.
+
 NO FICTIONAL OPENINGS:
 - Never: "A man...", "Imagine a person...", "An old woman once..."
 - No invented parables. Use real situations if you need examples.
@@ -484,6 +501,15 @@ LANGUAGE_RULES_HI = """भाषा नियम:
 - क्या कोई वाक्य पहले कही बात दोहराता है? काट दो।
 - "यह प्रश्न हमें... प्रेरित करता है" जैसे वाक्य एक बार से ज़्यादा नहीं।
 
+संरचना विविधता:
+- हर वाक्य अलग तरह से शुरू हो।
+- प्रश्न, रूपक, विरोधाभास, सीधा कथन — बारी-बारी से।
+- एक ही ढंग बार-बार = सतही सोच।
+
+वाक्य पूर्णता:
+- हर वाक्य पूरा करो। सीमा पास हो तो नया वाक्य मत शुरू करो।
+- अधूरा वाक्य, छोटे पूरे उत्तर से हमेशा बुरा है।
+
 काल्पनिक कहानियां मत बनाओ। असली उदाहरण दो।
 केवल शुद्ध हिंदी — अंग्रेज़ी शब्द मत मिलाओ (mystery, journey आदि नहीं)।"""
 
@@ -498,6 +524,19 @@ Examples:
 - Reframe: "Suffering doesn't build character. It reveals the character already there."
 
 Never use tired formulas like "The real question is not X, but Y" — find your own way."""
+
+
+# ── Philosophical Opening (only for philosophical/mixed, NOT emotional/crisis) ──
+
+PHILOSOPHICAL_OPENING_EN = """OPENING RULE:
+Your first sentence must be a strong philosophical statement — the entire response distilled into one line.
+Sharp, direct, memorable. Not a question. Not a definition.
+A claim that the rest of the response opens up.
+Example: "Fear is the mind's way of protecting something it believes it can lose." """
+
+PHILOSOPHICAL_OPENING_HI = """पहला वाक्य नियम:
+पहला वाक्य एक सशक्त दार्शनिक कथन हो — पूरे उत्तर का सार एक पंक्ति में।
+तीव्र, सीधा, यादगार। प्रश्न नहीं, परिभाषा नहीं — एक ऐसा सूत्र जो बाकी सब कुछ खोले।"""
 
 
 # ============================================================
@@ -710,6 +749,10 @@ def _build_hindi_flow_prompt(question: str, translated: str, context: str,
     ending = _get_ending_instruction(analysis)
     rasa_block_hi = _build_rasa_block_hi(analysis)
 
+    # Philosophical opening only for non-emotional contexts
+    ei = getattr(analysis, 'emotional_intensity', 'low')
+    phil_opening_hi = PHILOSOPHICAL_OPENING_HI if ei == "low" else ""
+
     philosopher_focus = ""
     if analysis.philosophers:
         names = ", ".join(analysis.philosophers[:2])
@@ -728,6 +771,8 @@ def _build_hindi_flow_prompt(question: str, translated: str, context: str,
 {rasa_block_hi}
 
 {flow_structure}
+
+{phil_opening_hi}
 
 सख्त नियम:
 - प्रवाहमय गद्य में लिखो — कोई शीर्षक नहीं, कोई लेबल नहीं, कोई बुलेट नहीं।
@@ -837,6 +882,10 @@ def build_flow_prompt(question: str, translated: str, context: str,
 
     insight_block = SHARP_INSIGHT_RULE if mode.depth == "high" else ""
 
+    # Philosophical opening only for non-emotional contexts
+    ei = getattr(analysis, 'emotional_intensity', 'low')
+    phil_opening = PHILOSOPHICAL_OPENING_EN if ei == "low" else ""
+
     return f"""{SOUL_IDENTITY_EN}
 
 {rasa_block}
@@ -845,6 +894,8 @@ STYLE: {style_info['instruction']}
 {style_info['voice']}
 
 OPENING: {opening_inst}
+
+{phil_opening}
 
 {flow_structure}
 
@@ -902,6 +953,13 @@ EXPLORATORY_MARKERS = [
 
 def parse_flow_output(raw_text: str) -> dict:
     text = raw_text.strip()
+
+    # Strip any leaked reasoning tags (gpt-oss / DeepSeek style)
+    text = re.sub(r'<think>.*?</think>', '', text, flags=re.DOTALL)
+    text = re.sub(r'</?think>', '', text)
+    # Strip Harmony special tokens (gpt-oss internal format)
+    text = re.sub(r'<\|(start|end|channel|message|return|call)\|>', '', text)
+
     cleaned_lines = []
     for line in text.split('\n'):
         cleaned = line

@@ -465,6 +465,15 @@
                             return;
                         }
 
+                        // Sentence completion — server trimmed incomplete tail
+                        if (typeof token === 'string' && token.startsWith('[REPLACE]')) {
+                            fullText = escapeHtml(token.substring(9)).replace(/\n/g, '<br>');
+                            if (bubble) {
+                                bubble.innerHTML = fullText + '<span class="cursor"></span>';
+                            }
+                            continue;
+                        }
+
                         // First token arrived — NOW remove typing
                         if (!bubbleReady) {
                             removeTyping(typingId);

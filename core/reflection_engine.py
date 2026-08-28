@@ -4,6 +4,7 @@
 # ============================================================
 
 import os
+import re
 import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
@@ -52,10 +53,19 @@ def _detect_repetition(answer: str) -> bool:
 def _detect_machine_disclaimer(answer: str) -> bool:
     lower = answer.lower()
     bad_phrases = [
+        # English — LLaMA-style
         "i am a machine", "i am an ai", "i am a language model",
         "i am just", "i don't have feelings", "i don't have emotions",
         "as an ai", "i was trained", "i am a program",
-        "मैं एक मशीन", "मुझे भावनाएं नहीं", "एक ai के रूप में"
+        # English — GPT-style variants
+        "i'm an ai", "i'm a language model", "i'm an artificial",
+        "being a large language model", "as a chatbot",
+        "as a language model", "i don't actually feel",
+        "i lack consciousness", "i'm not sentient",
+        "i should note that i'm", "i'm just a model",
+        # Hindi
+        "मैं एक मशीन", "मुझे भावनाएं नहीं", "एक ai के रूप में",
+        "मैं एक भाषा मॉडल", "मैं एक कृत्रिम",
     ]
     return any(p in lower for p in bad_phrases)
 
@@ -72,6 +82,23 @@ def _detect_paradox_resolved(answer: str, analysis: ConceptAnalysis) -> bool:
         "आज आप कर सकते", "इसका हल यह है"
     ]
     return any(s in lower for s in resolution_signals)
+
+
+def _detect_monotone_rhythm(answer: str) -> list:
+    """Detect 2+ sentences starting with the same first 2 words."""
+    sentences = [s.strip() for s in re.split(r'[.।!?\n]', answer) if len(s.strip()) > 15]
+    if len(sentences) < 3:
+        return []
+
+    starts = []
+    for s in sentences:
+        words = s.split()[:2]
+        if len(words) >= 2:
+            starts.append(' '.join(words).lower())
+
+    from collections import Counter
+    counts = Counter(starts)
+    return [start for start, count in counts.items() if count >= 2]
 
 
 def _build_flow_critique(analysis: ConceptAnalysis, flow_trace: FlowTrace = None) -> str:
@@ -104,12 +131,13 @@ def reflect_deep(answer: str, question: str = "", analysis: ConceptAnalysis = No
     2. Repetition check (cut duplicates)
     3. Paradox resolution check (reopen if resolved cheaply)
     4. Depth/quality critique
-    Uses 70b for deep questions, 8b for simple ones.
+    Uses main model for deep questions, fast model for simple ones.
     """
     language = detect_language(question)
     has_repetition = _detect_repetition(answer)
     has_disclaimer = _detect_machine_disclaimer(answer)
     has_cheap_resolution = _detect_paradox_resolved(answer, analysis)
+    rhythm_violations = _detect_monotone_rhythm(answer)
 
     flow_critique = ""
     if analysis is not None:
@@ -125,6 +153,9 @@ def reflect_deep(answer: str, question: str = "", analysis: ConceptAnalysis = No
         warnings.append("🔁 CRITICAL: This response repeats the same idea multiple times in different words. Identify the repetition and CUT it — each sentence must add something new.")
     if has_cheap_resolution:
         warnings.append("⚠️ CRITICAL: This is a paradox question but the response sneaks in a resolution or action step at the end. REMOVE the resolution. The paradox must be held open.")
+    if rhythm_violations:
+        patterns = ", ".join(f'"{v}"' for v in rhythm_violations[:3])
+        warnings.append(f"🔄 STRUCTURE: Multiple sentences start with the same pattern ({patterns}). Vary your sentence beginnings — use questions, metaphors, contradictions, direct claims.")
 
     warning_block = "\n".join(warnings) if warnings else ""
 

@@ -6,6 +6,7 @@
 from datetime import datetime, timezone
 from core.concept_analyzer import ConceptAnalysis
 from core.flow_engine import FlowTrace, _determine_answer_mode
+from models.llm_loader import get_last_call_info
 
 
 def synthesize_response(flow_output: dict, meta_observation: str = "",
@@ -38,7 +39,9 @@ def _classify_insight_type(analysis: ConceptAnalysis, confidence_signals: dict) 
 def build_flow_trace_data(question: str, analysis: ConceptAnalysis,
                           knowledge_results: dict, flow_output: dict,
                           uncertainty: dict, meta_observation: str,
-                          style_mode: str = "", opening_strategy: str = "") -> FlowTrace:
+                          style_mode: str = "", opening_strategy: str = "",
+                          contract_type: str = "", contract_violations: dict = None,
+                          prajna_hint: str = "") -> FlowTrace:
     """
     Build complete trace dict with all analysis, knowledge layers,
     confidence signals, uncertainty, meta-observation, and timestamp.
@@ -50,6 +53,9 @@ def build_flow_trace_data(question: str, analysis: ConceptAnalysis,
     knowledge_layers = {}
     for layer in ["philosophical", "scientific", "experiential"]:
         knowledge_layers[layer] = len(knowledge_results.get(layer, []))
+
+    # Get model info from the most recent LLM call
+    call_info = get_last_call_info()
 
     trace = FlowTrace(
         question=question,
@@ -82,6 +88,14 @@ def build_flow_trace_data(question: str, analysis: ConceptAnalysis,
         detected_rasa=getattr(analysis, 'detected_rasa', ''),
         rasa_intensity=getattr(analysis, 'rasa_intensity', ''),
         rasa_target=getattr(analysis, 'rasa_target', ''),
+        # Model tracking
+        model_used=call_info.get("model_used", ""),
+        was_fallback=call_info.get("was_fallback", False),
+        fallback_reason=call_info.get("fallback_reason", ""),
+        # Prajna + Contract tracking
+        prajna_hint=prajna_hint,
+        contract_type=contract_type,
+        contract_violations=contract_violations or {},
     )
 
     return trace
