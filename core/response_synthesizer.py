@@ -41,7 +41,7 @@ def build_flow_trace_data(question: str, analysis: ConceptAnalysis,
                           uncertainty: dict, meta_observation: str,
                           style_mode: str = "", opening_strategy: str = "",
                           contract_type: str = "", contract_violations: dict = None,
-                          prajna_hint: str = "") -> FlowTrace:
+                          prajna_hint: str = "", jev_result=None) -> FlowTrace:
     """
     Build complete trace dict with all analysis, knowledge layers,
     confidence signals, uncertainty, meta-observation, and timestamp.
@@ -96,6 +96,10 @@ def build_flow_trace_data(question: str, analysis: ConceptAnalysis,
         prajna_hint=prajna_hint,
         contract_type=contract_type,
         contract_violations=contract_violations or {},
+        # Jev classifier tracking
+        jev_used=jev_result is not None,
+        jev_latency_ms=jev_result.latency_ms if jev_result else 0.0,
+        jev_crisis_signal=jev_result.crisis_signal if jev_result else 0.0,
     )
 
     return trace

@@ -48,6 +48,10 @@ class FlowTrace:
     prajna_hint: str = ""
     contract_type: str = ""
     contract_violations: Dict = field(default_factory=dict)
+    # Jev classifier tracking
+    jev_used: bool = False
+    jev_latency_ms: float = 0.0
+    jev_crisis_signal: float = 0.0
 
 
 @dataclass
@@ -766,9 +770,16 @@ def _build_hindi_flow_prompt(question: str, translated: str, context: str,
     if history.strip():
         history_block = f"\nपिछली बातचीत:\n{history}\n"
 
+    # Warmth-first: acknowledge the human behind intellectual questions
+    warmth_block_hi = ""
+    if getattr(analysis, 'warmth_first', False):
+        warmth_block_hi = "पहले गर्मजोशी: इस प्रश्न के पीछे के इंसान को 1 गर्म वाक्य में स्वीकार करो, फिर दर्शन।"
+
     system = f"""{SOUL_IDENTITY_HI}
 
 {rasa_block_hi}
+
+{warmth_block_hi}
 
 {flow_structure}
 
@@ -886,9 +897,16 @@ def build_flow_prompt(question: str, translated: str, context: str,
     ei = getattr(analysis, 'emotional_intensity', 'low')
     phil_opening = PHILOSOPHICAL_OPENING_EN if ei == "low" else ""
 
+    # Warmth-first: acknowledge the human behind intellectual questions
+    warmth_block = ""
+    if getattr(analysis, 'warmth_first', False):
+        warmth_block = "WARMTH FIRST: Start with 1 warm sentence acknowledging the human behind this question before philosophy. Then proceed normally."
+
     return f"""{SOUL_IDENTITY_EN}
 
 {rasa_block}
+
+{warmth_block}
 
 STYLE: {style_info['instruction']}
 {style_info['voice']}

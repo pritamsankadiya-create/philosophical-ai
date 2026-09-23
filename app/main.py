@@ -23,6 +23,7 @@ from core.pipeline import (
 from memory.chat_memory import ChatMemory
 from memory.vector_store import build_vector_store
 from models.llm_loader import get_model_stats
+from core.jev_classifier import get_jev_stats
 
 app = FastAPI(title="Philosophical AI")
 
@@ -64,9 +65,10 @@ def health():
     stats = get_model_stats()
     return {
         "status"         : "running",
-        "version"        : "v4",
+        "version"        : "v4.1",
         "model"          : stats["current_model"],
         "model_stats"    : stats,
+        "jev_stats"      : get_jev_stats(),
         "streaming"      : "active",
         "chat_memory"    : f"{len(memory.history)} messages",
         "long_term"      : f"{long_term_memory.total_questions} questions learned",

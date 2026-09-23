@@ -10,7 +10,8 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dataclasses import asdict
 
 from core.thinking_engine import translate_hinglish, detect_language
-from core.concept_analyzer import analyze_concepts
+from core.concept_analyzer import analyze_concepts, RASA_TRANSITIONS
+from core.jev_classifier import classify_with_jev, JevResult
 from core.knowledge_retriever import retrieve_adaptive, format_layered_context
 from core.flow_engine import build_flow_prompt, parse_flow_output, FlowTrace, _select_style_mode, _select_opening, _determine_answer_mode
 from core.uncertainty_engine import classify_uncertainty
@@ -84,15 +85,42 @@ def _update_prajna_history(analysis):
             _rasa_journey.pop(0)
 
 
+def _apply_jev_to_analysis(analysis, jev_result: JevResult):
+    """
+    CRISIS ONLY — Jev overrides Python classification only when crisis detected.
+    Python handles question_type, EI, rasa, language, depth better for Hindi/Hinglish.
+    """
+    if jev_result is None:
+        return
+
+    # Only override when Jev detects crisis — force emotional/high so
+    # the rest of the pipeline (prompts, tokens, contracts) treats it as crisis
+    if jev_result.crisis_signal >= 0.7:
+        analysis.question_type = "emotional"
+        analysis.emotional_intensity = "high"
+
+
 def _prepare_v3(question: str, chat_memory=None):
     """
-    v3 preparation: adds active long-term memory signals + Prajna insight.
-    Returns (context, history, analysis, translated, language, knowledge_results, prajna_hint)
+    v4.1 preparation: Python analysis → Jev classification → active memory → Prajna.
+    Returns (context, history, analysis, translated, language, knowledge_results, prajna_hint, jev_result)
     Depth score is boosted for returning users on familiar concepts.
     """
     translated = translate_hinglish(question)
     language = detect_language(question)
     analysis = analyze_concepts(question, language=language, translated=translated)
+
+    # v3: Build history early — needed by Jev for context
+    history = ""
+    if chat_memory and not chat_memory.is_empty():
+        history = chat_memory.get_history_as_text()
+        context_summary = chat_memory.get_context_summary()
+        if context_summary:
+            history += f"\n[Context: {context_summary}]"
+
+    # v4.1: Jev crisis detection — only overrides analysis on crisis
+    jev_result = classify_with_jev(question, translated, language, history=history)
+    _apply_jev_to_analysis(analysis, jev_result)
 
     # v3: Active memory — boost depth score for returning explorers
     depth_boost = long_term_memory.get_depth_boost(analysis.concepts)
@@ -113,14 +141,6 @@ def _prepare_v3(question: str, chat_memory=None):
     knowledge_results = retrieve_adaptive(translated, analysis, chat_memory=chat_memory, top_k=4)
     context = format_layered_context(knowledge_results)
 
-    # v3: Inject long-term memory context hint into history
-    history = ""
-    if chat_memory and not chat_memory.is_empty():
-        history = chat_memory.get_history_as_text()
-        context_summary = chat_memory.get_context_summary()
-        if context_summary:
-            history += f"\n[Context: {context_summary}]"
-
     # v3: Add long-term context hint (tells LLM about user's depth)
     context_hint = long_term_memory.get_context_hint(analysis.concepts, language)
     if context_hint:
@@ -130,14 +150,14 @@ def _prepare_v3(question: str, chat_memory=None):
     if prajna_hint:
         context = prajna_hint + "\n\n" + context
 
-    return context, history, analysis, translated, language, knowledge_results, prajna_hint
+    return context, history, analysis, translated, language, knowledge_results, prajna_hint, jev_result
 
 
 # ─── Full pipeline (2 LLM calls) ─────────────────────────
 
 def run_pipeline(question: str, chat_memory=None, use_reflection: bool = True) -> str:
-    """v4 pipeline — active memory + soul identity + Prajna."""
-    context, history, analysis, translated, language, knowledge_results, prajna_hint = \
+    """v4.1 pipeline — Jev classification + active memory + soul identity + Prajna."""
+    context, history, analysis, translated, language, knowledge_results, prajna_hint, jev_result = \
         _prepare_v3(question, chat_memory)
 
     style_mode = _select_style_mode(analysis, question)
@@ -154,8 +174,12 @@ def run_pipeline(question: str, chat_memory=None, use_reflection: bool = True) -
     )
     answer = synthesize_response(flow_output, meta_observation, analysis.depth_score)
 
-    # Contract enforcement — Prajna hint drives contract selection
-    contract = select_contract(analysis, prajna_hint=prajna_hint, is_identity=False)
+    # Contract enforcement — Jev crisis_signal >= 0.7 forces crisis contract
+    if jev_result and jev_result.crisis_signal >= 0.7:
+        from utils.response_contract import CONTRACTS
+        contract = CONTRACTS["crisis"]
+    else:
+        contract = select_contract(analysis, prajna_hint=prajna_hint, is_identity=False)
     answer, violations = enforce_contract(
         answer, contract, language,
         asked_philosophers=analysis.philosophers,
@@ -167,6 +191,7 @@ def run_pipeline(question: str, chat_memory=None, use_reflection: bool = True) -
         style_mode=style_mode, opening_strategy=opening_strategy,
         contract_type=contract.name, contract_violations=violations,
         prajna_hint=prajna_hint,
+        jev_result=jev_result,
     )
     _store_trace(trace)
     long_term_memory.learn_from_question(analysis, trace)
@@ -191,8 +216,8 @@ def run_pipeline(question: str, chat_memory=None, use_reflection: bool = True) -
 # ─── Streaming pipeline (1 LLM call) ─────────────────────
 
 def run_pipeline_stream(question: str, chat_memory=None):
-    """v4 streaming pipeline — Prajna + contract enforcement."""
-    context, history, analysis, translated, language, knowledge_results, prajna_hint = \
+    """v4.1 streaming pipeline — Jev + Prajna + contract enforcement."""
+    context, history, analysis, translated, language, knowledge_results, prajna_hint, jev_result = \
         _prepare_v3(question, chat_memory)
 
     style_mode = _select_style_mode(analysis, question)
@@ -208,8 +233,12 @@ def run_pipeline_stream(question: str, chat_memory=None):
 
     raw_text = "".join(full_answer)
 
-    # Contract enforcement — Prajna hint drives contract selection
-    contract = select_contract(analysis, prajna_hint=prajna_hint, is_identity=False)
+    # Contract enforcement — Jev crisis_signal >= 0.7 forces crisis contract
+    if jev_result and jev_result.crisis_signal >= 0.7:
+        from utils.response_contract import CONTRACTS
+        contract = CONTRACTS["crisis"]
+    else:
+        contract = select_contract(analysis, prajna_hint=prajna_hint, is_identity=False)
     cleaned_text, violations = enforce_contract(
         raw_text, contract, language,
         asked_philosophers=analysis.philosophers,
@@ -231,6 +260,7 @@ def run_pipeline_stream(question: str, chat_memory=None):
         style_mode=style_mode, opening_strategy=opening_strategy,
         contract_type=contract.name, contract_violations=violations,
         prajna_hint=prajna_hint,
+        jev_result=jev_result,
     )
     _store_trace(trace)
     long_term_memory.learn_from_question(analysis, trace)
@@ -254,6 +284,19 @@ def get_pipeline_metadata(question: str):
     language = detect_language(question)
     analysis = analyze_concepts(question, language=language, translated=translated)
 
+    # Save Python-only classification for comparison
+    python_classification = {
+        "question_type": analysis.question_type,
+        "emotional_intensity": analysis.emotional_intensity,
+        "detected_rasa": analysis.detected_rasa,
+        "depth_score": analysis.depth_score,
+        "language": analysis.language,
+    }
+
+    # v4.1: Jev crisis detection (shown in output, only overrides on crisis)
+    jev_result = classify_with_jev(question, translated, language)
+    _apply_jev_to_analysis(analysis, jev_result)
+
     # Show what active memory would add
     depth_boost = long_term_memory.get_depth_boost(analysis.concepts)
     boosted_depth = min(1.0, analysis.depth_score + depth_boost)
@@ -271,7 +314,7 @@ def get_pipeline_metadata(question: str):
         language=language,
     )
 
-    return {
+    result = {
         "question": question,
         "translated": translated,
         "language": language,
@@ -297,9 +340,18 @@ def get_pipeline_metadata(question: str):
         "detected_rasa": getattr(analysis, 'detected_rasa', ''),
         "rasa_intensity": getattr(analysis, 'rasa_intensity', ''),
         "rasa_target": getattr(analysis, 'rasa_target', ''),
+        "warmth_first": analysis.warmth_first,
         "prajna_hint": prajna_hint,
-        "contract_type": select_contract(analysis, prajna_hint=prajna_hint, is_identity=False).name,
+        "contract_type": "crisis" if (jev_result and jev_result.crisis_signal >= 0.7)
+            else select_contract(analysis, prajna_hint=prajna_hint, is_identity=False).name,
+        "python_classification": python_classification,
     }
+
+    if jev_result:
+        from dataclasses import asdict
+        result["jev_classification"] = asdict(jev_result)
+
+    return result
 
 
 def get_latest_trace() -> dict:

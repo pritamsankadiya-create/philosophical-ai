@@ -45,6 +45,8 @@ class ConceptAnalysis:
     detected_rasa: str = "shaant"
     rasa_intensity: str = "low"
     rasa_target: str = "shaant"
+    # v4.1: Jev warmth signal
+    warmth_first: bool = False
 
 
 CONCEPT_MAP = {
