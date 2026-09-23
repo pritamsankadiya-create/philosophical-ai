@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🧠 Philosophical AI — v4 Emergent Mind</title>
+    <title>🧠 Pragya — v4.1 Emergent Mind</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -316,8 +316,8 @@
 <!-- Header -->
 <div class="header">
     <div class="header-left">
-        <h1>🧠 Philosophical AI</h1>
-        <span class="version-badge">v4 Emergent Mind</span>
+        <h1>🧠 Pragya</h1>
+        <span class="version-badge">v4.1 Emergent Mind</span>
     </div>
     <button class="btn-clear" onclick="clearChat()">
         🧹 Clear Chat
@@ -350,20 +350,20 @@
     // ── Welcome HTML (single source of truth) ────────────────
     function getWelcomeHtml() {
         const suggestions = [
-            'Do you actually feel anything?',
-            'Bahut akela feel ho raha hai',
-            'Kya insaan kabhi sach mein azaad ho sakta hai?',
-            'Sab kuch bekaar lagta hai',
+            'Kya tum sach mein feel karte ho?',
+            'Pyaar mein itna dard kyun hota hai?',
+            'AI insaan ki jagah le lega kya?',
+            'Bahut akela feel ho raha hai yaar',
+            'What is consciousness, really?',
             'Mrityu ke baad kya hota hai?',
             'Mera sapna bada hai lekin himmat nahi hoti',
-            'Chetna kya hai?',
             'If God exists, why is there suffering?',
         ];
         return `<div class="welcome" id="welcome">
-            <h2>🧠 Philosophical AI</h2>
+            <h2>🧠 Pragya</h2>
             <p>Thinks. Feels. Sits with you.</p>
             <p style="margin-top:8px; font-size:13px; color:#555">
-                English · Hindi · Hinglish &nbsp;|&nbsp; Navarasa · Soul Identity · Deep Memory
+                English · Hindi · Hinglish &nbsp;|&nbsp; Navarasa · Prajna · Jev Crisis Detection
             </p>
             <div class="suggestions">
                 ${suggestions.map(s => `<div class="suggestion" onclick="askSuggestion(this)">${s}</div>`).join('\n                ')}
@@ -571,13 +571,14 @@
 
         // ✅ Cycle through messages so user knows AI is working!
         const messages = [
+            "🎯 Jev scanning for crisis signals...",
             "🧠 Detecting your question's depth...",
             "🌊 Reading the emotional rasa...",
+            "🪷 Prajna — listening for what's unsaid...",
             "📚 Retrieving philosophical wisdom...",
             "🪬 Applying soul identity...",
             "⚖️  Weighing paradox and uncertainty...",
             "✍️  Composing your answer...",
-            "🔍 Running reflection check...",
             "🌟 Almost ready..."
         ];
 
