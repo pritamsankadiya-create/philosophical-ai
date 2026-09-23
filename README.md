@@ -4,7 +4,7 @@
 
 ![Python](https://img.shields.io/badge/Python-3.12-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.111-green)
-![LangChain](https://img.shields.io/badge/LangChain-0.2-orange)
+![ChromaDB](https://img.shields.io/badge/ChromaDB-ONNX-orange)
 ![Groq](https://img.shields.io/badge/Groq-Qwen_3.8_27B-purple)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
@@ -174,11 +174,16 @@ http://localhost:8000
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | `GET` | `/` | Chat UI |
-| `GET` | `/stream?question=...` | ⚡ Streaming response (cognitive pipeline) |
-| `POST` | `/chat` | Full pipeline response with reflection |
-| `GET` | `/analyze?question=...` | 🔬 Debug: concept analysis without LLM call |
+| `GET` | `/stream?question=...` | ⚡ Streaming response (primary endpoint) |
+| `POST` | `/chat` | Full pipeline with reflection (2 LLM calls) |
+| `GET` | `/analyze?question=...` | 🔬 Debug: concept analysis + Prajna + contract type |
+| `GET` | `/trace` | Latest flow trace (Prajna, contract, model info) |
+| `GET` | `/traces` | All flow traces |
 | `GET` | `/history` | View conversation history |
 | `GET` | `/clear` | Clear conversation memory |
+| `GET` | `/clear-all` | Nuclear reset: all memory erased |
+| `GET` | `/memory` | View long-term learning data |
+| `GET` | `/model-stats` | Model usage + fallback monitoring |
 | `GET` | `/rebuild` | Rebuild vector database |
 | `GET` | `/health` | Server health check |
 | `GET` | `/docs` | API documentation |
@@ -218,13 +223,17 @@ curl "http://localhost:8000/analyze?question=What+is+karma+according+to+Krishna"
 ```json
 {
   "question": "What is karma according to Krishna",
-  "translated": "What is karma according to Krishna",
   "language": "english",
   "concepts": ["karma"],
   "themes": ["gita_philosophy", "buddhism", "vedanta"],
   "philosophers": ["Shree Krishna"],
   "intent": "define",
-  "question_depth": "standard"
+  "depth_score": 0.55,
+  "question_type": "philosophical",
+  "emotional_intensity": "low",
+  "detected_rasa": "shaant",
+  "prajna_hint": "",
+  "contract_type": "default"
 }
 ```
 
@@ -237,50 +246,60 @@ User Question
       │
       ▼
 ┌─────────────────┐
-│ Stage 1:        │  ← Detect English / Hindi / Hinglish
-│ Language Detect  │     Translate Hinglish → Hindi
+│ Language Detect  │  ← Detect English / Hindi / Hinglish
+│ + Translation   │     Translate Hinglish → Hindi (370+ words)
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│ Stage 2:        │  ← Extract concepts, themes, philosophers,
-│ Concept Analyzer │     intent (define/compare/apply/challenge)
-│ (Pure Python)   │     and question depth — NO LLM call
+│ Concept Analyzer │  ← Extract concepts, themes, philosophers,
+│ + Navarasa      │     intent, depth, emotional intensity,
+│ (Pure Python)   │     9 rasas — NO LLM call
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│ Stage 3:        │  ← Multi-strategy search:
-│ Knowledge       │     1. Direct question search
-│ Retriever       │     2. Concept-enriched search
-│ (Chroma DB)     │     3. Philosopher-specific search
-└────────┬────────┘     + Vague follow-up resolution
-         │
-         ▼
-┌─────────────────┐
-│ Stage 4:        │  ← Embed reasoning frameworks (Vedanta,
-│ Prompt Composer  │     Buddhism, Stoicism...) + dialectic
-│                 │     structure + multi-perspective + intent
+│ Prajna Layer    │  ← Detect what is NOT said:
+│ (प्रज्ञा)        │     displacement, circling, rasa-stuck,
+│                 │     crisis signals, absence patterns
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│ Stage 5:        │  ← Generate answer using Qwen 3.8 27B
-│ LLM Generation  │     via Groq API (streaming or full)
-│ (Groq API)      │
+│ Knowledge       │  ← Multi-strategy search across 3 layers:
+│ Retriever       │     philosophical + scientific + experiential
+│ (ChromaDB)      │     + long-term memory context hints
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│ Stage 6:        │  ← Intent-aware self-critique
-│ Reflection      │     Deepens superficial answers
-│ (GPT-OSS 20B) │     using a fast smaller model
+│ Prompt Composer  │  ← Soul identity + rasa hints + philosophical
+│ (Flow Engine)   │     opening + style mode + language rules
 └────────┬────────┘
          │
          ▼
 ┌─────────────────┐
-│ Stage 7:        │  ← Save to memory with concept metadata
-│ Memory + Themes  │     Track recurring themes across turns
+│ LLM Generation  │  ← Qwen 3.8 27B via Groq API
+│ (Groq API)      │     Multi-tier fallback chain
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│ Contract        │  ← crisis: 3 sentences, strip advice
+│ Enforcement     │     emotional_high: 5 sentences
+│                 │     default: 8 sentences + dedup
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│ Reflection      │  ← Self-critique: disclaimer check,
+│ (Optional)      │     repetition, rhythm, paradox resolution
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│ Memory Update   │  ← Long-term learning + chat history
+│ + Prajna History│     + Prajna question/rasa tracking
 └─────────────────┘
 ```
 
@@ -290,12 +309,15 @@ User Question
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| Model | `qwen/qwen3.8-27b` | LLM model via Groq |
-| Fast Model | `llama-3.1-8b-instant` | Reflection engine model |
-| Memory | `5 messages` | Conversation history limit |
-| Max tokens | `800` | Response length (main) / `200` (reflection) |
+| Main Model | `qwen/qwen3.8-27b` | Primary LLM via Groq (2M TPD) |
+| Mid Fallback | `openai/gpt-oss-120b` | Tier 2 fallback on rate limit |
+| Fast Fallback | `openai/gpt-oss-20b` | Tier 3 fallback |
+| Memory | `5 messages` | Short-term conversation history |
+| Max tokens | `500–1680` | Adaptive based on depth + language |
 | Temperature | `0.7` | AI creativity level |
-| Top P | `0.9` | Nucleus sampling |
+| Crisis contract | `3 sentences` | Max response for crisis signals |
+| Emotional contract | `5 sentences` | Max response for high distress |
+| Default contract | `8 sentences` | Standard response length |
 
 ---
 
@@ -331,16 +353,18 @@ numpy
 
 ## 🗺️ Roadmap
 
-- [x] Level 1 — Rich philosophy knowledge base
-- [x] Level 2 — Conversation memory
-- [x] Level 2.5 — Hindi + Hinglish support
-- [x] Level 3 — Streaming Chat UI
-- [x] Level 4 — Cognitive Pipeline (concept analysis, multi-strategy retrieval, prompt composition)
-- [x] Level 4.5 — Migrate to Groq API for cloud deployment
-- [ ] Level 5 — Deploy online (Railway/Render)
-- [ ] Level 6 — User accounts
-- [ ] Level 7 — Save favorite quotes
-- [ ] Level 8 — Daily wisdom notifications
+- [x] Level 1 — Rich philosophy knowledge base (600+ quotes, 23 philosophers)
+- [x] Level 2 — Conversation memory (short-term + long-term persistent learning)
+- [x] Level 2.5 — Hindi + Hinglish support (370+ word translation dictionary)
+- [x] Level 3 — Streaming Chat UI (dark theme, SSE, mobile responsive)
+- [x] Level 4 — Cognitive Pipeline (15-stage: concept analysis, Navarasa, retrieval, prompt composition)
+- [x] Level 4.5 — Groq API migration (Qwen 3.8 27B + multi-tier fallback)
+- [x] Level 5 — Prajna layer (displacement, circling, rasa-stuck, crisis detection)
+- [x] Level 6 — Response contracts (crisis/emotional/default sentence caps + enforcement)
+- [x] Level 7 — Deploy on Render.com (Docker, auto-deploy from main)
+- [ ] Level 8 — Session isolation (per-user memory)
+- [ ] Level 9 — Fine-tuning data collection
+- [ ] Level 10 — Voice layer
 
 ---
 
@@ -366,7 +390,7 @@ This project draws wisdom from:
 | Technology | Purpose |
 |------------|---------|
 | **FastAPI** | Backend API server |
-| **LangChain** | Vector store & text splitting |
+| **ChromaDB + ONNX** | Vector database + embeddings |
 | **Chroma DB** | Vector database |
 | **Groq API** | Cloud LLM inference |
 | **Qwen 3.8 27B** | Main language model |
