@@ -1,20 +1,21 @@
-# 🧠 Philosophical AI
+# 🧠 Pragya — Philosophical AI
 
 > *A conversational AI powered by the wisdom of 23 great philosophers — speaks English, Hindi & Hinglish!*
 
+![Version](https://img.shields.io/badge/Version-4.1-a78bfa)
 ![Python](https://img.shields.io/badge/Python-3.12-blue)
 ![FastAPI](https://img.shields.io/badge/FastAPI-0.111-green)
-![ChromaDB](https://img.shields.io/badge/ChromaDB-ONNX-orange)
 ![Groq](https://img.shields.io/badge/Groq-Qwen_3.8_27B-purple)
+![Jev](https://img.shields.io/badge/Jev--1.13-Crisis_Detection-red)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
 
 ## 📖 What is this?
 
-**Philosophical AI** is a cloud-powered AI chatbot that answers your life questions using the wisdom of the world's greatest philosophers — from ancient Greek thinkers like Socrates and Plato to Indian masters like Osho, Vivekananda and Shankaracharya.
+**Pragya** is a cloud-powered philosophical AI that answers your life questions using the wisdom of the world's greatest philosophers — from ancient Greek thinkers like Socrates and Plato to Indian masters like Osho, Vivekananda and Shankaracharya.
 
-It features a **15-stage cognitive pipeline** with Prajna (प्रज्ञा) pattern detection, response contracts, Navarasa emotion detection, and persistent learning — analyzing your question, detecting what you're NOT saying, retrieving relevant wisdom, composing context-aware prompts, and reflecting on its own answers.
+It features a **17-stage cognitive pipeline** with Jev-1.13 crisis detection, Prajna (प्रज्ञा) pattern detection, response contracts, Navarasa emotion detection, and persistent learning — analyzing your question, detecting crisis signals, detecting what you're NOT saying, retrieving relevant wisdom, composing context-aware prompts, and reflecting on its own answers.
 
 Ask in **English**, **Hindi** or **Hinglish** — it understands all three!
 
@@ -23,7 +24,8 @@ Ask in **English**, **Hindi** or **Hinglish** — it understands all three!
 ## ✨ Features
 
 - 🌊 **Streaming responses** — answers appear word by word like ChatGPT
-- 🧠 **Cognitive Pipeline** — 15-stage processing: detect → analyze → Prajna insight → retrieve → compose → generate → contract enforce → reflect → remember
+- 🎯 **Jev Crisis Detection** — Jev-1.13 via OpenRouter detects crisis signals in Hindi/Hinglish with 97% accuracy (~870ms, $0.000017/call)
+- 🧠 **Cognitive Pipeline** — 17-stage processing: detect → analyze → Jev crisis check → Prajna insight → retrieve → compose → generate → contract enforce → reflect → remember
 - 🔬 **Concept Analyzer** — extracts philosophical concepts, themes, intent & depth from your question (pure Python, no LLM call)
 - 🔍 **Multi-strategy retrieval** — concept-enriched + philosopher-specific + vague query resolution
 - 📝 **Prompt Composer** — embeds reasoning frameworks + dialectic structure into prompts based on detected themes
@@ -83,8 +85,9 @@ philosophical-ai/
 │       └── index.html          ← Chat UI (dark theme)
 │
 ├── core/
-│   ├── pipeline.py             ← Central orchestrator (15-stage cognitive pipeline)
+│   ├── pipeline.py             ← Central orchestrator (17-stage cognitive pipeline)
 │   ├── concept_analyzer.py     ← Pure Python concept/theme/intent/Navarasa extraction
+│   ├── jev_classifier.py       ← Jev-1.13 crisis detection via OpenRouter API
 │   ├── prajna_layer.py         ← Prajna (प्रज्ञा) — detects what is NOT said
 │   ├── flow_engine.py          ← Soul identity + prompt composition + FlowTrace
 │   ├── knowledge_retriever.py  ← Multi-strategy retrieval + vague query resolution
@@ -126,6 +129,7 @@ philosophical-ai/
 
 - Python 3.12+
 - [Groq API Key](https://console.groq.com) (free tier available)
+- [OpenRouter API Key](https://openrouter.ai) (optional — for Jev crisis detection)
 
 ### 1. Clone the repository
 
@@ -152,7 +156,9 @@ pip install -r requirements.txt
 
 ```bash
 cp .env.example .env
-# Edit .env and add your Groq API key
+# Edit .env and add your API keys:
+# GROQ_API_KEY=your_groq_key (required)
+# JEV_API_KEY=your_openrouter_key (optional — enables Jev crisis detection)
 ```
 
 ### 5. Run the server
@@ -176,8 +182,8 @@ http://localhost:8000
 | `GET` | `/` | Chat UI |
 | `GET` | `/stream?question=...` | ⚡ Streaming response (primary endpoint) |
 | `POST` | `/chat` | Full pipeline with reflection (2 LLM calls) |
-| `GET` | `/analyze?question=...` | 🔬 Debug: concept analysis + Prajna + contract type |
-| `GET` | `/trace` | Latest flow trace (Prajna, contract, model info) |
+| `GET` | `/analyze?question=...` | 🔬 Debug: concept analysis + Jev vs Python comparison + Prajna |
+| `GET` | `/trace` | Latest flow trace (Jev, Prajna, contract, model info) |
 | `GET` | `/traces` | All flow traces |
 | `GET` | `/history` | View conversation history |
 | `GET` | `/clear` | Clear conversation memory |
@@ -185,7 +191,7 @@ http://localhost:8000
 | `GET` | `/memory` | View long-term learning data |
 | `GET` | `/model-stats` | Model usage + fallback monitoring |
 | `GET` | `/rebuild` | Rebuild vector database |
-| `GET` | `/health` | Server health check |
+| `GET` | `/health` | Server health check (model stats + Jev stats) |
 | `GET` | `/docs` | API documentation |
 
 ---
@@ -233,7 +239,9 @@ curl "http://localhost:8000/analyze?question=What+is+karma+according+to+Krishna"
   "emotional_intensity": "low",
   "detected_rasa": "shaant",
   "prajna_hint": "",
-  "contract_type": "default"
+  "contract_type": "default",
+  "python_classification": { "question_type": "philosophical", "emotional_intensity": "low" },
+  "jev_classification": { "crisis_signal": 0.02, "emotional_intensity": "low", "rasa": "shaant" }
 }
 ```
 
@@ -259,6 +267,13 @@ User Question
          │
          ▼
 ┌─────────────────┐
+│ Jev Crisis      │  ← Jev-1.13 via OpenRouter (~870ms)
+│ Detection       │     crisis_signal 0.0–1.0
+│ (API call)      │     ≥ 0.7 → force crisis contract
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
 │ Prajna Layer    │  ← Detect what is NOT said:
 │ (प्रज्ञा)        │     displacement, circling, rasa-stuck,
 │                 │     crisis signals, absence patterns
@@ -273,8 +288,8 @@ User Question
          │
          ▼
 ┌─────────────────┐
-│ Prompt Composer  │  ← Soul identity + rasa hints + philosophical
-│ (Flow Engine)   │     opening + style mode + language rules
+│ Prompt Composer  │  ← Soul identity + rasa hints + warmth_first
+│ (Flow Engine)   │     + philosophical opening + style mode
 └────────┬────────┘
          │
          ▼
@@ -285,9 +300,9 @@ User Question
          │
          ▼
 ┌─────────────────┐
-│ Contract        │  ← crisis: 3 sentences, strip advice
-│ Enforcement     │     emotional_high: 5 sentences
-│                 │     default: 8 sentences + dedup
+│ Contract        │  ← Jev crisis ≥ 0.7 OR Prajna crisis
+│ Enforcement     │     → 3 sentences, strip advice
+│                 │     emotional_high: 5 / default: 8
 └────────┬────────┘
          │
          ▼
@@ -312,10 +327,13 @@ User Question
 | Main Model | `qwen/qwen3.8-27b` | Primary LLM via Groq (2M TPD) |
 | Mid Fallback | `openai/gpt-oss-120b` | Tier 2 fallback on rate limit |
 | Fast Fallback | `openai/gpt-oss-20b` | Tier 3 fallback |
+| Crisis Detection | `typesafe/jev-1.13` | Jev via OpenRouter (~870ms, $0.000017/call) |
+| Jev Timeout | `2 seconds` | Fail fast → Python fallback |
+| Crisis Threshold | `≥ 0.7` | crisis_signal score to force crisis contract |
 | Memory | `5 messages` | Short-term conversation history |
 | Max tokens | `500–1680` | Adaptive based on depth + language |
 | Temperature | `0.7` | AI creativity level |
-| Crisis contract | `3 sentences` | Max response for crisis signals |
+| Crisis contract | `3 sentences` | Triggered by Jev ≥ 0.7 or Prajna crisis |
 | Emotional contract | `5 sentences` | Max response for high distress |
 | Default contract | `8 sentences` | Standard response length |
 
@@ -327,8 +345,8 @@ User Question
 # Build
 docker build -t philosophical-ai .
 
-# Run (pass your Groq API key)
-docker run -p 8000:8000 -e GROQ_API_KEY=your_key_here philosophical-ai
+# Run (pass your API keys)
+docker run -p 8000:8000 -e GROQ_API_KEY=your_key -e JEV_API_KEY=your_openrouter_key philosophical-ai
 ```
 
 ---
@@ -357,14 +375,15 @@ numpy
 - [x] Level 2 — Conversation memory (short-term + long-term persistent learning)
 - [x] Level 2.5 — Hindi + Hinglish support (370+ word translation dictionary)
 - [x] Level 3 — Streaming Chat UI (dark theme, SSE, mobile responsive)
-- [x] Level 4 — Cognitive Pipeline (15-stage: concept analysis, Navarasa, retrieval, prompt composition)
+- [x] Level 4 — Cognitive Pipeline (17-stage: concept analysis, Navarasa, retrieval, prompt composition)
 - [x] Level 4.5 — Groq API migration (Qwen 3.8 27B + multi-tier fallback)
 - [x] Level 5 — Prajna layer (displacement, circling, rasa-stuck, crisis detection)
 - [x] Level 6 — Response contracts (crisis/emotional/default sentence caps + enforcement)
 - [x] Level 7 — Deploy on Render.com (Docker, auto-deploy from main)
-- [ ] Level 8 — Session isolation (per-user memory)
-- [ ] Level 9 — Fine-tuning data collection
-- [ ] Level 10 — Voice layer
+- [x] Level 8 — Jev-1.13 crisis detection (97% accuracy, Hindi/Hinglish, $0.000017/call)
+- [ ] Level 9 — Session isolation (per-user memory)
+- [ ] Level 10 — Fine-tuning data collection
+- [ ] Level 11 — Voice layer
 
 ---
 
@@ -391,10 +410,10 @@ This project draws wisdom from:
 |------------|---------|
 | **FastAPI** | Backend API server |
 | **ChromaDB + ONNX** | Vector database + embeddings |
-| **Chroma DB** | Vector database |
 | **Groq API** | Cloud LLM inference |
 | **Qwen 3.8 27B** | Main language model |
-| **GPT-OSS 20B** | Fast reflection model |
+| **GPT-OSS 20B** | Fallback model |
+| **Jev-1.13 (TypeSafe)** | Crisis detection via OpenRouter |
 | **HTML/CSS/JS** | Chat frontend |
 
 ---
